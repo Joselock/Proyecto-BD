@@ -51,7 +51,7 @@ public class ConsultaService {
                     java.sql.Date fecha = rs.getDate("fecha");
                     java.sql.Time hora = rs.getTime("hora_informe");
                     int numInforme = rs.getInt("numInforme");
-                    int cantIniPac = rs.getInt("cantIniPac");
+                    //int cantIniPac = rs.getInt("cantIniPac");
                     int cantAdmPac = rs.getInt("cantAdmPac");
                     int cantAltPac = rs.getInt("cantAltPac");
                     int cantAnterior = rs.getInt("cantAnterior");
@@ -68,10 +68,9 @@ public class ConsultaService {
                     }
 
                     // Buscar o crear Unidad dentro del departamento
-                    // Nota: la unidad se identifica por nombre (podrías usar código si la función lo retorna)
                     Unidad unidad = unidadesMap.get(nombreUni);
                     if (unidad == null) {
-                        unidad = new Unidad(null, nombreUni, null); // código y ubicación se pueden setear después
+                        unidad = new Unidad(null, nombreUni, null); 
                         unidad.setInformes(new LinkedList<>());
                         unidadesMap.put(nombreUni, unidad);
                         departamento.getUnidades().add(unidad);
@@ -79,11 +78,6 @@ public class ConsultaService {
 
                     // Crear el objeto Informe con todos los campos
                     // El constructor de Informe espera: (Time hora, Date fecha, String numIn, int pacAtend, int pacAlta, int cantAdm, int total)
-                    // Asignamos:
-                    // - pacAtend = cantAnterior (pacientes atendidos desde el informe anterior)
-                    // - pacAlta = cantAltPac
-                    // - cantAdm = cantAdmPac
-                    // - total = cantDia (acumulado del día)
                     Informe informe = new Informe(
                         hora,
                         fecha,
@@ -93,7 +87,6 @@ public class ConsultaService {
                         cantAdmPac,      // pacientes admitidos
                         cantDia          // total acumulado en el día hasta este informe
                     );
-                    // Si tu clase Informe tiene un setter para numTurno, puedes agregarlo:
                     // informe.setNumTurno(numTurno);
                     unidad.getInformes().add(informe);
                 }
