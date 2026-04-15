@@ -8,9 +8,8 @@ public class Unidad {
     private String ubicacion;
     private List<Paciente> pacientes;
     private List<Medico>medicos;
+    private List<Informe>informes;
     
-    public Unidad() {
-    }
 
     public Unidad(String codigoUni, String nombreUni, String ubicacion) {
         this.codigoUni = codigoUni;
@@ -58,5 +57,14 @@ public class Unidad {
         this.medicos = medicos;
     }
 
+    public List<Informe> getInformes() {
+        return informes;
+    }
+
+    public void setInformes(List<Informe> informes) {
+        this.informes = informes;
+    }
+
+    
     
 }

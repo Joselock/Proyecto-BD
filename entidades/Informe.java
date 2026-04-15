@@ -11,6 +11,8 @@ public class Informe {
     private int pacAlta;
     private int cantAdm;
     private int total;
+
+    public Informe(){}
     
     public Informe(Time hora, Date fecha, String numIn, int pacAtend, int pacAlta, int cantAdm, int total) {
         this.hora = hora;

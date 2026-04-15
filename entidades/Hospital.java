@@ -11,6 +11,8 @@ public class Hospital {
     private int cantPac;
     private List<Departamento> departamentos;
 
+    public Hospital(){}
+
 
     public Hospital(String codigoHos, String nombreHos, int cantDep, int cantUni, int cantMed, int cantPac) {
         this.codigoHos = codigoHos;
