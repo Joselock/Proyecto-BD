@@ -1,13 +1,13 @@
 package entidades;
 
 public class Turno {
-    private int numTurn;
+    private String numTurn;
     private int canAten;
     private Medico medResp;
     private String estTur;
     private String codUni;
     
-    public Turno(int numTurn, int canAten, Medico medResp, String estTur, String codUni) {
+    public Turno(String numTurn, int canAten, Medico medResp, String estTur, String codUni) {
         this.numTurn = numTurn;
         this.canAten = canAten;
         this.medResp = medResp;
@@ -15,11 +15,11 @@ public class Turno {
         this.codUni = codUni;
     }
 
-    public int getNumTurn() {
+    public String getNumTurn() {
         return numTurn;
     }
 
-    public void setNumTurn(int numTurn) {
+    public void setNumTurn(String numTurn) {
         this.numTurn = numTurn;
     }
 

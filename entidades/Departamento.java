@@ -11,6 +11,16 @@ public class Departamento{
     public Departamento() {
     }
 
+    
+
+    public Departamento(String codigoDep, String nombreDep, List<Unidad> unidades) {
+        this.codigoDep = codigoDep;
+        this.nombreDep = nombreDep;
+        this.unidades = unidades;
+    }
+
+
+
     public Departamento(String codigoDep, String nombreDep) {
         this.codigoDep = codigoDep;
         this.nombreDep = nombreDep;

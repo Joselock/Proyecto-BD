@@ -1,20 +1,18 @@
 package services;
 
-
-import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.sql.Time;
 import java.util.LinkedList;
-import java.util.Map;
 
 import entidades.Departamento;
 import entidades.Hospital;
 import entidades.Informe;
+import entidades.Turno;
 import entidades.Unidad;
 import utils.BaseDatos;
-
 
 public class ConsultaService {
 
@@ -23,79 +21,47 @@ public class ConsultaService {
 
     public LinkedList<Hospital> obtenerInformeHospital(String codigo) throws SQLException {
         LinkedList<Hospital> resultado = new LinkedList<>();
-        String sql = "SELECT * FROM public.informeDuranteConsultaHospital(?)";
+        String function = "SELECT * FROM public.informeDuranteConsultaHospital(?)";
 
-        try (Connection con = BaseDatos.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        java.sql.Connection con = BaseDatos.getConnection();
+        PreparedStatement ps = con.prepareStatement(function);
+        ps.setString(1, codigo);
+        ResultSet rs = ps.executeQuery();
 
-            ps.setString(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
 
-                Hospital hospital = null;
-                // Mapas para evitar duplicados y mantener referencias
-                Map<String, Departamento> deptosMap = new HashMap<>();
-                Map<String, Unidad> unidadesMap = new HashMap<>();
+        while (rs.next()) {
+            String nomHos = rs.getString("hospital");
+            String nomDep = rs.getString("departamento");
+            String nomUni = rs.getString("unidad");
+            Date fecha = rs.getDate("fecha");
+            String numTurno = rs.getString("numTurno");
+            Time hora = rs.getTime("hora_informe");
+            int numInforme = rs.getInt("numInforme");
+            int cantInicial = rs.getInt("canIniPac");
+            int cantAdmitida = rs.getInt("cantAdmPac");
+            int cantAlta = rs.getInt("cantAltPac");
+            int cantAnterior = rs.getInt("cantAnterior");
+            int cantDia = rs.getInt("cantDia");
 
-                while (rs.next()) {
-                    // Crear el objeto Hospital una sola vez (primera fila)
-                    if (hospital == null) {
-                        hospital = new Hospital();
-                        hospital.setCodigoHos(codigo);
-                        hospital.setNombreHos(rs.getString("hospital"));
-                        hospital.setDepartamentos(new LinkedList<>());
-                    }
 
-                    // Obtener datos de la fila
-                    String nombreDep = rs.getString("departamento");
-                    String nombreUni = rs.getString("unidad");
-                    java.sql.Date fecha = rs.getDate("fecha");
-                    java.sql.Time hora = rs.getTime("hora_informe");
-                    int numInforme = rs.getInt("numInforme");
-                    //int cantIniPac = rs.getInt("cantIniPac");
-                    int cantAdmPac = rs.getInt("cantAdmPac");
-                    int cantAltPac = rs.getInt("cantAltPac");
-                    int cantAnterior = rs.getInt("cantAnterior");
-                    int cantDia = rs.getInt("cantDia");
+            Informe informe = new Informe(hora, fecha, numInforme, cantAnterior, cantDia, cantAdmitida, cantAlta,cantInicial);
+            Turno turno = new Turno(numTurno, 0, null, null, null);
+    
+            Unidad unidad = new Unidad(null, nomUni, null, null, null,new LinkedList<>(),new LinkedList<>());
+            unidad.getInformes().add(informe);
+            unidad.getTurnos().add(turno);
 
-                    // Buscar o crear Departamento
-                    Departamento departamento = deptosMap.get(nombreDep);
-                    if (departamento == null) {
-                        departamento = new Departamento();
-                        departamento.setNombreDep(nombreDep);
-                        departamento.setUnidades(new LinkedList<>());
-                        deptosMap.put(nombreDep, departamento);
-                        hospital.getDepartamentos().add(departamento);
-                    }
+            Departamento departamento = new Departamento(null, nomDep, new LinkedList<>());
+            departamento.getUnidades().add(unidad);
 
-                    // Buscar o crear Unidad dentro del departamento
-                    Unidad unidad = unidadesMap.get(nombreUni);
-                    if (unidad == null) {
-                        unidad = new Unidad(null, nombreUni, null); 
-                        unidad.setInformes(new LinkedList<>());
-                        unidadesMap.put(nombreUni, unidad);
-                        departamento.getUnidades().add(unidad);
-                    }
+            Hospital hospital = new Hospital(codigo, nomHos,new LinkedList<>());
+            hospital.getDepartamentos().add(departamento);
 
-                    // Crear el objeto Informe con todos los campos
-                    // El constructor de Informe espera: (Time hora, Date fecha, String numIn, int pacAtend, int pacAlta, int cantAdm, int total)
-                    Informe informe = new Informe(
-                        hora,
-                        fecha,
-                        String.valueOf(numInforme),
-                        cantAnterior,    // pacientes atendidos en el periodo
-                        cantAltPac,      // pacientes dados de alta
-                        cantAdmPac,      // pacientes admitidos
-                        cantDia          // total acumulado en el día hasta este informe
-                    );
-                    // informe.setNumTurno(numTurno);
-                    unidad.getInformes().add(informe);
-                }
+            resultado.add(hospital);
 
-                if (hospital != null) {
-                    resultado.add(hospital);
-                }
-            }
         }
+
+        
         return resultado;
     }
 }

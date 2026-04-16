@@ -13,6 +13,13 @@ public class Hospital {
 
     public Hospital(){}
 
+    
+    public Hospital(String codigoHos, String nombreHos,List<Departamento> departamentos) {
+        this.codigoHos = codigoHos;
+        this.nombreHos = nombreHos;
+        this.departamentos = departamentos;
+    }
+
 
     public Hospital(String codigoHos, String nombreHos, int cantDep, int cantUni, int cantMed, int cantPac) {
         this.codigoHos = codigoHos;

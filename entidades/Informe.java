@@ -6,15 +6,31 @@ import java.sql.Time;
 public class Informe {
     private Time hora;
     private Date fecha;
-    private String numIn;
+    private int numIn;
     private int pacAtend;
     private int pacAlta;
     private int cantAdm;
     private int total;
+    private int cantIni;
 
     public Informe(){}
+
     
-    public Informe(Time hora, Date fecha, String numIn, int pacAtend, int pacAlta, int cantAdm, int total) {
+    //Informe-consulta
+    public Informe(Time hora, Date fecha, int numIn, int pacAtend, int pacAlta, int cantAdm, int total, int cantIni) {
+        this.hora = hora;
+        this.fecha = fecha;
+        this.numIn = numIn;
+        this.pacAtend = pacAtend;
+        this.pacAlta = pacAlta;
+        this.cantAdm = cantAdm;
+        this.total = total;
+        this.cantIni = cantIni;
+    }
+
+
+
+    public Informe(Time hora, Date fecha, int numIn, int pacAtend, int pacAlta, int cantAdm, int total) {
         this.hora = hora;
         this.fecha = fecha;
         this.numIn = numIn;
@@ -40,11 +56,11 @@ public class Informe {
         this.fecha = fecha;
     }
 
-    public String getNumIn() {
+    public int getNumIn() {
         return numIn;
     }
 
-    public void setNumIn(String numIn) {
+    public void setNumIn(int numIn) {
         this.numIn = numIn;
     }
 
@@ -80,6 +96,17 @@ public class Informe {
         this.total = total;
     }
 
+
+    public int getCantIni() {
+        return cantIni;
+    }
+
+
+    public void setCantIni(int cantIni) {
+        this.cantIni = cantIni;
+    }
+
+    
     
 
 }

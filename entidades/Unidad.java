@@ -9,6 +9,7 @@ public class Unidad {
     private List<Paciente> pacientes;
     private List<Medico>medicos;
     private List<Informe>informes;
+    private List<Turno>turnos;
     
 
     public Unidad(String codigoUni, String nombreUni, String ubicacion) {
@@ -16,6 +17,21 @@ public class Unidad {
         this.nombreUni = nombreUni;
         this.ubicacion = ubicacion;
     }
+
+    
+
+    public Unidad(String codigoUni, String nombreUni, String ubicacion, List<Paciente> pacientes, List<Medico> medicos,
+            List<Informe> informes,List<Turno>turnos) {
+        this.codigoUni = codigoUni;
+        this.nombreUni = nombreUni;
+        this.ubicacion = ubicacion;
+        this.pacientes = pacientes;
+        this.medicos = medicos;
+        this.informes = informes;
+        this.turnos = turnos;
+    }
+
+
 
     public String getCodigoUni() {
         return codigoUni;
@@ -65,6 +81,15 @@ public class Unidad {
         this.informes = informes;
     }
 
+
+    public List<Turno> getTurnos() {
+        return turnos;
+    }
+
+
+    public void setTurnos(List<Turno> turnos) {
+        this.turnos = turnos;
+    }
     
     
 }
