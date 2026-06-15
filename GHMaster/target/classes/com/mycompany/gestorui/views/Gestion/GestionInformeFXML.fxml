@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="946.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Gestion.GestionInformeController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="946.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Gestion.GestionInformeController">
     <children>
         
-        <TableView fx:id="tablaInformes" layoutX="33.0" layoutY="91.0" prefHeight="497.0" prefWidth="562.0" stylesheets="@style/gestion.css">
+        <!-- Botón para mostrar/ocultar el panel -->
+        <Button fx:id="btnTogglePanel" layoutX="33.0" layoutY="50.0" prefWidth="120.0" text="Ocultar Panel" styleClass="toggle-panel-btn" />
+        
+        <TableView fx:id="tablaInformes" layoutX="33.0" layoutY="91.0" prefHeight="570.0" prefWidth="562.0" stylesheets="@style/gestion.css">
             <columns>
                 <TableColumn fx:id="colSeleccion" prefWidth="60.0" text="" />
                 <TableColumn fx:id="colNumInforme" prefWidth="100.0" text="Nº Informe" />
@@ -24,21 +27,55 @@
                 <TableColumn fx:id="colTotal" prefWidth="80.0" text="Total" />
             </columns>
         </TableView>
-        <AnchorPane fx:id="panelCrud" layoutX="614.0" layoutY="91.0" prefHeight="497.0" prefWidth="305.0" style="-fx-background-color: #ffffff;">
+        
+        <AnchorPane fx:id="panelCrud" layoutX="614.0" layoutY="91.0" prefHeight="570.0" prefWidth="305.0" style="-fx-background-color: #ffffff;" styleClass="crud-panel">
             <children>
-                <Label layoutX="73.0" layoutY="24.0" prefHeight="41.0" prefWidth="181.0" text="Panel de control"><font><Font size="20.0" /></font></Label>
+                <!-- Título del panel -->
+                <Label layoutX="73.0" layoutY="24.0" prefHeight="41.0" prefWidth="181.0" text="Panel de control">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
                 <Separator layoutX="40.0" layoutY="63.0" prefHeight="4.0" prefWidth="231.0" />
-                <Label fx:id="agregar" alignment="CENTER" layoutX="73.0" layoutY="93.0" prefHeight="48.0" prefWidth="60.0" text="➕ Agregar" />
-                <Label fx:id="modificar" alignment="CENTER" layoutX="178.0" layoutY="93.0" prefHeight="48.0" prefWidth="69.0" text="✏️ Modificar" />
-                <Label fx:id="eliminar" alignment="CENTER" layoutX="73.0" layoutY="151.0" prefHeight="48.0" prefWidth="60.0" text="🗑️ Eliminar" />
-                <Label fx:id="limpiar" alignment="CENTER" layoutX="119.0" layoutY="317.0" prefHeight="48.0" prefWidth="89.0" text="🧹 Limpiar" />
-                <JFXTextField fx:id="txtNumInforme" layoutX="49.0" layoutY="174.0" promptText="Nº Informe" />
-                <JFXTextField fx:id="txtHora" layoutX="49.0" layoutY="205.0" promptText="Hora (HH:MM:SS)" />
-                <JFXTextField fx:id="txtFecha" layoutX="49.0" layoutY="236.0" promptText="Fecha (YYYY-MM-DD)" />
-                <JFXTextField fx:id="txtPacAtendidos" layoutX="49.0" layoutY="267.0" promptText="Atendidos" />
-                <JFXTextField fx:id="txtPacAltas" layoutX="49.0" layoutY="298.0" promptText="Altas" />
-                <JFXTextField fx:id="txtCantAdmitidos" layoutX="49.0" layoutY="329.0" promptText="Admitidos" />
-                <JFXTextField fx:id="txtTotal" layoutX="49.0" layoutY="360.0" promptText="Total" />
+                
+                <!-- Botones CRUD con íconos -->
+                <Button fx:id="btnAgregar" 
+                        layoutX="49.0" layoutY="93.0" 
+                        prefHeight="48.0" prefWidth="60.0" 
+                        styleClass="icon-agregar" 
+                        text="Agregar" 
+                        contentDisplay="TOP" />
+                        
+                <Button fx:id="btnModificar" 
+                        layoutX="128.0" layoutY="93.0" 
+                        prefHeight="48.0" prefWidth="80.0" 
+                        styleClass="icon-modificar" 
+                        text="Modificar" 
+                        contentDisplay="TOP" />
+                        
+                <Button fx:id="btnEliminar" 
+                        layoutX="207.0" layoutY="93.0" 
+                        prefHeight="48.0" prefWidth="60.0" 
+                        styleClass="icon-eliminar" 
+                        text="Eliminar" 
+                        contentDisplay="TOP" />
+                
+                <!-- Campos de texto -->
+                <JFXTextField fx:id="txtNumInforme" layoutX="49.0" layoutY="174.0" prefHeight="24.0" prefWidth="208.0" promptText="Nº Informe" />
+                <JFXTextField fx:id="txtHora" layoutX="49.0" layoutY="205.0" prefHeight="24.0" prefWidth="208.0" promptText="Hora (HH:MM:SS)" />
+                <JFXTextField fx:id="txtFecha" layoutX="49.0" layoutY="236.0" prefHeight="24.0" prefWidth="208.0" promptText="Fecha (YYYY-MM-DD)" />
+                <JFXTextField fx:id="txtPacAtendidos" layoutX="49.0" layoutY="267.0" prefHeight="24.0" prefWidth="208.0" promptText="Atendidos" />
+                <JFXTextField fx:id="txtPacAltas" layoutX="49.0" layoutY="298.0" prefHeight="24.0" prefWidth="208.0" promptText="Altas" />
+                <JFXTextField fx:id="txtCantAdmitidos" layoutX="49.0" layoutY="329.0" prefHeight="24.0" prefWidth="208.0" promptText="Admitidos" />
+                <JFXTextField fx:id="txtTotal" layoutX="49.0" layoutY="360.0" prefHeight="24.0" prefWidth="208.0" promptText="Total" />
+                
+                <!-- Botón Limpiar -->
+                <Button fx:id="btnLimpiar" 
+                        layoutX="108.0" layoutY="420.0" 
+                        prefHeight="48.0" prefWidth="89.0" 
+                        styleClass="icon-limpiar" 
+                        text="Limpiar" 
+                        contentDisplay="TOP" />
             </children>
         </AnchorPane>
     </children>

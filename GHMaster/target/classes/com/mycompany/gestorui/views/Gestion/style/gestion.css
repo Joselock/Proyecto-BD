@@ -78,3 +78,23 @@
     -fx-background-color: #e3f2fd;
     -fx-text-fill: #1976d2;
 }
+
+
+.panel-hidden {
+    -fx-opacity: 0;
+    -fx-visibility: false;
+}
+
+/* Botón toggle */
+.toggle-panel-btn {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.toggle-panel-btn:hover {
+    -fx-background-color: #0b7dda;
+}
