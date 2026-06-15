@@ -14,36 +14,67 @@
 }
 
 
+/* Estilos base para todos los botones de iconos */
+.icon-agregar, .icon-modificar, .icon-eliminar, .icon-limpiar {
+    -fx-background-color: transparent;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-text-fill: #333;
+}
+
+/* Botón Agregar */
 .icon-agregar {
     -fx-graphic: url('/com/mycompany/gestorui/icons/agregar.png');
-    -fx-min-width: 32px;
-    -fx-min-height: 32px;
-    -fx-pref-width: 32px;
-    -fx-pref-height: 32px;
+    -fx-graphic-text-gap: 8px;
 }
 
-.icon-eliminar {
-    -fx-graphic: url('/com/mycompany/gestorui/icons/eliminar.png');
-    -fx-min-width: 32px;
-    -fx-min-height: 32px;
-    -fx-pref-width: 32px;
-    -fx-pref-height: 32px;
-}
-
+/* Botón Modificar */
 .icon-modificar {
     -fx-graphic: url('/com/mycompany/gestorui/icons/modificar.png');
-    -fx-min-width: 32px;
-    -fx-min-height: 32px;
-    -fx-pref-width: 32px;
-    -fx-pref-height: 32px;
+    -fx-graphic-text-gap: 8px;
 }
 
+/* Botón Eliminar */
+.icon-eliminar {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/eliminar.png');
+    -fx-graphic-text-gap: 8px;
+}
+
+/* Botón Limpiar */
 .icon-limpiar {
     -fx-graphic: url('/com/mycompany/gestorui/icons/limpiar.png');
-    -fx-min-width: 32px;
-    -fx-min-height: 32px;
-    -fx-pref-width: 32px;
-    -fx-pref-height: 32px;
+    -fx-graphic-text-gap: 8px;
 }
 
+/* Efecto hover para todos los botones */
+.icon-agregar:hover, .icon-modificar:hover, 
+.icon-eliminar:hover, .icon-limpiar:hover {
+    -fx-background-color: #e0e0e0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
 
+/* Efecto pressed */
+.icon-agregar:pressed, .icon-modificar:pressed, 
+.icon-eliminar:pressed, .icon-limpiar:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Estilo específico para botón eliminar (color rojo al hover) */
+.icon-eliminar:hover {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #d32f2f;
+}
+
+/* Estilo específico para botón agregar (color verde al hover) */
+.icon-agregar:hover {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #388e3c;
+}
+
+/* Estilo específico para botón modificar (color azul al hover) */
+.icon-modificar:hover {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+}
