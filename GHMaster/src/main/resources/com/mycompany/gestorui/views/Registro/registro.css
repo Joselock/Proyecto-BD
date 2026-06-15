@@ -1,0 +1,34 @@
+.register-button {
+    -fx-background-color: #229b22;
+    -fx-text-fill: #bfbebe;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-background-radius:20px;
+}
+
+.register-button:hover {
+    -fx-background-color: #2d8c2d;
+    -fx-text-fill: white;
+}
+
+.register-button:pressed {
+    -fx-background-color: #1a6e1a;
+}
+
+.cancel-button{
+    -fx-background-color: white;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-background-radius:20px;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #f0f0f0;  
+    -fx-text-fill: #333333;
+}
+
+.panel-registro{
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}

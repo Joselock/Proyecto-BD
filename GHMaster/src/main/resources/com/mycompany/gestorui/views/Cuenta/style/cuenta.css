@@ -1,0 +1,82 @@
+.change-password-button {
+    -fx-background-color: white;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20px;
+    -fx-border-color: #2d7a2d;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+}
+
+.change-password-button:hover {
+    -fx-background-color: #f0f0f0;  
+    -fx-text-fill: #333333;
+}
+
+.change-profile-button {
+    -fx-background-color: #229b22;
+    -fx-text-fill: #bfbebe;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20px;
+}
+
+.change-profile-button:hover {
+    -fx-background-color: #2d8c2d;
+    -fx-text-fill: white;
+}
+
+.change-profile-button:pressed {
+    -fx-background-color: #1a6e1a;
+}
+
+.avatar-button {
+    -fx-fill: #2d7a2d;
+    -fx-stroke: #1a5a1a;
+    -fx-stroke-width: 2px;
+    -fx-cursor: hand;
+}
+
+.avatar-button:hover {
+    -fx-fill: #3a8c3a;
+    -fx-stroke: #2d7a2d;
+}
+
+
+.change-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;  
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius:20px;
+}
+
+.change-button:hover {
+    -fx-background-color: #0056b3;  
+    -fx-text-fill: white;
+}
+
+.change-button:pressed {
+    -fx-background-color: #004099;  
+    -fx-text-fill: white;
+}
+
+.back-button{
+    -fx-background-color: white;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-background-radius:20px;
+}
+
+.back-button:hover {
+    -fx-background-color: #f0f0f0;  
+    -fx-text-fill: #333333;
+}
+
+.change-panel{
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}

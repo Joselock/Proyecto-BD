@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="490.0" prefWidth="758.0" style="-fx-background-color: #2d7a2d;" stylesheets="@registro.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Registro.RegistroPersonalController">
+   <children>
+       <ImageView fitHeight="527.0" fitWidth="350.0" layoutX="411.0" pickOnBounds="true" preserveRatio="true">
+           <Image url="@../../images/HGV%20Medical%20Services%20for%20Professional%20Drivers.jpeg" />
+       </ImageView>
+       
+      <AnchorPane layoutX="213.0" layoutY="60.0" opacity="0.94" prefHeight="417.0" prefWidth="336.0" style="-fx-background-color: #ffffff;" styleClass="panel-registro" stylesheets="@registro.css">
+         <children>
+            <Label layoutX="90.0" layoutY="36.0" text="Datos Personales">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            
+            <!-- Nombre completo -->
+            <JFXTextField fx:id="txtNombreCompleto" focusColor="#0c0a75" layoutX="47.0" layoutY="85.0" prefHeight="24.0" prefWidth="245.0" promptText="Nombre completo" unFocusColor="BLACK" />
+            
+            <!-- Especialidad -->
+            <JFXTextField fx:id="txtEspecialidad" focusColor="#0c0a75" layoutX="47.0" layoutY="140.0" prefHeight="24.0" prefWidth="245.0" promptText="Especialidad" unFocusColor="BLACK" />
+            
+            <!-- Dirección -->
+            <JFXTextField fx:id="txtDireccion" focusColor="#0c0a75" layoutX="47.0" layoutY="195.0" prefHeight="24.0" prefWidth="245.0" promptText="Dirección" unFocusColor="BLACK" />
+            
+            <!-- Teléfono -->
+            <JFXTextField fx:id="txtTelefono" focusColor="#0c0a75" layoutX="47.0" layoutY="250.0" prefHeight="24.0" prefWidth="245.0" promptText="Teléfono" unFocusColor="BLACK" />
+            
+            <!-- Botón Continuar -->
+            <JFXButton fx:id="btnContinuar" alignment="CENTER" layoutX="77.0" layoutY="307.0" onAction="#handleContinuar" prefHeight="36.0" prefWidth="192.0" styleClass="register-button" text="Continuar " />
+            
+            <!-- Botón Cancelar -->
+            <JFXButton fx:id="btnCancelar" layoutX="77.0" layoutY="356.0" onAction="#handleCancelar" prefHeight="36.0" prefWidth="192.0" styleClass="cancel-button" text="Cancelar" />
+         </children>
+      </AnchorPane>
+      
+      <Label fx:id="cerrar" layoutX="20.0" layoutY="14.0" onMouseClicked="#handleClose" style="-fx-cursor: hand;" text="X" textFill="#bfbebe">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="minimizar" layoutX="40.0" layoutY="14.0" onMouseClicked="#handleMinimize" style="-fx-cursor: hand;" text="—" textFill="#bfbebe">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="695.0" prefWidth="1200.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.MainWindowController">
+   
+       <children>
+        <!-- HEADER (fijo arriba) -->
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" prefWidth="1200.0" spacing="20.0" style="-fx-background-color: #2d7a2d;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets left="30.0" right="30.0" />
+            </padding>
+         
+            <Label text="Dashboard" textFill="WHITE">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+         
+            <HBox HBox.hgrow="ALWAYS" />
+         
+            <Label fx:id="lblUsuario" text="Usuario: Admin" textFill="WHITE">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+         
+    
+            <Button fx:id="btnMenu" onAction="#mostrarMenu" style="-fx-font-size: 24px; -fx-background-color: transparent; -fx-text-fill: white;" text="☰" />
+         
+        </HBox>
+      
+        <!-- CONTENIDO PRINCIPAL (se expande) -->
+        <VBox layoutY="70.0" spacing="20.0" style="-fx-background-color: #f5f5f5;" stylesheets="@../styles/mainwindow.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="70.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+         
+            <!-- SECCIÓN 1: INDICADORES CLAVE (5 CARDS) -->
+            <HBox alignment="CENTER" spacing="15.0">
+                <VBox alignment="CENTER" prefHeight="120.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" styleClass="metric-card" stylesheets="@../styles/mainwindow.css" HBox.hgrow="SOMETIMES">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <Label styleClass="icon-hospital" />
+                    <Label fx:id="lblTotalHospitales" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2d7a2d;" text="3">
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="Hospitales" />
+                </VBox>
+            
+                <VBox alignment="CENTER" prefHeight="120.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" styleClass="metric-card" stylesheets="@../styles/mainwindow.css" HBox.hgrow="SOMETIMES">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <Label styleClass="icon-department" />
+                    <Label fx:id="lblTotalDepartamentos" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2d7a2d;" text="12">
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="Departamentos" />
+                </VBox>
+            
+                <VBox alignment="CENTER" prefHeight="174.0" prefWidth="214.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" styleClass="metric-card" stylesheets="@../styles/mainwindow.css" HBox.hgrow="SOMETIMES">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <Label styleClass="icon-unit" />
+                    <Label fx:id="lblTotalUnidades" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2d7a2d;" text="45">
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="Unidades" />
+                </VBox>
+            
+                <VBox alignment="CENTER" prefHeight="120.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" styleClass="metric-card" stylesheets="@../styles/mainwindow.css" HBox.hgrow="SOMETIMES">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <Label styleClass="icon-medic" />
+                    <Label fx:id="lblTotalMedicos" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2d7a2d;" text="287">
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="Médicos" />
+                </VBox>
+            
+                <VBox alignment="CENTER" prefHeight="120.0" prefWidth="220.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" styleClass="metric-card" stylesheets="@../styles/mainwindow.css" HBox.hgrow="SOMETIMES">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <Label styleClass="icon-patient" stylesheets="@../styles/mainwindow.css" />
+                    <Label fx:id="lblTotalPacientes" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #2d7a2d;" text="1,234">
+                        <VBox.margin>
+                            <Insets top="5.0" />
+                        </VBox.margin>
+                    </Label>
+                    <Label style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="Pacientes" />
+                </VBox>
+            </HBox>
+         
+            <!-- SECCIÓN 2 Y 3: GRÁFICO + ALERTAS (se expande verticalmente) -->
+            <HBox alignment="TOP_LEFT" spacing="20.0" VBox.vgrow="ALWAYS">
+                <!-- SECCIÓN 2: TOP 5 HOSPITALES -->
+                <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" stylesheets="@../styles/mainwindow.css" HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+      
+                    <!-- Título con icono de trofeo -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <VBox.margin>
+                            <Insets bottom="15.0" />
+                        </VBox.margin>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                            <Image url="@/com/mycompany/gestorui/icons/trofeo.png" />
+                        </ImageView>
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="TOP 5 HOSPITALES" />
+                    </HBox>
+      
+                    <BarChart fx:id="chartTopHospitales" legendVisible="false" stylesheets="@../styles/mainwindow.css" VBox.vgrow="ALWAYS">
+                        <xAxis>
+                            <CategoryAxis label="Hospitales" side="BOTTOM" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Pacientes" side="LEFT" />
+                        </yAxis>
+                    </BarChart>
+                </VBox>
+   
+            
+            <!-- SECCIÓN 3: ALERTAS Y PENDIENTES -->
+            <VBox prefWidth="400.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" stylesheets="@../styles/mainwindow.css" HBox.hgrow="NEVER">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                </padding>
+   
+                <!-- Título con icono -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <VBox.margin>
+                        <Insets bottom="15.0" />
+                    </VBox.margin>
+      
+                    <!-- Icono de advertencia -->
+                    <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                        <Image url="@/com/mycompany/gestorui/icons/warning.png" />
+                    </ImageView>
+      
+                    <!-- Texto del título -->
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="UNIDADES POR REVISAR" />
+                </HBox>
+   
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" stylesheets="@../styles/mainwindow.css" VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox fx:id="vboxAlertas" spacing="10.0" />
+                    </content>
+                </ScrollPane>
+            </VBox>
+        </HBox> 
+        </VBox>
+    </children>
+</AnchorPane>

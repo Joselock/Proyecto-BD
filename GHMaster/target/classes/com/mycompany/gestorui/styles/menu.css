@@ -1,0 +1,22 @@
+/* menu.css */
+.menu-popup {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);
+    -fx-padding: 5px 0;
+}
+
+.menu-item-custom {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 25px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-max-width: Infinity;
+}
+
+.menu-item-custom:hover {
+    -fx-background-color: #2d7a2d;
+    -fx-text-fill: white;
+}
+

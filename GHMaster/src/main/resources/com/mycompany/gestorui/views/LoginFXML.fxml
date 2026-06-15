@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="490.0" prefWidth="758.0" style="-fx-background-color: #2d7a2d;" stylesheets="@/com/mycompany/gestorui/styles/login.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.LoginController">
+   <children>
+      <!-- 1️⃣ PRIMERO: La imagen de fondo (se dibuja DETRÁS) -->
+      <ImageView fitHeight="559.0" fitWidth="355.0" layoutY="-12.0" opacity="0.82" pickOnBounds="true" preserveRatio="true">
+         <Image url="@../images/alexandr-podvalny-tE7_jvK-_YU-unsplash.jpg" />
+      </ImageView>
+      
+      <!-- 2️⃣ DESPUÉS: El panel de login (se dibuja ENCIMA de la imagen) -->
+      <AnchorPane layoutX="214.0" layoutY="66.0" opacity="0.94" prefHeight="390.0" prefWidth="330.0" style="-fx-background-color: #ffffff;" styleClass="panel-inicio" stylesheets="@../styles/login.css">
+         <children>
+            <!-- Campo de usuario -->
+            <JFXTextField fx:id="usernameField" focusColor="#0c0a75" labelFloat="true" layoutX="49.0" layoutY="118.0" prefHeight="24.0" prefWidth="226.0" promptText="username/email" unFocusColor="BLACK">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </JFXTextField>
+            
+            <!-- Campo de contraseña (oculto) -->
+            <JFXPasswordField fx:id="passwordField" focusColor="#0c0a75" labelFloat="true" layoutX="49.0" layoutY="173.0" prefHeight="24.0" prefWidth="202.0" promptText="password" unFocusColor="BLACK" />
+            
+            <!-- Campo de texto visible (para mostrar contraseña) -->
+            <JFXTextField fx:id="visiblePasswordField" focusColor="#0c0a75" labelFloat="true" layoutX="49.0" layoutY="173.0" managed="false" prefHeight="24.0" prefWidth="190.0" promptText="password" unFocusColor="#98989e" visible="false" />
+            
+            <!-- Label con imagen para mostrar/ocultar contraseña -->
+            <Label fx:id="togglePasswordLabel" layoutX="254.0" layoutY="173.0" onMouseClicked="#togglePasswordVisibility" prefHeight="24.0" prefWidth="21.0" style="-fx-cursor: hand;">
+                <graphic>
+                    <ImageView fx:id="toggleIcon" fitHeight="16" fitWidth="16" preserveRatio="true">
+                        <Image url="@/com/mycompany/gestorui/images/eye-open.png" />
+                    </ImageView>
+                </graphic>
+            </Label>
+            
+            <!-- Botón de login -->
+            <JFXButton fx:id="btnIniciar" layoutX="68.0" layoutY="245.0" onAction="#handleLogin" prefHeight="36.0" prefWidth="195.0" styleClass="sign-in-button" text="Sign In" />
+            
+            <Label layoutX="95.0" layoutY="47.0" text="Inicio de Sesión">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Hyperlink layoutX="104.0" layoutY="332.0" prefHeight="22.0" prefWidth="125.0" text="Forgot Password?" />
+            <Label fx:id="errorLabel" alignment="CENTER" layoutX="50.0" layoutY="221.0" prefHeight="16.0" prefWidth="226.0" text="Credenciales incorrectas" textFill="#e40808" visible="false" />
+            <JFXButton fx:id="btnCancelar" layoutX="68.0" layoutY="290.0" onAction="#handleCancelar" prefHeight="36.0" prefWidth="195.0" styleClass="back-button" stylesheets="@../styles/login.css" text="Atrás" />
+         </children>
+      </AnchorPane>
+      
+      <!-- 3️⃣ Los botones de cerrar/minimizar (también encima) -->
+      <Label fx:id="X" layoutX="732.0" layoutY="14.0" onMouseClicked="#handleClose" prefHeight="20.0" prefWidth="12.0" style="-fx-cursor: hand;" text="X" textFill="#ddc9c9">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="699.0" layoutY="14.0" onMouseClicked="#handleMinimize" prefHeight="20.0" prefWidth="21.0" text="—" textFill="#ddc9c9">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+   </children>
+</AnchorPane>

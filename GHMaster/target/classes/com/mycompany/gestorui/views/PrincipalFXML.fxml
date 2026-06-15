@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="429.0" prefWidth="635.0" style="-fx-background-color: #2d7a2d;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.PrincipalController">
+   <children>
+      <JFXButton fx:id="iniciar" layoutX="217.0" layoutY="244.0" onAction="#handleIniciar" prefHeight="36.0" prefWidth="192.0" styleClass="principal-button" stylesheets="@../styles/principal.css" text="Iniciar Sesión" textFill="#bfbebe" />
+      <JFXButton fx:id="registrar" layoutX="217.0" layoutY="293.0" onAction="#handleRegistro" prefHeight="36.0" prefWidth="192.0" styleClass="principal-button" stylesheets="@../styles/principal.css" text="Registrarse" textFill="#bfbebe" />
+      <Label alignment="CENTER" layoutX="202.0" layoutY="88.0" prefHeight="67.0" prefWidth="231.0" text="Consulta Hospitalaria" textFill="#bfbebe">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="99.0" layoutY="147.0" text="Todo lo que necesites saber sobre procesos y personal de un hospital" textFill="#bfbebe" />
+      <Label layoutX="262.0" layoutY="76.0" text="Sistema de" textFill="#bfbebe">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="X" layoutX="603.0" layoutY="20.0" onMouseClicked="#handleClose" text="X" textFill="#bfbebe">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="minimizar" layoutX="578.0" layoutY="20.0" onMouseClicked="#handleMinimize" text="—" textFill="#bfbebe">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

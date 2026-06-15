@@ -1,0 +1,49 @@
+.metric-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.metric-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 4);
+    -fx-translate-y: -2px;
+}
+
+.crud-panel{
+    -fx-background-radius: 10;
+}
+
+
+.icon-agregar {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/agregar.png');
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+}
+
+.icon-eliminar {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/eliminar.png');
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+}
+
+.icon-modificar {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/modificar.png');
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+}
+
+.icon-limpiar {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/limpiar.png');
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+}
+
+

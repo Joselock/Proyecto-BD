@@ -1,0 +1,17 @@
+
+.principal-button {
+    -fx-background-color:  #ffffff;
+    -fx-text-fill:  #2d7a2d;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-background-radius:20px;
+}
+
+.principal-button:hover {
+    -fx-background-color: #2d8c2d;
+    -fx-text-fill: white;
+}
+
+.principal-button:pressed {
+    -fx-background-color: #1a6e1a;
+}

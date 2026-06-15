@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="654.0" prefWidth="735.0" stylesheets="@/com/mycompany/gestorui/views/Cuenta/style/cuenta.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Cuenta.CuentaController">
+    <children>
+        <!-- Header -->
+        <AnchorPane prefHeight="46.0" prefWidth="735.0" style="-fx-background-color: #2d7a2d;">
+            <children>
+                <Label fx:id="cerrar" layoutX="707.0" layoutY="11.0" onMouseClicked="#handleClose" text="X" textFill="#bfbebe">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+                <Label fx:id="minimizar" layoutX="680.0" layoutY="11.0" onMouseClicked="#handleMinimize" text="—" textFill="#bfbebe">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </children>
+        </AnchorPane>
+      
+        <!-- Título -->
+        <Label alignment="CENTER" layoutX="256.0" layoutY="46.0" prefHeight="72.0" prefWidth="224.0" text="Mi cuenta" textFill="#2d7a2d">
+            <font>
+                <Font size="32.0" />
+            </font>
+        </Label>
+      
+        <!-- Botón de menú -->
+        <Button fx:id="btnMenu" layoutX="665.0" layoutY="59.0" onAction="#mostrarMenu" style="-fx-font-size: 24px; -fx-background-color: transparent; -fx-text-fill: #2d7a2d;" text="⋮" />
+      
+        <!-- Círculo para el avatar (solo visual) -->
+        <Circle fx:id="avatarCircle" fill="#2d7a2d" layoutX="368.0" layoutY="197.0" radius="84.0" stroke="#2d7a2d" strokeType="INSIDE" />
+
+        <!-- ImageView para la foto de perfil -->
+        <ImageView fx:id="avatarImage" fitHeight="168.0" fitWidth="168.0" layoutX="284.0" layoutY="113.0" preserveRatio="false" />
+        <!-- Botón para cambiar/borrar avatar -->
+       
+        <JFXButton fx:id="btnChangeAvatar" layoutX="310.0" layoutY="260.0" onAction="#handleChangeAvatar" prefHeight="30.0" prefWidth="116.0" style="-fx-background-color: #2d7a2d; -fx-text-fill: white; -fx-background-radius: 15px; -fx-cursor: hand;" text="📷 Cambiar foto" />
+      
+        <!-- Nombre de usuario -->
+        <Label fx:id="lblUsername" layoutX="334.0" layoutY="317.0" text="Usuario" textFill="#2d7a2d">
+            <font>
+                <Font size="18.0" />
+            </font>
+        </Label>
+      
+        <!-- Datos del usuario -->
+        <Label fx:id="nombre" layoutX="160.0" layoutY="360.0" text="Nombre y Apellidos:" />
+        <Label fx:id="gmail" layoutX="160.0" layoutY="390.0" text="Gmail:" />
+        <Label fx:id="especialidad" layoutX="160.0" layoutY="420.0" text="Especialidad:" />
+        <Label fx:id="direccion" layoutX="160.0" layoutY="450.0" text="Dirección:" />
+        <Label fx:id="telefono" layoutX="160.0" layoutY="480.0" text="Teléfono:" />
+      
+      
+    </children>
+</AnchorPane>

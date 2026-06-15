@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="949.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Reporte.ReporteController">
+   <children>
+      <HBox layoutX="147.0" layoutY="149.0" prefHeight="117.0" prefWidth="655.0" spacing="15.0">
+         <children>
+            <VBox onMouseClicked="#handleListadoPacientes" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label prefHeight="5.0" prefWidth="122.0" text="Listado de pacientes" />
+               </children>
+            </VBox>
+            <VBox onMouseClicked="#handleListadoMedicos" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Listado de medicos" />
+               </children>
+            </VBox>
+            <VBox onMouseClicked="#handleResumenHospital" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Resumen por hospitales" />
+               </children>
+            </VBox>
+            <VBox onMouseClicked="#handleTop" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Top 5 hospitales con mas pacientes" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="147.0" layoutY="280.0" prefHeight="117.0" prefWidth="655.0" spacing="15.0">
+         <children>
+            <VBox onMouseClicked="#handleInformesConsultas" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Informe durante consultas" />
+               </children>
+            </VBox>
+            <VBox onMouseClicked="#handleNOAtendidos" prefHeight="200.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Pacientes no atendidos" />
+               </children>
+            </VBox>
+            <VBox onMouseClicked="#handleResumenProceso" prefHeight="200.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Resumen del proceso" />
+               </children>
+            </VBox>
+            <VBox onMouseClicked="#handleRevisarTurno" prefHeight="200.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Revisar turnos" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <Label alignment="CENTER" layoutX="377.0" layoutY="46.0" prefHeight="58.0" prefWidth="195.0" text="Reportes">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="minimizar" layoutX="882.0" layoutY="21.0" onMouseClicked="#handleMinimize" text="—">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="cerrar" layoutX="912.0" layoutY="21.0" onMouseClicked="#handleClose" text="X">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <HBox layoutX="147.0" layoutY="415.0" prefHeight="117.0" prefWidth="655.0" spacing="15.0">
+         <children>
+            <VBox onMouseClicked="#handleConsultasExitosas" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/reportes.css">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <children>
+                  <Label text="Consultas exitosas" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

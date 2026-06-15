@@ -1,0 +1,85 @@
+/* Estilos globales */
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", sans-serif;
+}
+
+/* Cards de indicadores */
+.metric-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.metric-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 4);
+    -fx-translate-y: -2px;
+}
+
+
+/* Gráfico de barras */
+.chart-bar {
+    -fx-bar-fill: #2d7a2d;
+}
+
+.chart-bar:hover {
+    -fx-bar-fill: #1a5a1a;
+}
+
+/* Botones */
+.button {
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-opacity: 0.9;
+}
+
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/*Iconos de los indicadores*/
+
+/* mainwindow.css */
+.icon-hospital {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/hospital-icon.png');
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+}
+
+.icon-department {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/department-icon.png');
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+}
+
+.icon-unit {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/unit-icon.png');
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+}
+
+.icon-medic {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/medic-icon.png');
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+}
+
+.icon-patient {
+    -fx-graphic: url('/com/mycompany/gestorui/icons/patient-icon.png');
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+}
+
+.icon-warning{
+    -fx-graphic: url('/com/mycompany/gestorui/icons/warning.png');
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+    
+}
