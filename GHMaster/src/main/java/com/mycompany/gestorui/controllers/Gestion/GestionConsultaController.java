@@ -2,7 +2,10 @@ package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
 import com.mycompany.gestorui.model.entidades.Consulta;
+import com.mycompany.gestorui.model.services.crud.crudConsulta;
+
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +19,8 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -40,7 +45,7 @@ public class GestionConsultaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
         configurarCheckBoxSeleccionarTodos();
-        cargarEjemplos();
+        cargarDatos();
         configurarEventos();
         configurarPanelToggle();
     }
@@ -108,13 +113,30 @@ public class GestionConsultaController implements Initializable {
         colSeleccion.setSortable(false);
     }
 
-    private void cargarEjemplos() {
-        // Datos de ejemplo
-        items.addAll(
-            new Consulta("P001", 1, false, "Fiebre alta", null),
-            new Consulta("P002", 2, true, "", null),
-            new Consulta("P003", 3, false, "Dolor de cabeza", null)
-        );
+    private void cargarDatos() {
+         tablaConsultas.setPlaceholder(new ProgressIndicator());
+        
+        new Thread(() -> {
+            try {
+                List<Consulta> lista = crudConsulta.obtenerConsultas();
+                
+                Platform.runLater(() -> {
+                    items.clear();
+                    items.addAll(lista);
+                    tablaConsultas.setPlaceholder(new Label("No hay consultas"));
+                    
+                    if (lista.isEmpty()) {
+                        mostrarAlerta("No se encontraron consultas", Alert.AlertType.INFORMATION);
+                    }
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    mostrarAlerta("Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
+                    tablaConsultas.setPlaceholder(new Label("Error al cargar datos"));
+                });
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void configurarEventos() {
@@ -192,10 +214,18 @@ public class GestionConsultaController implements Initializable {
                 return;
             }
             
-            Consulta c = new Consulta(numHistoria, numTurno, atendido, causa, null);
-            items.add(c);
-            limpiarCampos();
-            mostrarAlerta("Consulta agregada correctamente", Alert.AlertType.INFORMATION);
+            // Insertar en BD
+            Map<String, Object> resultado = crudConsulta.insertarConsulta(numTurno, numHistoria, atendido, causa);
+            
+            if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+                Consulta c = new Consulta(numHistoria, numTurno, atendido, causa, null);
+                items.add(c);
+                limpiarCampos();
+                mostrarAlerta("Consulta agregada correctamente", Alert.AlertType.INFORMATION);
+            } else {
+                String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+                mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
+            }
         } catch (NumberFormatException e) {
             mostrarAlerta("El número de turno debe ser un valor numérico");
         }
@@ -217,7 +247,7 @@ public class GestionConsultaController implements Initializable {
                 return;
             }
             
-            // Verificar si el nuevo número de turno ya existe (si es diferente al original)
+            // Verificar si el nuevo número de turno ya existe
             if (nuevoNumTurno != c.getNumeroT()) {
                 boolean existe = items.stream().anyMatch(cons -> cons.getNumeroT() == nuevoNumTurno);
                 if (existe) {
@@ -226,14 +256,27 @@ public class GestionConsultaController implements Initializable {
                 }
             }
             
-            c.setNumeroT(nuevoNumTurno);
-            c.setNumH(nuevoNumHistoria);
-            c.setAtend(chkAtendido.isSelected());
-            c.setCausa(chkAtendido.isSelected() ? "" : txtCausa.getText().trim());
+            boolean atendido = chkAtendido.isSelected();
+            String causa = atendido ? "" : txtCausa.getText().trim();
             
-            tablaConsultas.refresh();
-            limpiarCampos();
-            mostrarAlerta("Consulta modificada correctamente", Alert.AlertType.INFORMATION);
+            // Guardar valores originales
+            int numOriginal = c.getNumeroT();
+            
+            // Actualizar en BD
+            Map<String, Object> resultado = crudConsulta.modificarConsulta(numOriginal, nuevoNumTurno, nuevoNumHistoria, atendido, causa);
+            
+            if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+                c.setNumeroT(nuevoNumTurno);
+                c.setNumH(nuevoNumHistoria);
+                c.setAtend(atendido);
+                c.setCausa(causa);
+                tablaConsultas.refresh();
+                limpiarCampos();
+                mostrarAlerta("Consulta modificada correctamente", Alert.AlertType.INFORMATION);
+            } else {
+                String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+                mostrarAlerta("Error al modificar: " + mensaje, Alert.AlertType.ERROR);
+            }
         } catch (NumberFormatException e) {
             mostrarAlerta("El número de turno debe ser un valor numérico");
         }
@@ -251,9 +294,29 @@ public class GestionConsultaController implements Initializable {
         alert.setContentText("¿Eliminar " + seleccionados.size() + " consulta(s)?");
         
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            items.removeAll(seleccionados);
-            seleccionados.clear();
-            mostrarAlerta("Consulta(s) eliminada(s) correctamente", Alert.AlertType.INFORMATION);
+            List<Consulta> aEliminar = List.copyOf(seleccionados);
+            boolean todosEliminados = true;
+            StringBuilder errores = new StringBuilder();
+            
+            for (Consulta c : aEliminar) {
+                Map<String, Object> resultado = crudConsulta.eliminarConsulta(c.getNumeroT(), c.getNumH());
+                
+                if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+                    items.remove(c);
+                    seleccionados.remove(c);
+                } else {
+                    todosEliminados = false;
+                    String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+                    errores.append("• Turno ").append(c.getNumeroT()).append(": ").append(mensaje).append("\n");
+                }
+            }
+            
+            if (todosEliminados) {
+                mostrarAlerta("Consulta(s) eliminada(s) correctamente", Alert.AlertType.INFORMATION);
+            } else {
+                mostrarAlerta("Algunas consultas no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
+                cargarDatos(); // Recargar para sincronizar
+            }
         }
     }
 

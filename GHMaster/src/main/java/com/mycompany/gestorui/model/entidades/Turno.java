@@ -8,6 +8,7 @@ public class Turno {
     private String codUni;
     private Consulta consulta;
     private Medico medico;
+    private String codigoUni;
     
     
     public Turno(int numTurn, int cantAten, String estTur, String codUni,Medico medico) {
@@ -16,6 +17,15 @@ public class Turno {
         this.estTur = estTur;
         this.codUni = codUni;
         this.medico = medico;
+    }
+
+    public Turno(int numTurn, int cantAten, String estTur, String codUni,Medico medico,String codigoUni) {
+        this.numTurn = numTurn;
+        this.cantAten = cantAten;
+        this.estTur = estTur;
+        this.codUni = codUni;
+        this.medico = medico;
+        this.codigoUni = codigoUni;
     }
     
     
@@ -95,6 +105,14 @@ public class Turno {
 
     public void setMedico(Medico medico) {
         this.medico = medico;
+    }
+
+    public String getCodigoUni() {
+        return codigoUni;
+    }
+
+    public void setCodigoUni(String codigoUni) {
+        this.codigoUni = codigoUni;
     }
 
     

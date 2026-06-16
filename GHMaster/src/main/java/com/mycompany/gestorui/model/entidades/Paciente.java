@@ -8,7 +8,7 @@ public class Paciente {
     private Date fechaN;
     private String direccionP;
     private String estado;
-
+    String codigoUni;
     
     
     public Paciente() {
@@ -20,6 +20,15 @@ public class Paciente {
         this.fechaN = fechaN;
         this.direccionP = direccionP;
         this.estado = estado;
+    }
+
+    public Paciente(String numHisCli, String nombrePac, Date fechaN, String direccionP,String estado,String codigoUni) {
+        this.numHisCli = numHisCli;
+        this.nombrePac = nombrePac;
+        this.fechaN = fechaN;
+        this.direccionP = direccionP;
+        this.estado = estado;
+        this.codigoUni = codigoUni;
     }
 
     public String getNumHisCli() {
@@ -60,6 +69,14 @@ public class Paciente {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getCodigoUni() {
+        return codigoUni;
+    }
+
+    public void setCodigoUni(String codigoUni) {
+        this.codigoUni = codigoUni;
     }
 
     

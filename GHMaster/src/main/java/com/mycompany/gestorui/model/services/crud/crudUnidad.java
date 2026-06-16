@@ -3,14 +3,60 @@ package com.mycompany.gestorui.model.services.crud;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.mycompany.gestorui.model.entidades.Unidad;
 import com.mycompany.gestorui.model.utils.BaseDatos;
 
 public class crudUnidad {
 
+    public static List<Unidad> obtenerUnidades() {
+        List<Unidad> unidades = new ArrayList<>();
+        String sql = "SELECT * FROM public.\"Unidad\" ORDER BY \"codUni\"";
+        
+        java.sql.Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            con = BaseDatos.getConnection();
+            if (con == null) {
+                System.err.println("Error: No se pudo conectar a la base de datos");
+                return unidades;
+            }
+            
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Unidad unidad = new Unidad(null, null, null, null);
+                unidad.setCodigoUni(rs.getString("codUni"));
+                unidad.setNombreUni(rs.getString("nomUni"));
+                unidad.setUbicacion(rs.getString("ubiUni"));
+                unidad.setCodigoDep(rs.getString("codDep"));
+                unidades.add(unidad);
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error al obtener unidades: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return unidades;
+    }
+
     //Function para insertar una unidad
-    public Map<String, Object> insertarUnidad(String codUni, String nomUni, String ubicacion, String codDep) {
+    public static Map<String, Object> insertarUnidad(String codUni, String nomUni, String ubicacion, String codDep) {
         java.sql.Connection con = BaseDatos.getConnection();
 
         String function = "SELECT * FROM public.insertarUnidad(?, ?, ?, ?)";
@@ -40,7 +86,7 @@ public class crudUnidad {
 
     
     //Funcion para modificar una unidad
-    public Map<String, Object> modificarUnidad(String oldCod, String newCod, String nomUni, String ubicacion,
+    public static Map<String, Object> modificarUnidad(String oldCod, String newCod, String nomUni, String ubicacion,
             String codDep) {
         java.sql.Connection con = BaseDatos.getConnection();        
 
@@ -72,7 +118,7 @@ public class crudUnidad {
 
 
     //Funcion para eliminar una unidad
-    public String eliminarUnidad(String codUni) {
+    public static String eliminarUnidad(String codUni) {
         java.sql.Connection con = BaseDatos.getConnection();
 
         String function = "SELECT public.eliminarUnidad(?)";

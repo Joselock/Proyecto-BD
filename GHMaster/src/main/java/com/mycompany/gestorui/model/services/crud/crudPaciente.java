@@ -5,13 +5,65 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.mycompany.gestorui.model.entidades.Paciente;
 import com.mycompany.gestorui.model.utils.BaseDatos;
 
 public class crudPaciente {
 
-    public Map<String, Object> insertarPaciente(String numHistoria, String nomPac, String direccion,
+    public static List<Paciente> obtenerPacientes() {
+        List<Paciente> pacientes = new ArrayList<>();
+        // JOIN para obtener estPac desde la tabla Registro
+        String sql = "SELECT p.\"numHisCli\", p.\"nomPac\", p.\"dirPac\", p.\"fechaN\", r.\"codUni\", r.\"estPac\" " +
+                     "FROM public.\"Paciente\" p " +
+                     "LEFT JOIN public.\"Registro\" r ON p.\"numHisCli\" = r.\"numHisCli\" " +
+                     "ORDER BY p.\"numHisCli\"";
+        
+        java.sql.Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            con = BaseDatos.getConnection();
+            if (con == null) {
+                System.err.println("Error: No se pudo conectar a la base de datos");
+                return pacientes;
+            }
+            
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Paciente paciente = new Paciente();
+                paciente.setNumHisCli(rs.getString("numHisCLi"));
+                paciente.setNombrePac(rs.getString("nomPac"));
+                paciente.setDireccionP(rs.getString("dirPac"));
+                paciente.setFechaN(rs.getDate("fechaN"));
+                paciente.setEstado(rs.getString("estPac")); 
+                paciente.setCodigoUni(rs.getString("codUni"));
+                pacientes.add(paciente);
+            }
+            
+        } catch (SQLException e) {
+            System.err.println("Error al obtener pacientes: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return pacientes;
+    }
+
+    public static Map<String, Object> insertarPaciente(String numHistoria, String nomPac, String direccion,
             LocalDate fechaNac, String estadoPac, String codUni) {
 
         java.sql.Connection con = BaseDatos.getConnection();        
@@ -29,11 +81,11 @@ public class crudPaciente {
                     return Map.of(
                             "existe", rs.getBoolean("existe"),
                             "mensaje", rs.getString("mensaje"),
-                            "numHistoria", rs.getString("numHistoria"),
+                            "numHistoria", rs.getString("numHisCli"),
                             "nomPac", rs.getString("nomPac"),
-                            "direccion", rs.getString("direccion"),
+                            "direccion", rs.getString("dirPac"),
                             "fecha", rs.getDate("fecha"),
-                            "estadoPac", rs.getString("estadoPac"),
+                            "estadoPac", rs.getString("estPac"),
                             "codUni", rs.getString("codUni"));
                 }
             }
@@ -43,7 +95,7 @@ public class crudPaciente {
         return Map.of("existe", false, "mensaje", "Sin resultado");
     }
 
-    public Map<String, Object> modificarPaciente(String oldHistoria, String newHistoria, String estPac,
+    public static Map<String, Object> modificarPaciente(String oldHistoria, String newHistoria, String estPac,
             String nomPac, String direccion, LocalDate fechaN, String codUni) {
         
         java.sql.Connection con = BaseDatos.getConnection();          
@@ -62,10 +114,10 @@ public class crudPaciente {
                     return Map.of(
                             "existe", rs.getBoolean("existe"),
                             "mensaje", rs.getString("mensaje"),
-                            "numHistoria", rs.getString("numHistoria"),
+                            "numHistoria", rs.getString("numHisCli"),
                             "estPac", rs.getString("estPac"),
                             "nomPac", rs.getString("nomPac"),
-                            "direccion", rs.getString("direccion"),
+                            "direccion", rs.getString("dirPac"),
                             "fechaN", rs.getDate("fechaN"),
                             "codUni", rs.getString("codUni"));
                 }
@@ -76,7 +128,7 @@ public class crudPaciente {
         return Map.of("existe", false, "mensaje", "Sin resultado");
     }
 
-    public String eliminarPaciente(String numHistoria) {
+    public static String eliminarPaciente(String numHistoria) {
 
         java.sql.Connection con = BaseDatos.getConnection();  
         String function = "SELECT public.eliminarPaciente(?)";

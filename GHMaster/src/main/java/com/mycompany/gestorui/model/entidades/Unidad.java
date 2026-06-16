@@ -10,6 +10,7 @@ public class Unidad {
     private List<Medico>medicos;
     private List<Informe>informes;
     private List<Turno>turnos;
+    private String codigoDep;
     
 
     public Unidad(String codigoUni, String nombreUni, String ubicacion) {
@@ -18,7 +19,12 @@ public class Unidad {
         this.ubicacion = ubicacion;
     }
 
-    
+    public Unidad(String codigoUni, String nombreUni, String ubicacion,String codigoDep) {
+        this.codigoUni = codigoUni;
+        this.nombreUni = nombreUni;
+        this.ubicacion = ubicacion;
+        this.codigoDep = codigoDep;
+    }
 
     public Unidad(String codigoUni, String nombreUni, String ubicacion, Registro registro, List<Medico> medicos,
             List<Informe> informes,List<Turno>turnos) {
@@ -93,6 +99,14 @@ public class Unidad {
 
     public void setRegistro(Registro registro) {
         this.registro = registro;
+    }
+
+    public String getCodigoDep() {
+        return codigoDep;
+    }
+
+    public void setCodigoDep(String codigoDep) {
+        this.codigoDep = codigoDep;
     }
     
     

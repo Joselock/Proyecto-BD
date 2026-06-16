@@ -5,6 +5,7 @@ import java.util.List;
 public class Departamento{
     private String codigoDep;
     private String nombreDep;
+    private String codigoHos;
     private List<Unidad>unidades;
     
 
@@ -15,9 +16,10 @@ public class Departamento{
     }
 
 
-    public Departamento(String codigoDep, String nombreDep) {
+    public Departamento(String codigoDep, String nombreDep,String codigoHos) {
         this.codigoDep = codigoDep;
         this.nombreDep = nombreDep;
+        this.codigoHos = codigoHos;
     }
 
     
@@ -44,6 +46,17 @@ public class Departamento{
     public void setUnidades(List<Unidad> unidades) {
         this.unidades = unidades;
     }
+
+
+    public String getCodigoHos() {
+        return codigoHos;
+    }
+
+
+    public void setCodigoHos(String codigoHos) {
+        this.codigoHos = codigoHos;
+    }
+
 
     
 

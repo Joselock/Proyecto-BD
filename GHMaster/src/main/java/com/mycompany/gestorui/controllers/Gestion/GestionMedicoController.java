@@ -2,7 +2,12 @@ package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
 import com.mycompany.gestorui.model.entidades.Medico;
+import com.mycompany.gestorui.model.entidades.Unidad;
+import com.mycompany.gestorui.model.services.crud.crudMedico;
+import com.mycompany.gestorui.model.services.crud.crudUnidad;
+
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,7 +20,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -23,21 +31,25 @@ public class GestionMedicoController implements Initializable {
 
     @FXML private TableView<Medico> tablaMedicos;
     @FXML private TableColumn<Medico, Boolean> colSeleccion;
-    @FXML private TableColumn<Medico, String> colCodigo, colNombre, colEspecialidad, colLicencia, colTelefono;
+    @FXML private TableColumn<Medico, String> colCodigo, colNombre, colEspecialidad, colLicencia, colTelefono, colUnidad;
     @FXML private JFXTextField txtCodigo, txtNombre, txtEspecialidad, txtLicencia, txtTelefono, txtDatosContacto, txtExperiencia;
+    @FXML private ComboBox<String> cmbUnidad;
     @FXML private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
     @FXML private AnchorPane panelCrud;
     @FXML private Button btnTogglePanel;
 
     private ObservableList<Medico> items = FXCollections.observableArrayList();
+    private ObservableList<String> unidadItems = FXCollections.observableArrayList();
+    private Map<String, String> unidadMap = new HashMap<>();
     private Set<Medico> seleccionados = new HashSet<>();
     private boolean panelVisible = true;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
+        cargarUnidades();
         configurarCheckBoxSeleccionarTodos();
-        cargarEjemplos();
+        cargarDatos();
         configurarEventos();
         configurarPanelToggle();
     }
@@ -75,6 +87,7 @@ public class GestionMedicoController implements Initializable {
         colEspecialidad.setCellValueFactory(new PropertyValueFactory<>("especialidad"));
         colLicencia.setCellValueFactory(new PropertyValueFactory<>("numeroLic"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        colUnidad.setCellValueFactory(new PropertyValueFactory<>("codigoUni"));
         
         tablaMedicos.setItems(items);
         
@@ -109,12 +122,54 @@ public class GestionMedicoController implements Initializable {
         colSeleccion.setSortable(false);
     }
 
-    private void cargarEjemplos() {
-        items.addAll(
-            new Medico("M001", "Dr. Juan Pérez", "Cardiología", "LIC123", "juan@mail.com", 10, "555-1234"),
-            new Medico("M002", "Dra. María López", "Neurología", "LIC456", "maria@mail.com", 8, "555-5678"),
-            new Medico("M003", "Dr. Carlos Ruiz", "Pediatría", "LIC789", "carlos@mail.com", 5, "555-9012")
-        );
+    private void cargarUnidades() {
+        new Thread(() -> {
+            try {
+                List<Unidad> unidades = crudUnidad.obtenerUnidades();
+                Platform.runLater(() -> {
+                    unidadItems.clear();
+                    unidadMap.clear();
+                    for (Unidad u : unidades) {
+                        String display = u.getCodigoUni() + " - " + u.getNombreUni();
+                        unidadItems.add(display);
+                        unidadMap.put(display, u.getCodigoUni());
+                    }
+                    cmbUnidad.setItems(unidadItems);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private String obtenerCodigoUnidadSeleccionado() {
+        String selected = cmbUnidad.getValue();
+        if (selected != null && unidadMap.containsKey(selected)) {
+            return unidadMap.get(selected);
+        }
+        return null;
+    }
+
+    private void cargarDatos() {
+        tablaMedicos.setPlaceholder(new ProgressIndicator());
+        
+        new Thread(() -> {
+            try {
+                List<Medico> lista = crudMedico.obtenerMedicos();
+                
+                Platform.runLater(() -> {
+                    items.clear();
+                    items.addAll(lista);
+                    tablaMedicos.setPlaceholder(new Label("No hay médicos"));
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    mostrarAlerta("Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
+                    tablaMedicos.setPlaceholder(new Label("Error al cargar datos"));
+                });
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void configurarEventos() {
@@ -168,7 +223,7 @@ public class GestionMedicoController implements Initializable {
     }
 
     private void agregar() {
-        String cod = txtCodigo.getText().trim();
+       String cod = txtCodigo.getText().trim();
         String nom = txtNombre.getText().trim();
         
         if (cod.isEmpty() || nom.isEmpty()) {
@@ -187,12 +242,31 @@ public class GestionMedicoController implements Initializable {
             exp = Integer.parseInt(txtExperiencia.getText().trim());
         } catch (NumberFormatException e) {}
         
-        Medico m = new Medico(cod, nom, txtEspecialidad.getText().trim(), 
-                              txtLicencia.getText().trim(), txtDatosContacto.getText().trim(), 
-                              exp, txtTelefono.getText().trim());
-        items.add(m);
-        limpiarCampos();
-        mostrarAlerta("Médico agregado correctamente", Alert.AlertType.INFORMATION);
+        String codUni = obtenerCodigoUnidadSeleccionado();
+        
+        Map<String, Object> resultado = crudMedico.insertarMedico(
+            cod, 
+            nom, 
+            txtEspecialidad.getText().trim(), 
+            txtLicencia.getText().trim(), 
+            txtTelefono.getText().trim(), 
+            exp, 
+            txtDatosContacto.getText().trim(),
+            codUni
+        );
+        
+        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+            Medico m = new Medico(cod, nom, txtEspecialidad.getText().trim(), 
+                                  txtLicencia.getText().trim(), txtDatosContacto.getText().trim(), 
+                                  exp, txtTelefono.getText().trim());
+            m.setCodigoUni(codUni);
+            items.add(m);
+            limpiarCampos();
+            mostrarAlerta("Médico agregado correctamente", Alert.AlertType.INFORMATION);
+        } else {
+            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+            mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
+        }
     }
 
     private void modificar() {
@@ -218,19 +292,56 @@ public class GestionMedicoController implements Initializable {
             }
         }
         
-        m.setCodigoMed(nuevoCodigo);
-        m.setNombreMed(nuevoNombre);
-        m.setEspecialidad(txtEspecialidad.getText().trim());
-        m.setNumeroLic(txtLicencia.getText().trim());
-        m.setTelefono(txtTelefono.getText().trim());
-        m.setDatosC(txtDatosContacto.getText().trim());
+        String codOriginal = m.getCodigoMed();
+        String nomOriginal = m.getNombreMed();
+        String espOriginal = m.getEspecialidad();
+        String licOriginal = m.getNumeroLic();
+        String telOriginal = m.getTelefono();
+        int expOriginal = m.getExperiencia();
+        String datosOriginal = m.getDatosC();
+        
+        int exp = 0;
         try {
-            m.setExperiencia(Integer.parseInt(txtExperiencia.getText().trim()));
+            exp = Integer.parseInt(txtExperiencia.getText().trim());
         } catch (NumberFormatException e) {}
         
-        tablaMedicos.refresh();
-        limpiarCampos();
-        mostrarAlerta("Médico modificado correctamente", Alert.AlertType.INFORMATION);
+        String codUni = obtenerCodigoUnidadSeleccionado();
+        
+        Map<String, Object> resultado = crudMedico.modificarMedico(
+            codOriginal,
+            nuevoCodigo,
+            nuevoNombre,
+            txtEspecialidad.getText().trim(),
+            txtLicencia.getText().trim(),
+            txtTelefono.getText().trim(),
+            exp,
+            txtDatosContacto.getText().trim(),
+            codUni
+        );
+        
+        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+            m.setCodigoMed(nuevoCodigo);
+            m.setNombreMed(nuevoNombre);
+            m.setEspecialidad(txtEspecialidad.getText().trim());
+            m.setNumeroLic(txtLicencia.getText().trim());
+            m.setTelefono(txtTelefono.getText().trim());
+            m.setDatosC(txtDatosContacto.getText().trim());
+            m.setExperiencia(exp);
+            m.setCodigoUni(codUni);
+            tablaMedicos.refresh();
+            limpiarCampos();
+            mostrarAlerta("Médico modificado correctamente", Alert.AlertType.INFORMATION);
+        } else {
+            m.setCodigoMed(codOriginal);
+            m.setNombreMed(nomOriginal);
+            m.setEspecialidad(espOriginal);
+            m.setNumeroLic(licOriginal);
+            m.setTelefono(telOriginal);
+            m.setDatosC(datosOriginal);
+            m.setExperiencia(expOriginal);
+            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+            mostrarAlerta("Error al modificar: " + mensaje, Alert.AlertType.ERROR);
+        }
     }
 
     private void eliminarSeleccionados() {
@@ -245,9 +356,28 @@ public class GestionMedicoController implements Initializable {
         alert.setContentText("¿Eliminar " + seleccionados.size() + " médico(s)?");
         
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            items.removeAll(seleccionados);
-            seleccionados.clear();
-            mostrarAlerta("Médico(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+            List<Medico> aEliminar = List.copyOf(seleccionados);
+            boolean todosEliminados = true;
+            StringBuilder errores = new StringBuilder();
+            
+            for (Medico m : aEliminar) {
+                String resultado = crudMedico.eliminarMedico(m.getCodigoMed());
+                
+                if (resultado != null && !resultado.toLowerCase().contains("error")) {
+                    items.remove(m);
+                    seleccionados.remove(m);
+                } else {
+                    todosEliminados = false;
+                    errores.append("• ").append(m.getCodigoMed()).append(": ").append(resultado).append("\n");
+                }
+            }
+            
+            if (todosEliminados) {
+                mostrarAlerta("Médico(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+            } else {
+                mostrarAlerta("Algunos médicos no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
+                cargarDatos();
+            }
         }
     }
 
@@ -259,6 +389,7 @@ public class GestionMedicoController implements Initializable {
         txtTelefono.clear();
         txtDatosContacto.clear();
         txtExperiencia.clear();
+        cmbUnidad.setValue(null);
         tablaMedicos.getSelectionModel().clearSelection();
     }
 

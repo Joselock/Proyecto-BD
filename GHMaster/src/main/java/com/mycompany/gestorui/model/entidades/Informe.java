@@ -23,8 +23,26 @@ public class Informe {
     private int cantPacOtraUnidad;
     private int cantPacOtrasCausas;
     private int cantPacDesconoce;
+    private String codigoUni;
+    private int numeroTurno;
 
     // Informe-consulta
+    public Informe(Time hora, Date fecha, String numIn, int pacAtend, int pacAlta, int cantAdm, int total, int cantIni,
+            int cantAnterior,int numeroTurno,String codigoUni) {
+
+        this.hora = hora;
+        this.fecha = fecha;
+        this.numIn = numIn;
+        this.pacAtend = pacAtend;
+        this.pacAlta = pacAlta;
+        this.cantAdm = cantAdm;
+        this.total = total;
+        this.cantIni = cantIni;
+        this.cantAnterior = cantAnterior;
+        this.codigoUni = codigoUni;
+        this.numeroTurno = numeroTurno;
+    }
+
     public Informe(Time hora, Date fecha, String numIn, int pacAtend, int pacAlta, int cantAdm, int total, int cantIni,
             int cantAnterior) {
 
@@ -130,7 +148,23 @@ public class Informe {
         this.cantAnterior = cantAnterior;
     }
 
-   
+
+    public String getCodigoUni() {
+        return codigoUni;
+    }
+
+    public void setCodigoUni(String codigoUni) {
+        this.codigoUni = codigoUni;
+    }
+
+    public int getNumeroTurno() {
+        return numeroTurno;
+    }
+
+    public void setNumeroTurno(int numeroTurno) {
+        this.numeroTurno = numeroTurno;
+    }
+
 
 
     
@@ -183,5 +217,6 @@ public class Informe {
     public void setCantPacDesconoce(int cantPacDesconoce) {
         this.cantPacDesconoce = cantPacDesconoce;
     }
+
 
 }

@@ -2,7 +2,12 @@ package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
 import com.mycompany.gestorui.model.entidades.Paciente;
+import com.mycompany.gestorui.model.entidades.Unidad;
+import com.mycompany.gestorui.model.services.crud.crudPaciente;
+import com.mycompany.gestorui.model.services.crud.crudUnidad;
+
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,7 +21,10 @@ import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import java.net.URL;
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -24,23 +32,62 @@ public class GestionPacienteController implements Initializable {
 
     @FXML private TableView<Paciente> tablaPacientes;
     @FXML private TableColumn<Paciente, Boolean> colSeleccion;
-    @FXML private TableColumn<Paciente, String> colNumHistoria, colNombre, colDireccion, colFechaNac, colEstado;
+    @FXML private TableColumn<Paciente, String> colNumHistoria;
+    @FXML private TableColumn<Paciente, String> colNombre;
+    @FXML private TableColumn<Paciente, String> colDireccion;
+    @FXML private TableColumn<Paciente, Date> colFechaNac;
+    @FXML private TableColumn<Paciente, String> colEstado;
+    @FXML private TableColumn<Paciente, String> colUnidad;
+    
     @FXML private JFXTextField txtNumHistoria, txtNombre, txtDireccion, txtFechaNac, txtEstado;
+    @FXML private ComboBox<String> cmbUnidad;
     @FXML private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
     @FXML private AnchorPane panelCrud;
     @FXML private Button btnTogglePanel;
 
     private ObservableList<Paciente> items = FXCollections.observableArrayList();
+    private ObservableList<String> unidadItems = FXCollections.observableArrayList();
+    private Map<String, String> unidadMap = new HashMap<>();
     private Set<Paciente> seleccionados = new HashSet<>();
     private boolean panelVisible = true;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        cargarUnidades();
         configurarTabla();
         configurarCheckBoxSeleccionarTodos();
-        cargarEjemplos();
+        cargarDatos();
         configurarEventos();
         configurarPanelToggle();
+    }
+
+    private void cargarUnidades() {
+        new Thread(() -> {
+            try {
+                List<Unidad> unidades = crudUnidad.obtenerUnidades();
+                Platform.runLater(() -> {
+                    unidadItems.clear();
+                    unidadMap.clear();
+                    for (Unidad u : unidades) {
+                        String display = u.getCodigoUni() + " - " + u.getNombreUni();
+                        unidadItems.add(display);
+                        unidadMap.put(display, u.getCodigoUni());
+                    }
+                    cmbUnidad.setItems(unidadItems);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> mostrarAlerta("Error al cargar unidades: " + e.getMessage()));
+            }
+        }).start();
+    }
+
+    private String obtenerCodigoUnidadSeleccionado() {
+        String selected = cmbUnidad.getValue();
+        if (selected != null && unidadMap.containsKey(selected)) {
+            return unidadMap.get(selected);
+        }
+        return null;
     }
 
     private void configurarTabla() {
@@ -76,6 +123,7 @@ public class GestionPacienteController implements Initializable {
         colDireccion.setCellValueFactory(new PropertyValueFactory<>("direccionP"));
         colFechaNac.setCellValueFactory(new PropertyValueFactory<>("fechaN"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        colUnidad.setCellValueFactory(new PropertyValueFactory<>("codigoUni"));
         
         tablaPacientes.setItems(items);
         
@@ -83,15 +131,29 @@ public class GestionPacienteController implements Initializable {
             if (ev.getClickCount() == 2) {
                 Paciente p = tablaPacientes.getSelectionModel().getSelectedItem();
                 if (p != null) {
-                    txtNumHistoria.setText(p.getNumHisCli());
-                    txtNombre.setText(p.getNombrePac());
-                    txtDireccion.setText(p.getDireccionP());
-                    txtFechaNac.setText(p.getFechaN() != null ? p.getFechaN().toString() : "");
-                    txtEstado.setText(p.getEstado());
+                    cargarDatosEnPanel(p);
                     if (!panelVisible) mostrarPanel();
                 }
             }
         });
+    }
+
+    private void cargarDatosEnPanel(Paciente p) {
+        txtNumHistoria.setText(p.getNumHisCli());
+        txtNombre.setText(p.getNombrePac());
+        txtDireccion.setText(p.getDireccionP());
+        txtFechaNac.setText(p.getFechaN() != null ? p.getFechaN().toString() : "");
+        txtEstado.setText(p.getEstado());
+        
+        // Cargar la unidad seleccionada en el ComboBox
+        if (p.getCodigoUni() != null && !p.getCodigoUni().isEmpty()) {
+            for (Map.Entry<String, String> entry : unidadMap.entrySet()) {
+                if (entry.getValue().equals(p.getCodigoUni())) {
+                    cmbUnidad.setValue(entry.getKey());
+                    break;
+                }
+            }
+        }
     }
 
     private void configurarCheckBoxSeleccionarTodos() {
@@ -108,12 +170,26 @@ public class GestionPacienteController implements Initializable {
         colSeleccion.setSortable(false);
     }
 
-    private void cargarEjemplos() {
-        items.addAll(
-            new Paciente("P001", "Ana López", Date.valueOf("1990-05-10"), "Calle 123", "Activo"),
-            new Paciente("P002", "Luis García", Date.valueOf("1985-08-15"), "Avenida 456", "Activo"),
-            new Paciente("P003", "Marta Fernández", Date.valueOf("1995-03-20"), "Plaza 789", "Inactivo")
-        );
+    private void cargarDatos() {
+        tablaPacientes.setPlaceholder(new ProgressIndicator());
+        
+        new Thread(() -> {
+            try {
+                List<Paciente> lista = crudPaciente.obtenerPacientes();
+                
+                Platform.runLater(() -> {
+                    items.clear();
+                    items.addAll(lista);
+                    tablaPacientes.setPlaceholder(new Label("No hay pacientes"));
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    mostrarAlerta("Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
+                    tablaPacientes.setPlaceholder(new Label("Error al cargar datos"));
+                });
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void configurarEventos() {
@@ -183,13 +259,35 @@ public class GestionPacienteController implements Initializable {
         
         Date fecha = null;
         try {
-            fecha = Date.valueOf(txtFechaNac.getText().trim());
-        } catch (Exception e) {}
+            String fechaStr = txtFechaNac.getText().trim();
+            if (!fechaStr.isEmpty()) {
+                fecha = Date.valueOf(fechaStr);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Formato de fecha inválido. Use YYYY-MM-DD");
+            return;
+        }
         
-        Paciente p = new Paciente(num, nom, fecha, txtDireccion.getText().trim(), txtEstado.getText().trim());
-        items.add(p);
-        limpiarCampos();
-        mostrarAlerta("Paciente agregado correctamente", Alert.AlertType.INFORMATION);
+        String codUni = obtenerCodigoUnidadSeleccionado();
+        
+        Map<String, Object> resultado = crudPaciente.insertarPaciente(
+            num,
+            nom,
+            txtDireccion.getText().trim(),
+            fecha != null ? fecha.toLocalDate() : null,
+            txtEstado.getText().trim(),
+            codUni
+        );
+        
+        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+            Paciente p = new Paciente(num, nom, fecha, txtDireccion.getText().trim(), txtEstado.getText().trim(), codUni);
+            items.add(p);
+            limpiarCampos();
+            mostrarAlerta("Paciente agregado correctamente", Alert.AlertType.INFORMATION);
+        } else {
+            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+            mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
+        }
     }
 
     private void modificar() {
@@ -215,17 +313,44 @@ public class GestionPacienteController implements Initializable {
             }
         }
         
-        p.setNumHisCli(nuevoNum);
-        p.setNombrePac(nuevoNombre);
-        p.setDireccionP(txtDireccion.getText().trim());
+        Date fecha = null;
         try {
-            p.setFechaN(Date.valueOf(txtFechaNac.getText().trim()));
-        } catch (Exception e) {}
-        p.setEstado(txtEstado.getText().trim());
+            String fechaStr = txtFechaNac.getText().trim();
+            if (!fechaStr.isEmpty()) {
+                fecha = Date.valueOf(fechaStr);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Formato de fecha inválido. Use YYYY-MM-DD");
+            return;
+        }
         
-        tablaPacientes.refresh();
-        limpiarCampos();
-        mostrarAlerta("Paciente modificado correctamente", Alert.AlertType.INFORMATION);
+        String codUni = obtenerCodigoUnidadSeleccionado();
+        String numOriginal = p.getNumHisCli();
+        
+        Map<String, Object> resultado = crudPaciente.modificarPaciente(
+            numOriginal,
+            nuevoNum,
+            txtEstado.getText().trim(),
+            nuevoNombre,
+            txtDireccion.getText().trim(),
+            fecha != null ? fecha.toLocalDate() : null,
+            codUni
+        );
+        
+        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+            p.setNumHisCli(nuevoNum);
+            p.setNombrePac(nuevoNombre);
+            p.setDireccionP(txtDireccion.getText().trim());
+            p.setFechaN(fecha);
+            p.setEstado(txtEstado.getText().trim());
+            p.setCodigoUni(codUni);
+            tablaPacientes.refresh();
+            limpiarCampos();
+            mostrarAlerta("Paciente modificado correctamente", Alert.AlertType.INFORMATION);
+        } else {
+            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+            mostrarAlerta("Error al modificar: " + mensaje, Alert.AlertType.ERROR);
+        }
     }
 
     private void eliminarSeleccionados() {
@@ -240,9 +365,28 @@ public class GestionPacienteController implements Initializable {
         alert.setContentText("¿Eliminar " + seleccionados.size() + " paciente(s)?");
         
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            items.removeAll(seleccionados);
-            seleccionados.clear();
-            mostrarAlerta("Paciente(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+            List<Paciente> aEliminar = List.copyOf(seleccionados);
+            boolean todosEliminados = true;
+            StringBuilder errores = new StringBuilder();
+            
+            for (Paciente p : aEliminar) {
+                String resultado = crudPaciente.eliminarPaciente(p.getNumHisCli());
+                
+                if (resultado != null && !resultado.toLowerCase().contains("error")) {
+                    items.remove(p);
+                    seleccionados.remove(p);
+                } else {
+                    todosEliminados = false;
+                    errores.append("• ").append(p.getNumHisCli()).append(": ").append(resultado).append("\n");
+                }
+            }
+            
+            if (todosEliminados) {
+                mostrarAlerta("Paciente(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+            } else {
+                mostrarAlerta("Algunos pacientes no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
+                cargarDatos();
+            }
         }
     }
 
@@ -252,6 +396,7 @@ public class GestionPacienteController implements Initializable {
         txtDireccion.clear();
         txtFechaNac.clear();
         txtEstado.clear();
+        cmbUnidad.setValue(null);
         tablaPacientes.getSelectionModel().clearSelection();
     }
 

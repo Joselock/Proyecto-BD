@@ -1,8 +1,13 @@
 package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
+import com.mycompany.gestorui.model.entidades.Departamento;
 import com.mycompany.gestorui.model.entidades.Unidad;
+import com.mycompany.gestorui.model.services.crud.crudDepartamento;
+import com.mycompany.gestorui.model.services.crud.crudUnidad;
+
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,7 +20,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -23,21 +31,25 @@ public class GestionUnidadController implements Initializable {
 
     @FXML private TableView<Unidad> tablaUnidades;
     @FXML private TableColumn<Unidad, Boolean> colSeleccion;
-    @FXML private TableColumn<Unidad, String> colCodigo, colNombre, colUbicacion;
+    @FXML private TableColumn<Unidad, String> colCodigo, colNombre, colUbicacion, colDepartamento;
     @FXML private JFXTextField txtCodigo, txtNombre, txtUbicacion;
+    @FXML private ComboBox<String> cmbDepartamento;
     @FXML private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
     @FXML private AnchorPane panelCrud;
     @FXML private Button btnTogglePanel;
 
     private ObservableList<Unidad> items = FXCollections.observableArrayList();
+    private ObservableList<String> departamentoItems = FXCollections.observableArrayList();
+    private Map<String, String> departamentoMap = new HashMap<>();
     private Set<Unidad> seleccionados = new HashSet<>();
     private boolean panelVisible = true;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
+        cargarDepartamentos();
         configurarCheckBoxSeleccionarTodos();
-        cargarEjemplos();
+        cargarDatos();
         configurarEventos();
         configurarPanelToggle();
     }
@@ -73,6 +85,7 @@ public class GestionUnidadController implements Initializable {
         colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigoUni"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreUni"));
         colUbicacion.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
+        colDepartamento.setCellValueFactory(new PropertyValueFactory<>("codigoDep"));
         
         tablaUnidades.setItems(items);
         
@@ -83,6 +96,7 @@ public class GestionUnidadController implements Initializable {
                     txtCodigo.setText(u.getCodigoUni());
                     txtNombre.setText(u.getNombreUni());
                     txtUbicacion.setText(u.getUbicacion());
+                    cmbDepartamento.setValue(u.getCodigoDep() != null ? departamentoMap.getOrDefault(u.getCodigoDep(), u.getCodigoDep()) : null);
                     if (!panelVisible) mostrarPanel();
                 }
             }
@@ -103,13 +117,55 @@ public class GestionUnidadController implements Initializable {
         colSeleccion.setSortable(false);
     }
 
-    private void cargarEjemplos() {
-        items.addAll(
-            new Unidad("U001", "Unidad de Cuidados Intensivos", "Planta 3 - Ala Norte"),
-            new Unidad("U002", "Consulta Externa", "Planta 1 - Ala Sur"),
-            new Unidad("U003", "Laboratorio", "Planta 2 - Ala Este"),
-            new Unidad("U004", "Radiología", "Planta 0 - Ala Oeste")
-        );
+    private void cargarDatos() {
+        tablaUnidades.setPlaceholder(new ProgressIndicator());
+        
+        new Thread(() -> {
+            try {
+                List<Unidad> lista = crudUnidad.obtenerUnidades();
+                
+                Platform.runLater(() -> {
+                    items.clear();
+                    items.addAll(lista);
+                    tablaUnidades.setPlaceholder(new Label("No hay unidades"));
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    mostrarAlerta("Error al cargar datos: " + e.getMessage(), Alert.AlertType.ERROR);
+                    tablaUnidades.setPlaceholder(new Label("Error al cargar datos"));
+                });
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void cargarDepartamentos() {
+        new Thread(() -> {
+            try {
+                List<Departamento> lista = crudDepartamento.obtenerDepartamentos();
+                Platform.runLater(() -> {
+                    departamentoItems.clear();
+                    departamentoMap.clear();
+                    for (Departamento dep : lista) {
+                        String display = dep.getCodigoDep() + " - " + dep.getNombreDep();
+                        departamentoItems.add(display);
+                        departamentoMap.put(dep.getCodigoDep(), display);
+                    }
+                    cmbDepartamento.setItems(departamentoItems);
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> mostrarAlerta("Error al cargar departamentos: " + e.getMessage(), Alert.AlertType.ERROR));
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private String obtenerCodigoDepartamentoSeleccionado() {
+        String value = cmbDepartamento.getValue();
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.split(" - ", 2)[0];
     }
 
     private void configurarEventos() {
@@ -177,10 +233,18 @@ public class GestionUnidadController implements Initializable {
             return;
         }
         
-        Unidad u = new Unidad(cod, nom, txtUbicacion.getText().trim());
-        items.add(u);
-        limpiarCampos();
-        mostrarAlerta("Unidad agregada correctamente", Alert.AlertType.INFORMATION);
+        String codDep = obtenerCodigoDepartamentoSeleccionado();
+        Map<String, Object> resultado = crudUnidad.insertarUnidad(cod, nom, txtUbicacion.getText().trim(), codDep);
+        
+        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+            Unidad u = new Unidad(cod, nom, txtUbicacion.getText().trim(), codDep);
+            items.add(u);
+            limpiarCampos();
+            mostrarAlerta("Unidad agregada correctamente", Alert.AlertType.INFORMATION);
+        } else {
+            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+            mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
+        }
     }
 
     private void modificar() {
@@ -206,13 +270,34 @@ public class GestionUnidadController implements Initializable {
             }
         }
         
-        u.setCodigoUni(nuevoCodigo);
-        u.setNombreUni(nuevoNombre);
-        u.setUbicacion(txtUbicacion.getText().trim());
+        String codOriginal = u.getCodigoUni();
+        String nomOriginal = u.getNombreUni();
+        String ubiOriginal = u.getUbicacion();
         
-        tablaUnidades.refresh();
-        limpiarCampos();
-        mostrarAlerta("Unidad modificada correctamente", Alert.AlertType.INFORMATION);
+        String codDep = obtenerCodigoDepartamentoSeleccionado();
+        Map<String, Object> resultado = crudUnidad.modificarUnidad(
+            codOriginal,
+            nuevoCodigo,
+            nuevoNombre,
+            txtUbicacion.getText().trim(),
+            codDep
+        );
+        
+        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
+            u.setCodigoUni(nuevoCodigo);
+            u.setNombreUni(nuevoNombre);
+            u.setUbicacion(txtUbicacion.getText().trim());
+            u.setCodigoDep(codDep);
+            tablaUnidades.refresh();
+            limpiarCampos();
+            mostrarAlerta("Unidad modificada correctamente", Alert.AlertType.INFORMATION);
+        } else {
+            u.setCodigoUni(codOriginal);
+            u.setNombreUni(nomOriginal);
+            u.setUbicacion(ubiOriginal);
+            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
+            mostrarAlerta("Error al modificar: " + mensaje, Alert.AlertType.ERROR);
+        }
     }
 
     private void eliminarSeleccionados() {
@@ -227,9 +312,28 @@ public class GestionUnidadController implements Initializable {
         alert.setContentText("¿Eliminar " + seleccionados.size() + " unidad(es)?");
         
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            items.removeAll(seleccionados);
-            seleccionados.clear();
-            mostrarAlerta("Unidad(es) eliminada(s) correctamente", Alert.AlertType.INFORMATION);
+            List<Unidad> aEliminar = List.copyOf(seleccionados);
+            boolean todosEliminados = true;
+            StringBuilder errores = new StringBuilder();
+            
+            for (Unidad u : aEliminar) {
+                String resultado = crudUnidad.eliminarUnidad(u.getCodigoUni());
+                
+                if (resultado != null && !resultado.toLowerCase().contains("error")) {
+                    items.remove(u);
+                    seleccionados.remove(u);
+                } else {
+                    todosEliminados = false;
+                    errores.append("• ").append(u.getCodigoUni()).append(": ").append(resultado).append("\n");
+                }
+            }
+            
+            if (todosEliminados) {
+                mostrarAlerta("Unidad(es) eliminada(s) correctamente", Alert.AlertType.INFORMATION);
+            } else {
+                mostrarAlerta("Algunas unidades no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
+                cargarDatos();
+            }
         }
     }
 
@@ -237,6 +341,7 @@ public class GestionUnidadController implements Initializable {
         txtCodigo.clear();
         txtNombre.clear();
         txtUbicacion.clear();
+        cmbDepartamento.setValue(null);
         tablaUnidades.getSelectionModel().clearSelection();
     }
 
