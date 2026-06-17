@@ -2,11 +2,7 @@ package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
 import com.mycompany.gestorui.model.entidades.Informe;
-import com.mycompany.gestorui.model.entidades.Turno;
-import com.mycompany.gestorui.model.entidades.Unidad;
 import com.mycompany.gestorui.model.services.crud.crudInforme;
-import com.mycompany.gestorui.model.services.crud.crudTurno;
-import com.mycompany.gestorui.model.services.crud.crudUnidad;
 
 import javafx.animation.*;
 import javafx.application.Platform;
@@ -24,10 +20,8 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -46,87 +40,22 @@ public class GestionInformeController implements Initializable {
     @FXML private TableColumn<Informe, Integer> colTotal;
     
     @FXML private JFXTextField txtNumInforme, txtHora, txtFecha, txtPacAtendidos, txtPacAltas, txtCantAdmitidos, txtTotal;
-    @FXML private ComboBox<String> cmbTurno, cmbUnidad;
-    @FXML private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
+    @FXML private Button btnEliminar, btnLimpiar;
     @FXML private AnchorPane panelCrud;
     @FXML private Button btnTogglePanel;
 
     private ObservableList<Informe> items = FXCollections.observableArrayList();
-    private ObservableList<String> turnoItems = FXCollections.observableArrayList();
-    private ObservableList<String> unidadItems = FXCollections.observableArrayList();
-    private Map<String, Integer> turnoMap = new HashMap<>();
-    private Map<String, String> unidadMap = new HashMap<>();
     private Set<Informe> seleccionados = new HashSet<>();
     private boolean panelVisible = true;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cargarTurnos();
-        cargarUnidades();
         configurarTabla();
         configurarCheckBoxSeleccionarTodos();
         cargarDatos();
         configurarEventos();
         configurarPanelToggle();
     }
-
-    private void cargarTurnos() {
-        new Thread(() -> {
-            try {
-                List<Turno> turnos = crudTurno.obtenerTurnos();
-                Platform.runLater(() -> {
-                    turnoItems.clear();
-                    turnoMap.clear();
-                    for (Turno t : turnos) {
-                        String display = "T" + t.getNumTurn() + " - " + t.getEstTur();
-                        turnoItems.add(display);
-                        turnoMap.put(display, t.getNumTurn());
-                    }
-                    cmbTurno.setItems(turnoItems);
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-                Platform.runLater(() -> mostrarAlerta("Error al cargar turnos: " + e.getMessage()));
-            }
-        }).start();
-    }
-
-    /*private Integer obtenerNumeroTurnoSeleccionado() {
-        String selected = cmbTurno.getValue();
-        if (selected != null && turnoMap.containsKey(selected)) {
-            return turnoMap.get(selected);
-        }
-        return null;
-    }*/
-
-    private void cargarUnidades() {
-        new Thread(() -> {
-            try {
-                List<Unidad> unidades = crudUnidad.obtenerUnidades();
-                Platform.runLater(() -> {
-                    unidadItems.clear();
-                    unidadMap.clear();
-                    for (Unidad u : unidades) {
-                        String display = u.getCodigoUni() + " - " + u.getNombreUni();
-                        unidadItems.add(display);
-                        unidadMap.put(display, u.getCodigoUni());
-                    }
-                    cmbUnidad.setItems(unidadItems);
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-                Platform.runLater(() -> mostrarAlerta("Error al cargar unidades: " + e.getMessage()));
-            }
-        }).start();
-    }
-
-    /*private String obtenerCodigoUnidadSeleccionado() {
-        String selected = cmbUnidad.getValue();
-        if (selected != null && unidadMap.containsKey(selected)) {
-            return unidadMap.get(selected);
-        }
-        return null;
-    }*/
 
     private void configurarTabla() {
         colSeleccion.setCellFactory(col -> new CheckBoxTableCell<>() {
@@ -188,26 +117,6 @@ public class GestionInformeController implements Initializable {
         txtPacAltas.setText(String.valueOf(i.getPacAlta()));
         txtCantAdmitidos.setText(String.valueOf(i.getCantAdm()));
         txtTotal.setText(String.valueOf(i.getTotal()));
-        
-        // Cargar el turno seleccionado en el ComboBox
-        if (i.getNumeroTurno() > 0) {
-            for (Map.Entry<String, Integer> entry : turnoMap.entrySet()) {
-                if (entry.getValue().equals(i.getNumeroTurno())) {
-                    cmbTurno.setValue(entry.getKey());
-                    break;
-                }
-            }
-        }
-        
-        // Cargar la unidad seleccionada en el ComboBox
-        if (i.getCodigoUni() != null && !i.getCodigoUni().isEmpty()) {
-            for (Map.Entry<String, String> entry : unidadMap.entrySet()) {
-                if (entry.getValue().equals(i.getCodigoUni())) {
-                    cmbUnidad.setValue(entry.getKey());
-                    break;
-                }
-            }
-        }
     }
 
     private void configurarCheckBoxSeleccionarTodos() {
@@ -235,6 +144,13 @@ public class GestionInformeController implements Initializable {
                     items.clear();
                     items.addAll(lista);
                     tablaInformes.setPlaceholder(new Label("No hay informes"));
+                    
+                    // Debug: Verificar que los datos tienen Turno y Unidad
+                    for (Informe i : items) {
+                        System.out.println("Informe: " + i.getNumIn() + 
+                                         ", Turno: " + i.getNumeroTurno() + 
+                                         ", Unidad: " + i.getCodigoUni());
+                    }
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
@@ -247,8 +163,6 @@ public class GestionInformeController implements Initializable {
     }
 
     private void configurarEventos() {
-        //btnAgregar.setOnAction(e -> agregar());
-        //btnModificar.setOnAction(e -> modificar());
         btnEliminar.setOnAction(e -> eliminarSeleccionados());
         btnLimpiar.setOnAction(e -> limpiarCampos());
     }
@@ -296,150 +210,6 @@ public class GestionInformeController implements Initializable {
         panelVisible = true;
     }
 
-    /*private void agregar() {
-        String num = txtNumInforme.getText().trim();
-        if (num.isEmpty()) {
-            mostrarAlerta("Número de informe es obligatorio");
-            return;
-        }
-        
-        boolean existe = items.stream().anyMatch(i -> i.getNumIn().equals(num));
-        if (existe) {
-            mostrarAlerta("Ya existe un informe con ese número");
-            return;
-        }
-        
-        Time hora = null;
-        Date fecha = null;
-        try {
-            String horaStr = txtHora.getText().trim();
-            if (!horaStr.isEmpty()) hora = Time.valueOf(horaStr);
-        } catch (Exception e) {
-            mostrarAlerta("Formato de hora inválido. Use HH:MM:SS");
-            return;
-        }
-        try {
-            String fechaStr = txtFecha.getText().trim();
-            if (!fechaStr.isEmpty()) fecha = Date.valueOf(fechaStr);
-        } catch (Exception e) {
-            mostrarAlerta("Formato de fecha inválido. Use YYYY-MM-DD");
-            return;
-        }
-        
-        Integer numTurno = obtenerNumeroTurnoSeleccionado();
-        String codUni = obtenerCodigoUnidadSeleccionado();
-        
-        if (numTurno == null) {
-            mostrarAlerta("Seleccione un turno");
-            return;
-        }
-        
-        if (codUni == null || codUni.isEmpty()) {
-            mostrarAlerta("Seleccione una unidad");
-            return;
-        }
-        
-        int atend = parseInt(txtPacAtendidos.getText());
-        int altas = parseInt(txtPacAltas.getText());
-        int adm = parseInt(txtCantAdmitidos.getText());
-        int total = parseInt(txtTotal.getText());
-        
-        Map<String, Object> resultado = crudInforme.insertarInformeCompleto(
-            num, hora, fecha, atend, altas, adm, total, numTurno, codUni
-        );
-        
-        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
-            Informe i = new Informe(hora, fecha, num, atend, altas, adm, total, numTurno, codUni);
-            items.add(i);
-            limpiarCampos();
-            mostrarAlerta("Informe agregado correctamente", Alert.AlertType.INFORMATION);
-        } else {
-            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
-            mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
-        }
-    }*/
-
-    /*private void modificar() {
-        Informe i = tablaInformes.getSelectionModel().getSelectedItem();
-        if (i == null) {
-            mostrarAlerta("Seleccione un informe de la tabla");
-            return;
-        }
-        
-        String nuevoNum = txtNumInforme.getText().trim();
-        if (nuevoNum.isEmpty()) {
-            mostrarAlerta("Número de informe es obligatorio");
-            return;
-        }
-        
-        if (!nuevoNum.equals(i.getNumIn())) {
-            boolean existe = items.stream().anyMatch(inf -> inf.getNumIn().equals(nuevoNum));
-            if (existe) {
-                mostrarAlerta("Ya existe otro informe con ese número");
-                return;
-            }
-        }
-        
-        Time hora = null;
-        Date fecha = null;
-        try {
-            String horaStr = txtHora.getText().trim();
-            if (!horaStr.isEmpty()) hora = Time.valueOf(horaStr);
-        } catch (Exception e) {
-            mostrarAlerta("Formato de hora inválido. Use HH:MM:SS");
-            return;
-        }
-        try {
-            String fechaStr = txtFecha.getText().trim();
-            if (!fechaStr.isEmpty()) fecha = Date.valueOf(fechaStr);
-        } catch (Exception e) {
-            mostrarAlerta("Formato de fecha inválido. Use YYYY-MM-DD");
-            return;
-        }
-        
-        Integer numTurno = obtenerNumeroTurnoSeleccionado();
-        String codUni = obtenerCodigoUnidadSeleccionado();
-        
-        if (numTurno == null) {
-            mostrarAlerta("Seleccione un turno");
-            return;
-        }
-        
-        if (codUni == null || codUni.isEmpty()) {
-            mostrarAlerta("Seleccione una unidad");
-            return;
-        }
-        
-        int atend = parseInt(txtPacAtendidos.getText());
-        int altas = parseInt(txtPacAltas.getText());
-        int adm = parseInt(txtCantAdmitidos.getText());
-        int total = parseInt(txtTotal.getText());
-        
-        String numOriginal = i.getNumIn();
-        
-        Map<String, Object> resultado = crudInforme.modificarInformeCompleto(
-            numOriginal, nuevoNum, hora, fecha, atend, altas, adm, total, numTurno, codUni
-        );
-        
-        if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
-            i.setNumIn(nuevoNum);
-            i.setHora(hora);
-            i.setFecha(fecha);
-            i.setPacAtend(atend);
-            i.setPacAlta(altas);
-            i.setCantAdm(adm);
-            i.setTotal(total);
-            i.setNumeroTurno(numTurno);
-            i.setCodigoUni(codUni);
-            tablaInformes.refresh();
-            limpiarCampos();
-            mostrarAlerta("Informe modificado correctamente", Alert.AlertType.INFORMATION);
-        } else {
-            String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
-            mostrarAlerta("Error al modificar: " + mensaje, Alert.AlertType.ERROR);
-        }
-    }*/
-
     private void eliminarSeleccionados() {
         if (seleccionados.isEmpty()) {
             mostrarAlerta("Seleccione al menos un informe");
@@ -485,18 +255,8 @@ public class GestionInformeController implements Initializable {
         txtPacAltas.clear();
         txtCantAdmitidos.clear();
         txtTotal.clear();
-        cmbTurno.setValue(null);
-        cmbUnidad.setValue(null);
         tablaInformes.getSelectionModel().clearSelection();
     }
-
-    /*private int parseInt(String s) {
-        try {
-            return Integer.parseInt(s.trim());
-        } catch (Exception e) {
-            return 0;
-        }
-    }*/
 
     private void mostrarAlerta(String msg) {
         mostrarAlerta(msg, Alert.AlertType.WARNING);

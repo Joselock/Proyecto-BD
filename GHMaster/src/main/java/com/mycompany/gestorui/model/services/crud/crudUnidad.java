@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +32,12 @@ public class crudUnidad {
             rs = ps.executeQuery();
             
             while (rs.next()) {
-                Unidad unidad = new Unidad(null, null, null, null);
-                unidad.setCodigoUni(rs.getString("codUni"));
-                unidad.setNombreUni(rs.getString("nomUni"));
-                unidad.setUbicacion(rs.getString("ubiUni"));
-                unidad.setCodigoDep(rs.getString("codDep"));
+                Unidad unidad = new Unidad(
+                    rs.getString("codUni"),
+                    rs.getString("nomUni"),
+                    rs.getString("ubiUni"),
+                    rs.getString("codDep")
+                );
                 unidades.add(unidad);
             }
             
@@ -55,85 +57,148 @@ public class crudUnidad {
         return unidades;
     }
 
-    //Function para insertar una unidad
+    // Función para insertar una unidad
     public static Map<String, Object> insertarUnidad(String codUni, String nomUni, String ubicacion, String codDep) {
-        java.sql.Connection con = BaseDatos.getConnection();
+        Map<String, Object> resultado = new HashMap<>();
+        java.sql.Connection con = null;
+        
+        try {
+            con = BaseDatos.getConnection();
+            if (con == null) {
+                resultado.put("existe", false);
+                resultado.put("mensaje", "Error de conexión a la base de datos");
+                return resultado;
+            }
 
-        String function = "SELECT * FROM public.insertarUnidad(?, ?, ?, ?)";
+            String function = "SELECT * FROM public.insertarUnidad(?, ?, ?, ?)";
 
-        try (PreparedStatement ps = con.prepareStatement(function)) {
-            ps.setString(1, codUni);
-            ps.setString(2, nomUni);
-            ps.setString(3, ubicacion);
-            ps.setString(4, codDep);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Map.of(
-                            "existe", rs.getBoolean("existe"),
-                            "mensaje", rs.getString("mensaje"),
-                            "codUni", rs.getString("codUni"),
-                            "nomUni", rs.getString("nomUni"),
-                            "ubiUni", rs.getString("ubiUni"),
-                            "codDep", rs.getString("codDep"));
+            try (PreparedStatement ps = con.prepareStatement(function)) {
+                ps.setString(1, codUni);
+                ps.setString(2, nomUni);
+                ps.setString(3, ubicacion);
+                // Manejar codDep que puede ser null
+                if (codDep != null && !codDep.isEmpty()) {
+                    ps.setString(4, codDep);
+                } else {
+                    ps.setNull(4, java.sql.Types.VARCHAR);
+                }
+                
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        resultado.put("existe", rs.getBoolean("existe"));
+                        resultado.put("mensaje", rs.getString("mensaje"));
+                        resultado.put("codUni", rs.getString("codUni"));
+                        resultado.put("nomUni", rs.getString("nomUni"));
+                        resultado.put("ubiUni", rs.getString("ubiUni"));
+                        resultado.put("codDep", rs.getString("codDep"));
+                    } else {
+                        resultado.put("existe", false);
+                        resultado.put("mensaje", "No se obtuvo respuesta de la base de datos");
+                    }
                 }
             }
         } catch (SQLException e) {
-            return Map.of("existe", false, "mensaje", e.getMessage());
+            resultado.put("existe", false);
+            resultado.put("mensaje", "Error SQL: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-        return Map.of("existe", false, "mensaje", "Sin resultado");
+        return resultado;
     }
 
-    
-    //Funcion para modificar una unidad
+    // Función para modificar una unidad
     public static Map<String, Object> modificarUnidad(String oldCod, String newCod, String nomUni, String ubicacion,
             String codDep) {
-        java.sql.Connection con = BaseDatos.getConnection();        
+        Map<String, Object> resultado = new HashMap<>();
+        java.sql.Connection con = null;
+        
+        try {
+            con = BaseDatos.getConnection();
+            if (con == null) {
+                resultado.put("existe", false);
+                resultado.put("mensaje", "Error de conexión a la base de datos");
+                return resultado;
+            }
 
-        String function = "SELECT * FROM public.modificarUnidad(?, ?, ?, ?, ?)";
+            String function = "SELECT * FROM public.modificarUnidad(?, ?, ?, ?, ?)";
 
-        try (PreparedStatement ps = con.prepareStatement(function)) {
-            ps.setString(1, oldCod);
-            ps.setString(2, newCod);
-            ps.setString(3, nomUni);
-            ps.setString(4, ubicacion);
-            ps.setString(5, codDep);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Map.of(
-                            "existe", rs.getBoolean("existe"),
-                            "mensaje", rs.getString("mensaje"),
-                            "codUni", rs.getString("codUni"),
-                            "nomUni", rs.getString("nomUni"),
-                            "ubiUni", rs.getString("ubiUni"),
-                            "codDep", rs.getString("codDep"));
+            try (PreparedStatement ps = con.prepareStatement(function)) {
+                ps.setString(1, oldCod);
+                ps.setString(2, newCod);
+                ps.setString(3, nomUni);
+                ps.setString(4, ubicacion);
+                // Manejar codDep que puede ser null
+                if (codDep != null && !codDep.isEmpty()) {
+                    ps.setString(5, codDep);
+                } else {
+                    ps.setNull(5, java.sql.Types.VARCHAR);
+                }
+                
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        resultado.put("existe", rs.getBoolean("existe"));
+                        resultado.put("mensaje", rs.getString("mensaje"));
+                        resultado.put("codUni", rs.getString("codUni"));
+                        resultado.put("nomUni", rs.getString("nomUni"));
+                        resultado.put("ubiUni", rs.getString("ubiUni"));
+                        resultado.put("codDep", rs.getString("codDep"));
+                    } else {
+                        resultado.put("existe", false);
+                        resultado.put("mensaje", "No se obtuvo respuesta de la base de datos");
+                    }
                 }
             }
         } catch (SQLException e) {
-            return Map.of("existe", false, "mensaje", e.getMessage());
+            resultado.put("existe", false);
+            resultado.put("mensaje", "Error SQL: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-        return Map.of("existe", false, "mensaje", "Sin resultado");
+        return resultado;
     }
 
-
-    //Funcion para eliminar una unidad
+    // Función para eliminar una unidad
     public static String eliminarUnidad(String codUni) {
-        java.sql.Connection con = BaseDatos.getConnection();
+        java.sql.Connection con = null;
+        
+        try {
+            con = BaseDatos.getConnection();
+            if (con == null) {
+                return "Error: No se pudo conectar a la base de datos";
+            }
 
-        String function = "SELECT public.eliminarUnidad(?)";
+            String function = "SELECT public.eliminarUnidad(?)";
 
-        try (PreparedStatement ps = con.prepareStatement(function)) {
-            ps.setString(1, codUni);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next())
-                    return rs.getString(1);
+            try (PreparedStatement ps = con.prepareStatement(function)) {
+                ps.setString(1, codUni);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getString(1);
+                    }
+                }
             }
         } catch (SQLException e) {
             return "Error: " + e.getMessage();
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         
         return "Error: sin respuesta";
     }
-
 }

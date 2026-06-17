@@ -3,6 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -15,94 +17,139 @@
          <children>
             <AnchorPane fx:id="menuPane" style="-fx-background-color: #f5f5f5;" prefHeight="920.0" prefWidth="949.0">
                <children>
-                  <Label alignment="CENTER" layoutX="377.0" layoutY="46.0" prefHeight="58.0" prefWidth="195.0" text="Gestion de Activos">
+                  <Label alignment="CENTER" layoutX="377.0" layoutY="46.0" prefHeight="58.0" prefWidth="195.0" text="Gestión de Activos">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </Label>
+                  
+                  <!-- Primera fila -->
                   <HBox layoutX="147.0" layoutY="149.0" prefHeight="117.0" prefWidth="655.0" spacing="15.0">
                      <children>
-                        <VBox onMouseClicked="#handleHospital" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        <!-- Hospitales -->
+                        <VBox onMouseClicked="#handleHospital" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label fx:id="hospital" prefHeight="21.0" prefWidth="110.0" text="Hospitales" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/hospital.png" />
+                              </ImageView>
+                              <Label text="Hospitales" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
                         </VBox>
-                        <VBox onMouseClicked="#handleDepartamento" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        
+                        <!-- Departamentos -->
+                        <VBox onMouseClicked="#handleDepartamento" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label text="Departamentos" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/departamento.png" />
+                              </ImageView>
+                              <Label text="Departamentos" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
                         </VBox>
-                        <VBox onMouseClicked="#handleUnidad" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        
+                        <!-- Unidades -->
+                        <VBox onMouseClicked="#handleUnidad" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
                            <children>
-                              <Label text="Unidades" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/unidad.png" />
+                              </ImageView>
+                              <Label text="Unidades" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
-                           <padding>
-                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                           </padding>
                         </VBox>
-                        <VBox onMouseClicked="#handleMedico" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        
+                        <!-- Médicos -->
+                        <VBox onMouseClicked="#handleMedico" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label text="Medicos" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/medico.png" />
+                              </ImageView>
+                              <Label text="Médicos" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
                         </VBox>
                      </children>
                   </HBox>
+                  
+                  <!-- Segunda fila -->
                   <HBox layoutX="147.0" layoutY="280.0" prefHeight="117.0" prefWidth="655.0" spacing="15.0">
                      <children>
-                        <VBox onMouseClicked="#handleTurno" prefHeight="100.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        <!-- Turnos -->
+                        <VBox onMouseClicked="#handleTurno" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label text="Turnos" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/turno.png" />
+                              </ImageView>
+                              <Label text="Turnos" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
                         </VBox>
-                        <VBox onMouseClicked="#handleInforme" prefHeight="200.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        
+                        <!-- Informes -->
+                        <VBox onMouseClicked="#handleInforme" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label text="Informes" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/informe.png" />
+                              </ImageView>
+                              <Label text="Informes" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
                         </VBox>
-                        <VBox onMouseClicked="#handleConsulta" prefHeight="200.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        
+                        <!-- Consultas -->
+                        <VBox onMouseClicked="#handleConsulta" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label text="Consultas" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/consulta.png" />
+                              </ImageView>
+                              <Label text="Consultas" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
                         </VBox>
-                        <VBox onMouseClicked="#handlePaciente" prefHeight="200.0" prefWidth="152.0" styleClass="metric-card" stylesheets="@style/gestion.css">
+                        
+                        <!-- Pacientes -->
+                        <VBox onMouseClicked="#handlePaciente" prefHeight="100.0" prefWidth="152.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2); -fx-cursor: hand;" styleClass="metric-card" stylesheets="@style/gestion.css" alignment="CENTER" spacing="8">
                            <padding>
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label text="Pacientes" />
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/paciente.png" />
+                              </ImageView>
+                              <Label text="Pacientes" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
                            </children>
                         </VBox>
                      </children>
                   </HBox>
+                  
                </children>
             </AnchorPane>
          </children>
       </StackPane>
+      
       <Button fx:id="btnBack" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleBack" prefHeight="30.0" prefWidth="115.0" style="-fx-background-color: transparent; -fx-text-fill: #2d7a2d; -fx-font-size: 14px; -fx-font-weight: bold;" text="← Volver" visible="false" />
-      <Label fx:id="minimizar" layoutX="882.0" layoutY="21.0" onMouseClicked="#handleMinimize" text="—">
+      
+      <Label fx:id="minimizar" layoutX="882.0" layoutY="21.0" onMouseClicked="#handleMinimize" text="—" style="-fx-cursor: hand;">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="cerrar" layoutX="912.0" layoutY="21.0" onMouseClicked="#handleClose" text="X">
+      <Label fx:id="cerrar" layoutX="912.0" layoutY="21.0" onMouseClicked="#handleClose" text="X" style="-fx-cursor: hand;">
          <font>
             <Font size="20.0" />
          </font>

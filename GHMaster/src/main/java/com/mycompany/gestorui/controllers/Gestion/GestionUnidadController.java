@@ -40,7 +40,8 @@ public class GestionUnidadController implements Initializable {
 
     private ObservableList<Unidad> items = FXCollections.observableArrayList();
     private ObservableList<String> departamentoItems = FXCollections.observableArrayList();
-    private Map<String, String> departamentoMap = new HashMap<>();
+    private Map<String, String> departamentoMap = new HashMap<>(); // codDep -> display
+    private Map<String, String> displayMap = new HashMap<>(); // display -> codDep
     private Set<Unidad> seleccionados = new HashSet<>();
     private boolean panelVisible = true;
 
@@ -82,10 +83,11 @@ public class GestionUnidadController implements Initializable {
         colSeleccion.setPrefWidth(60);
         colSeleccion.setText("");
 
+        // CORRECCIÓN: Usar el nombre correcto de la propiedad en la entidad
         colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigoUni"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreUni"));
         colUbicacion.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
-        colDepartamento.setCellValueFactory(new PropertyValueFactory<>("codigoDep"));
+        colDepartamento.setCellValueFactory(new PropertyValueFactory<>("codigoDep")); // Cambiado de codDep a codigoDep
         
         tablaUnidades.setItems(items);
         
@@ -96,7 +98,15 @@ public class GestionUnidadController implements Initializable {
                     txtCodigo.setText(u.getCodigoUni());
                     txtNombre.setText(u.getNombreUni());
                     txtUbicacion.setText(u.getUbicacion());
-                    cmbDepartamento.setValue(u.getCodigoDep() != null ? departamentoMap.getOrDefault(u.getCodigoDep(), u.getCodigoDep()) : null);
+                    
+                    // CORRECCIÓN: Usar codigoDep en lugar de codDep
+                    if (u.getCodigoDep() != null && !u.getCodigoDep().isEmpty()) {
+                        String display = departamentoMap.get(u.getCodigoDep());
+                        cmbDepartamento.setValue(display != null ? display : u.getCodigoDep());
+                    } else {
+                        cmbDepartamento.setValue(null);
+                    }
+                    
                     if (!panelVisible) mostrarPanel();
                 }
             }
@@ -146,10 +156,12 @@ public class GestionUnidadController implements Initializable {
                 Platform.runLater(() -> {
                     departamentoItems.clear();
                     departamentoMap.clear();
+                    displayMap.clear();
                     for (Departamento dep : lista) {
                         String display = dep.getCodigoDep() + " - " + dep.getNombreDep();
                         departamentoItems.add(display);
                         departamentoMap.put(dep.getCodigoDep(), display);
+                        displayMap.put(display, dep.getCodigoDep());
                     }
                     cmbDepartamento.setItems(departamentoItems);
                 });
@@ -165,6 +177,7 @@ public class GestionUnidadController implements Initializable {
         if (value == null || value.isBlank()) {
             return null;
         }
+        // Extraer el código del departamento del display
         return value.split(" - ", 2)[0];
     }
 
@@ -273,6 +286,7 @@ public class GestionUnidadController implements Initializable {
         String codOriginal = u.getCodigoUni();
         String nomOriginal = u.getNombreUni();
         String ubiOriginal = u.getUbicacion();
+        String depOriginal = u.getCodigoDep();
         
         String codDep = obtenerCodigoDepartamentoSeleccionado();
         Map<String, Object> resultado = crudUnidad.modificarUnidad(
@@ -292,9 +306,11 @@ public class GestionUnidadController implements Initializable {
             limpiarCampos();
             mostrarAlerta("Unidad modificada correctamente", Alert.AlertType.INFORMATION);
         } else {
+            // Restaurar valores originales
             u.setCodigoUni(codOriginal);
             u.setNombreUni(nomOriginal);
             u.setUbicacion(ubiOriginal);
+            u.setCodigoDep(depOriginal);
             String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
             mostrarAlerta("Error al modificar: " + mensaje, Alert.AlertType.ERROR);
         }
@@ -319,7 +335,7 @@ public class GestionUnidadController implements Initializable {
             for (Unidad u : aEliminar) {
                 String resultado = crudUnidad.eliminarUnidad(u.getCodigoUni());
                 
-                if (resultado != null && !resultado.toLowerCase().contains("error")) {
+                if (resultado != null && !resultado.toLowerCase().contains("error") && !resultado.toLowerCase().contains("fallo")) {
                     items.remove(u);
                     seleccionados.remove(u);
                 } else {
