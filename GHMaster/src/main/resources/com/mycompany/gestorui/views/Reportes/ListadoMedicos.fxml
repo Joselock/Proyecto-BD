@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Reporte.ListadoMedicosController">
+   <children>
+      <VBox layoutX="20.0" layoutY="60.0" prefHeight="620.0" prefWidth="960.0" spacing="15.0">
+         <children>
+            <Label fx:id="lblInfo" text="Cargando médicos...">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            
+            <ScrollPane fitToWidth="true" prefHeight="550.0" prefWidth="960.0">
+               <content>
+                  <TableView fx:id="tablaMedicos" prefHeight="550.0" prefWidth="940.0">
+                     <columns>
+                        <TableColumn fx:id="colNombre" prefWidth="150.0" text="Nombre" />
+                        <TableColumn fx:id="colLicencia" prefWidth="120.0" text="Licencia" />
+                        <TableColumn fx:id="colEspecialidad" prefWidth="150.0" text="Especialidad" />
+                        <TableColumn fx:id="colTelefono" prefWidth="120.0" text="Teléfono" />
+                        <TableColumn fx:id="colExperiencia" prefWidth="80.0" text="Años Exp." />
+                        <TableColumn fx:id="colDatosCon" prefWidth="100.0" text="Datos Contacto" />
+                        <TableColumn fx:id="colHospital" prefWidth="120.0" text="Hospital" />
+                        <TableColumn fx:id="colDepartamento" prefWidth="120.0" text="Departamento" />
+                        <TableColumn fx:id="colUnidad" prefWidth="120.0" text="Unidad" />
+                     </columns>
+                  </TableView>
+               </content>
+            </ScrollPane>
+            
+            <Label fx:id="lblTotal" style="-fx-font-weight: bold;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

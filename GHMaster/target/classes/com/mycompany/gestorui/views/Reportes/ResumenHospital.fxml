@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Reporte.ResumenHospitalController">
+   <children>
+      <VBox layoutX="20.0" layoutY="60.0" prefHeight="620.0" prefWidth="960.0" spacing="15.0">
+         <children>
+            <Label fx:id="lblInfo" text="Cargando resumen...">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            
+            <ScrollPane fitToWidth="true" prefHeight="550.0" prefWidth="960.0">
+               <content>
+                  <TableView fx:id="tablaHospitales" prefHeight="550.0" prefWidth="940.0">
+                     <columns>
+                        <TableColumn fx:id="colNombre" prefWidth="250.0" text="Hospital" />
+                        <TableColumn fx:id="colDepartamentos" prefWidth="150.0" text="Departamentos" />
+                        <TableColumn fx:id="colUnidades" prefWidth="150.0" text="Unidades" />
+                        <TableColumn fx:id="colMedicos" prefWidth="150.0" text="Médicos" />
+                        <TableColumn fx:id="colPacientes" prefWidth="150.0" text="Pacientes" />
+                     </columns>
+                  </TableView>
+               </content>
+            </ScrollPane>
+            
+            <Label fx:id="lblTotal" style="-fx-font-weight: bold;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

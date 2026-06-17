@@ -14,11 +14,7 @@
     <children>
         
         <!-- Botón para mostrar/ocultar el panel -->
-        <Button fx:id="btnTogglePanel" 
-                layoutX="33.0" layoutY="50.0" 
-                prefWidth="120.0" 
-                text="Ocultar Panel" 
-                styleClass="toggle-panel-btn" />
+        <Button fx:id="btnTogglePanel" layoutX="799.0" layoutY="61.0" prefWidth="120.0" styleClass="toggle-panel-btn" text="Ocultar Panel" />
         
         <TableView fx:id="tablaPacientes" layoutX="33.0" layoutY="91.0" prefHeight="497.0" prefWidth="562.0" stylesheets="@style/gestion.css">
             <columns>
@@ -41,9 +37,9 @@
                 </Label>
                 <Separator layoutX="40.0" layoutY="63.0" prefHeight="4.0" prefWidth="231.0" />
                 
-                <Button fx:id="btnAgregar" layoutX="49.0" layoutY="83.0" prefHeight="48.0" prefWidth="60.0" styleClass="icon-agregar" text="Agregar" contentDisplay="TOP" />
-                <Button fx:id="btnModificar" layoutX="128.0" layoutY="83.0" prefHeight="48.0" prefWidth="80.0" styleClass="icon-modificar" text="Modificar" contentDisplay="TOP" />
-                <Button fx:id="btnEliminar" layoutX="207.0" layoutY="83.0" prefHeight="48.0" prefWidth="60.0" styleClass="icon-eliminar" text="Eliminar" contentDisplay="TOP" />
+                <Button fx:id="btnAgregar" contentDisplay="TOP" layoutX="49.0" layoutY="83.0" prefHeight="48.0" prefWidth="60.0" styleClass="icon-agregar" text="Agregar" />
+                <Button fx:id="btnModificar" contentDisplay="TOP" layoutX="128.0" layoutY="83.0" prefHeight="48.0" prefWidth="80.0" styleClass="icon-modificar" text="Modificar" />
+                <Button fx:id="btnEliminar" contentDisplay="TOP" layoutX="207.0" layoutY="83.0" prefHeight="48.0" prefWidth="60.0" styleClass="icon-eliminar" text="Eliminar" />
                 
                 <JFXTextField fx:id="txtNumHistoria" layoutX="49.0" layoutY="155.0" prefHeight="24.0" prefWidth="208.0" promptText="Nº Historia" />
                 <JFXTextField fx:id="txtNombre" layoutX="49.0" layoutY="191.0" prefHeight="24.0" prefWidth="208.0" promptText="Nombre" />
@@ -52,9 +48,9 @@
                 <JFXTextField fx:id="txtEstado" layoutX="49.0" layoutY="299.0" prefHeight="24.0" prefWidth="208.0" promptText="Estado" />
                 
                 <!-- ComboBox para Unidad (llave foránea) -->
-                <ComboBox fx:id="cmbUnidad" layoutX="49.0" layoutY="335.0" prefHeight="24.0" prefWidth="208.0" promptText="Seleccionar Unidad" />
+                <ComboBox fx:id="cmbUnidad" layoutX="49.0" layoutY="347.0" prefHeight="24.0" prefWidth="208.0" promptText="Seleccionar Unidad" />
                 
-                <Button fx:id="btnLimpiar" layoutX="108.0" layoutY="400.0" prefHeight="48.0" prefWidth="89.0" styleClass="icon-limpiar" text="Limpiar" contentDisplay="TOP" />
+                <Button fx:id="btnLimpiar" contentDisplay="TOP" layoutX="108.0" layoutY="400.0" prefHeight="48.0" prefWidth="89.0" styleClass="icon-limpiar" text="Limpiar" />
             </children>
         </AnchorPane>
     </children>

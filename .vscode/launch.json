@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TestFXMLLoading",
+            "request": "launch",
+            "mainClass": "TestFXMLLoading",
+            "projectName": "GHMaster"
+        },
+        {
+            "type": "java",
             "name": "App",
             "request": "launch",
             "mainClass": "com.mycompany.gestorui.App",

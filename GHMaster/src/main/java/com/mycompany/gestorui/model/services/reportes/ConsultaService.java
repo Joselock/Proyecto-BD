@@ -130,7 +130,7 @@ public class ConsultaService {
                     int numeroTurno = rs.getInt("numeroTurno");
                     String medico = rs.getString("medico");
                     int totalPacAten = rs.getInt("totalPacAten");
-                    int pacienteAtendTurnos = rs.getInt("pacienteAtendTurnos");
+                    int pacienteAtendTurnos = rs.getInt("pacienteAtend");
 
                     Informe i = new Informe(null, null, null, totalPacAten, 0, 0, 0, 0, 0);
                     Turno t = new Turno(numeroTurno, pacienteAtendTurnos, null, null, new Medico(null, medico, null, null, null, 0, null));

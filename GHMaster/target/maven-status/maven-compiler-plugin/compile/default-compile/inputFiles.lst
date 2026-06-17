@@ -1,8 +1,11 @@
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/NoAtendidosController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/services/crud/crudUnidad.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/services/crud/crudHospital.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/TopHospitalesController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Gestion/GestionUnidadController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/components/Gestion.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/entidades/Departamento.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/InformesConsultasController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/services/crud/crudInforme.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/services/reportes/PacienteService.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/components/Login.java
@@ -10,11 +13,14 @@
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/entidades/Turno.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/services/reportes/MedicoService.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/login/entidad/DataUser.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/ListadoPacientesController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Registro/RegistroPersonalController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/entidades/Informe.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Cuenta/CambiarContrasenaController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/App.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Gestion/GestionConsultaController.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/RevisarTurnosController.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/ResumenHospitalController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Cuenta/CambiarDatosController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/components/MainWindow.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/services/crud/crudTurno.java
@@ -43,6 +49,7 @@
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/entidades/Medico.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/components/Registro.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/utils/BaseDatosLogin.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/ResumenProcesoController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Gestion/GestionTurnoController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/entidades/Hospital.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Gestion/GestionHospitalController.java
@@ -50,6 +57,8 @@
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/LoginController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/entidades/Consulta.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/utils/BaseDatos.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/ConsultasExitosasController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Gestion/GestionMedicoController.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/services/crud/crudMedico.java
 /home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/model/entidades/Paciente.java
+/home/ignacio/Documentos/Code/Proyecto-BD/GHMaster/src/main/java/com/mycompany/gestorui/controllers/Reporte/ListadoMedicosController.java

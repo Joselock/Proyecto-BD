@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Reporte.ListadoPacientesController">
+   <children>
+      <VBox layoutX="20.0" layoutY="60.0" prefHeight="620.0" prefWidth="960.0" spacing="15.0">
+         <children>
+            <HBox spacing="15.0" alignment="CENTER_LEFT">
+               <children>
+                  <Label text="Buscar por:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="cmbTipoBusqueda" prefWidth="150.0" />
+                  <TextField fx:id="txtCodigo" prefWidth="150.0" promptText="Ingrese código" />
+                  <Button fx:id="btnBuscar" onMouseClicked="#buscarPacientes" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-background-radius: 5;" text="Buscar" />
+                  <Label fx:id="lblInfo" textFill="#2c3e50">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+            
+            <ScrollPane fitToWidth="true" prefHeight="500.0" prefWidth="960.0">
+               <content>
+                  <TableView fx:id="tablaPacientes" prefHeight="500.0" prefWidth="940.0">
+                     <columns>
+                        <TableColumn fx:id="colNumHistoria" prefWidth="100.0" text="Nº Historia" />
+                        <TableColumn fx:id="colNombre" prefWidth="180.0" text="Nombre" />
+                        <TableColumn fx:id="colFechaNac" prefWidth="120.0" text="Fecha Nac." />
+                        <TableColumn fx:id="colEdad" prefWidth="60.0" text="Edad" />
+                        <TableColumn fx:id="colDireccion" prefWidth="180.0" text="Dirección" />
+                        <TableColumn fx:id="colHospital" prefWidth="120.0" text="Hospital" />
+                        <TableColumn fx:id="colDepartamento" prefWidth="120.0" text="Departamento" />
+                        <TableColumn fx:id="colUnidad" prefWidth="120.0" text="Unidad" />
+                     </columns>
+                  </TableView>
+               </content>
+            </ScrollPane>
+            
+            <Label fx:id="lblTotal" style="-fx-font-weight: bold;">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
