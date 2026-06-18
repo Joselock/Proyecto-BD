@@ -9,6 +9,7 @@ import com.mycompany.gestorui.model.entidades.Hospital;
 import com.mycompany.gestorui.model.entidades.Informe;
 import com.mycompany.gestorui.model.entidades.Medico;
 import com.mycompany.gestorui.model.entidades.Unidad;
+import com.mycompany.gestorui.controllers.Reporte.Manager.TurnosRevisadosManager;
 import com.mycompany.gestorui.model.services.reportes.UnidadService;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -16,10 +17,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.geometry.Insets;
+import javafx.application.Platform;
 
 public class RevisarTurnosController implements Initializable {
 
@@ -58,12 +66,13 @@ public class RevisarTurnosController implements Initializable {
     
     private ObservableList<TurnoRow> turnosData = FXCollections.observableArrayList();
     private UnidadService unidadService = new UnidadService();
+    private TurnosRevisadosManager manager = TurnosRevisadosManager.getInstance();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             configurarColumnas();
-            // Cargar datos en un hilo separado para no bloquear la UI
+            configurarDobleClick();
             Thread thread = new Thread(this::cargarDatos);
             thread.setDaemon(true);
             thread.start();
@@ -86,11 +95,137 @@ public class RevisarTurnosController implements Initializable {
         tablaTurnos.setItems(turnosData);
     }
     
+    private void configurarDobleClick() {
+        tablaTurnos.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                TurnoRow selectedRow = tablaTurnos.getSelectionModel().getSelectedItem();
+                if (selectedRow != null) {
+                    mostrarVentanaDetalle(selectedRow);
+                }
+            }
+        });
+    }
+    
+    private void mostrarVentanaDetalle(TurnoRow turno) {
+        Stage ventana = new Stage();
+        ventana.initModality(Modality.APPLICATION_MODAL);
+        ventana.setTitle("Detalle del Turno - Revisión");
+        ventana.setWidth(500);
+        ventana.setHeight(500);
+        ventana.setResizable(false);
+        
+        VBox root = new VBox(15);
+        root.setPadding(new Insets(25));
+        root.setStyle("-fx-background-color: #f5f5f5;");
+        
+        Label titulo = new Label("📋 Detalle del Turno");
+        titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+        
+        VBox infoBox = new VBox(8);
+        infoBox.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);");
+        
+        Label lblHospital = new Label("🏥 Hospital: " + turno.getHospital());
+        Label lblDepartamento = new Label("📂 Departamento: " + turno.getDepartamento());
+        Label lblUnidad = new Label("🏛️ Unidad: " + turno.getUnidad());
+        Label lblMedico = new Label("👨‍⚕️ Médico: " + turno.getMedico());
+        Label lblTotalPac = new Label("📊 Total Pacientes: " + turno.getTotalPacientes());
+        Label lblPacAtend = new Label("✅ Pacientes Atendidos: " + turno.getCantPacAten());
+        Label lblPorcentaje = new Label("📈 Porcentaje Atención: " + turno.getPorcentajeAten());
+        Label lblEstado = new Label("🔵 Estado Actual: " + turno.getEstado());
+        
+        lblHospital.setStyle("-fx-font-size: 14px;");
+        lblDepartamento.setStyle("-fx-font-size: 14px;");
+        lblUnidad.setStyle("-fx-font-size: 14px;");
+        lblMedico.setStyle("-fx-font-size: 14px;");
+        lblTotalPac.setStyle("-fx-font-size: 14px;");
+        lblPacAtend.setStyle("-fx-font-size: 14px;");
+        lblPorcentaje.setStyle("-fx-font-size: 14px;");
+        lblEstado.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        
+        infoBox.getChildren().addAll(
+            lblHospital, lblDepartamento, lblUnidad, lblMedico,
+            lblTotalPac, lblPacAtend, lblPorcentaje, lblEstado
+        );
+        
+        Button btnRevisar = new Button("✅ Marcar como Revisado");
+        btnRevisar.setStyle(
+            "-fx-background-color: #27ae60; " +
+            "-fx-text-fill: white; " +
+            "-fx-font-size: 14px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 10 20; " +
+            "-fx-background-radius: 5; " +
+            "-fx-cursor: hand;"
+        );
+        btnRevisar.setMaxWidth(Double.MAX_VALUE);
+        
+        boolean yaRevisado = manager.esRevisado(
+            turno.getHospital(),
+            turno.getDepartamento(),
+            turno.getUnidad(),
+            turno.getMedico()
+        );
+        
+        if (yaRevisado || turno.getEstado().contains("OK") || turno.getEstado().contains("Extioso")) {
+            btnRevisar.setText("✅ Ya revisado");
+            btnRevisar.setStyle(
+                "-fx-background-color: #95a5a6; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 14px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-padding: 10 20; " +
+                "-fx-background-radius: 5;"
+            );
+            btnRevisar.setDisable(true);
+        }
+        
+        btnRevisar.setOnAction(e -> {
+            String hospital = turno.getHospital();
+            String departamento = turno.getDepartamento();
+            String unidad = turno.getUnidad();
+            String medico = turno.getMedico();
+            
+            // Marcar como revisado en el manager global (actualiza BD)
+            manager.marcarComoRevisado(hospital, departamento, unidad, medico);
+            
+            // Cambiar el estado
+            turno.setEstado("✅ Revisado");
+            
+            // Eliminar el registro de la tabla
+            turnosData.remove(turno);
+            
+            // Actualizar contador
+            lblTotal.setText("Total de unidades: " + turnosData.size());
+            lblInfo.setText("✅ Turno marcado como revisado. Quedan " + turnosData.size() + " por revisar.");
+            
+            ventana.close();
+        });
+        
+        Button btnCerrar = new Button("✖ Cerrar");
+        btnCerrar.setStyle(
+            "-fx-background-color: #e74c3c; " +
+            "-fx-text-fill: white; " +
+            "-fx-font-size: 14px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-padding: 10 20; " +
+            "-fx-background-radius: 5; " +
+            "-fx-cursor: hand;"
+        );
+        btnCerrar.setMaxWidth(Double.MAX_VALUE);
+        btnCerrar.setOnAction(e -> ventana.close());
+        
+        root.getChildren().addAll(titulo, infoBox, btnRevisar, btnCerrar);
+        
+        Scene scene = new Scene(root);
+        ventana.setScene(scene);
+        ventana.showAndWait();
+    }
+    
     private void cargarDatos() {
         try {
             LinkedList<Hospital> hospitales = unidadService.listadoUnidades();
             if (hospitales == null) {
-                javafx.application.Platform.runLater(() -> 
+                Platform.runLater(() -> 
                     lblInfo.setText("❌ No se pudieron cargar las unidades")
                 );
                 return;
@@ -112,6 +247,19 @@ public class RevisarTurnosController implements Initializable {
                             if (informe == null || medico == null) continue;
                             
                             float porcentaje = informe.getPorcentajePacAtend();
+                            
+                            // Verificar si ya fue revisado
+                            boolean yaRevisado = manager.esRevisado(
+                                h.getNombreHos(),
+                                d.getNombreDep(),
+                                u.getNombreUni(),
+                                medico.getNombreMed()
+                            );
+                            
+                            if (yaRevisado) {
+                                continue;
+                            }
+                            
                             String estado = porcentaje >= 80 ? "🟢 OK" : "🔴 Revisar";
                             
                             turnosData.add(new TurnoRow(
@@ -131,13 +279,13 @@ public class RevisarTurnosController implements Initializable {
             }
             
             int finalTotal = total;
-            javafx.application.Platform.runLater(() -> {
+            Platform.runLater(() -> {
                 lblTotal.setText("Total de unidades: " + finalTotal);
-                lblInfo.setText("✅ " + finalTotal + " unidades revisadas");
+                lblInfo.setText("✅ " + finalTotal + " unidades por revisar");
             });
             
         } catch (Exception ex) {
-            javafx.application.Platform.runLater(() -> 
+            Platform.runLater(() -> 
                 lblInfo.setText("❌ Error al revisar turnos: " + ex.getMessage())
             );
             ex.printStackTrace();
@@ -164,6 +312,19 @@ public class RevisarTurnosController implements Initializable {
             this.cantPacAten = new SimpleStringProperty(cantPacAten != null ? cantPacAten : "0");
             this.porcentajeAten = new SimpleStringProperty(porcentajeAten != null ? porcentajeAten : "0%");
             this.estado = new SimpleStringProperty(estado != null ? estado : "");
+        }
+        
+        public String getHospital() { return hospital.get(); }
+        public String getDepartamento() { return departamento.get(); }
+        public String getUnidad() { return unidad.get(); }
+        public String getTotalPacientes() { return totalPacientes.get(); }
+        public String getMedico() { return medico.get(); }
+        public String getCantPacAten() { return cantPacAten.get(); }
+        public String getPorcentajeAten() { return porcentajeAten.get(); }
+        public String getEstado() { return estado.get(); }
+        
+        public void setEstado(String nuevoEstado) { 
+            estado.set(nuevoEstado); 
         }
         
         public SimpleStringProperty hospitalProperty() { return hospital; }

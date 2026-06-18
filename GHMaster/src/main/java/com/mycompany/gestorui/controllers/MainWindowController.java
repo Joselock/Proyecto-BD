@@ -16,22 +16,27 @@ import com.mycompany.gestorui.model.entidades.Hospital;
 import com.mycompany.gestorui.model.entidades.Medico;
 import com.mycompany.gestorui.model.entidades.Unidad;
 import com.mycompany.gestorui.model.services.reportes.HospitalService;
+import com.mycompany.gestorui.controllers.Reporte.Manager.TurnosRevisadosListener;
+import com.mycompany.gestorui.controllers.Reporte.Manager.TurnosRevisadosManager;
 import com.mycompany.gestorui.model.services.reportes.UnidadService;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PopupControl;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class MainWindowController implements Initializable {
+public class MainWindowController implements Initializable, TurnosRevisadosListener {
 
     @FXML
     private Label lblUsuario;
@@ -62,9 +67,12 @@ public class MainWindowController implements Initializable {
 
     private PopupControl popupMenu;
     private VBox menuContent;
+    private TurnosRevisadosManager manager = TurnosRevisadosManager.getInstance();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Registrar este controlador como listener
+        manager.agregarListener(this);
 
         String usuario = LoginController.getUsuarioActual();
         if (usuario != null && !usuario.isEmpty()) {
@@ -83,6 +91,18 @@ public class MainWindowController implements Initializable {
         crearMenuPersonalizado();
     }
 
+    @Override
+    public void onTurnoRevisado(String hospital, String departamento, String unidad, String medico) {
+        Platform.runLater(() -> {
+            System.out.println("🔔 Notificación: Turno revisado - " + hospital + " | " + departamento + " | " + unidad + " | " + medico);
+            try {
+                cargarAlertas();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
     private Button crearItemMenu(String texto, javafx.event.EventHandler<ActionEvent> accion) {
         Button item = new Button(texto);
         item.getStyleClass().add("menu-item-custom");
@@ -97,14 +117,12 @@ public class MainWindowController implements Initializable {
     }
 
     private void crearMenuPersonalizado() {
-        // Crear el contenido del menú
         menuContent = new VBox();
         menuContent.getStyleClass().add("menu-popup");
 
         String cssUrl = getClass().getResource("/com/mycompany/gestorui/styles/menu.css").toExternalForm();
         menuContent.getStylesheets().add(cssUrl);
 
-        // Crear los items del menú - Ahora usando referencia de método
         Button itemGestion = crearItemMenu("👤Gestión", this::mostrarGestion);
         Button itemReportes = crearItemMenu("Reportes", this::mostrarReportes);
         Button itemCuenta = crearItemMenu("Mi cuenta", this::mostrarCuenta);
@@ -112,10 +130,9 @@ public class MainWindowController implements Initializable {
 
         menuContent.getChildren().addAll(itemGestion, itemReportes, itemCuenta, itemCerrar);
 
-        // Crear el popup
         popupMenu = new PopupControl();
         popupMenu.getScene().setRoot(menuContent);
-        popupMenu.setAutoHide(true);  // Se cierra al hacer clic fuera
+        popupMenu.setAutoHide(true);
     }
 
     @FXML
@@ -124,12 +141,10 @@ public class MainWindowController implements Initializable {
             crearMenuPersonalizado();
         }
 
-        // Calcular posición debajo del botón
         Point2D point = btnMenu.localToScreen(0, btnMenu.getHeight());
         double x = point.getX();
         double y = point.getY();
 
-        // Asegurar que el menú no se salga de la ventana
         Stage stage = (Stage) btnMenu.getScene().getWindow();
         double menuWidth = popupMenu.getWidth() > 0 ? popupMenu.getWidth() : 180;
         double windowRightEdge = stage.getX() + stage.getWidth();
@@ -138,11 +153,9 @@ public class MainWindowController implements Initializable {
             x = windowRightEdge - menuWidth - 10;
         }
 
-        // Mostrar el menú
         popupMenu.show(btnMenu, x, y);
     }
 
-    // Métodos del menú con ActionEvent como parámetro
     @FXML
     private void mostrarGestion(ActionEvent event) {
         try {
@@ -173,80 +186,71 @@ public class MainWindowController implements Initializable {
     @FXML
     private void cerrarSesion(ActionEvent event) {
         try {
-            // Cerrar la ventana actual (MainWindow)
             Stage stageActual = (Stage) btnMenu.getScene().getWindow();
             stageActual.close();
-
             Login.mostrarVentanaLogin();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //Indicadores con la cantidad de hos,dep,uni,med y pac
     private void cargarIndicadores() throws SQLException {
         HashMap<String, Integer> indicadores = new HashMap<>(MainWindow.cantIndicadores());
-
-        //Mostrar indicadores obtenidos
         lblTotalHospitales.setText(Integer.toString(indicadores.get("hospitales")));
         lblTotalDepartamentos.setText(Integer.toString(indicadores.get("departamentos")));
         lblTotalUnidades.setText(Integer.toString(indicadores.get("unidades")));
         lblTotalMedicos.setText(Integer.toString(indicadores.get("medicos")));
         lblTotalPacientes.setText(Integer.toString(indicadores.get("pacientes")));
-
     }
 
-    //Grafico para el top 5 de hospitales con mas de 100 pacientes
     private void cargarGraficoTopHospitales() throws SQLException {
         HospitalService hs = new HospitalService();
         LinkedList<Hospital> listado = new LinkedList<>(hs.hospitalesMayorCantidadPacientes());
 
         chartTopHospitales.getData().clear();
-
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Pacientes");
 
         for (Hospital h : listado) {
             series.getData().add(new XYChart.Data<>(h.getNombreHos(), h.getCantPac()));
         }
-
         chartTopHospitales.getData().add(series);
     }
 
     private void cargarAlertas() throws SQLException {
         vboxAlertas.getChildren().clear();
 
-        String unidad;
-        String departamento;
-        String hospital;
-        String medico;
-
         UnidadService us = new UnidadService();
         LinkedList<Hospital> listado = new LinkedList<>(us.listadoUnidades());
+        int alertasCount = 0;
 
         for (Hospital h : listado) {
-            hospital = h.getNombreHos();
-            //System.out.println("Hospital: "+hospital);
+            String hospital = h.getNombreHos();
 
             for (Departamento d : h.getDepartamentos()) {
-                departamento = d.getNombreDep();
-                //System.out.println("Depa: "+departamento);
+                String departamento = d.getNombreDep();
 
                 for (Unidad u : d.getUnidades()) {
-                    unidad = u.getNombreUni();
-                    //System.out.println("Uni: "+unidad);
+                    String unidad = u.getNombreUni();
 
                     for (Medico m : u.getMedicos()) {
-                        medico = m.getNombreMed();
-                        //System.out.println("Med: "+medico);
+                        String medico = m.getNombreMed();
 
-                        agregarAlerta(unidad, departamento, hospital, medico);
+                        // Verificar si ya fue revisado
+                        if (!manager.esRevisado(hospital, departamento, unidad, medico)) {
+                            agregarAlerta(unidad, departamento, hospital, medico);
+                            alertasCount++;
+                        }
                     }
                 }
             }
         }
 
+        if (alertasCount == 0) {
+            Label noAlertas = new Label("✅ No hay turnos pendientes de revisar");
+            noAlertas.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 10;");
+            vboxAlertas.getChildren().add(noAlertas);
+        }
     }
 
     private void agregarAlerta(String unidad, String departamento, String hospital, String medico) {
@@ -254,24 +258,100 @@ public class MainWindowController implements Initializable {
         alertaBox.setStyle("-fx-background-color: #fff3cd; -fx-background-radius: 5; -fx-border-color: #ffc107; -fx-border-radius: 5; -fx-border-width: 1;");
         alertaBox.setPadding(new Insets(10));
 
-        Label lblUnidad = new Label("• " + unidad + "(" + departamento + ")");
+        Label lblUnidad = new Label("• " + unidad + " (" + departamento + ")");
         lblUnidad.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
         Label lblHospital = new Label("Hospital: " + hospital);
         lblHospital.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
 
-        Label lblMedico = new Label("Medico: " + medico);
+        Label lblMedico = new Label("Médico: " + medico);
         lblMedico.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666;");
 
-        Button btnRevisar = new Button("Revisar");
+        Button btnRevisar = new Button("🔍 Revisar");
         btnRevisar.setStyle("-fx-background-color: #2d7a2d; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;");
-        btnRevisar.setOnAction(e -> handleRevisarUnidad(unidad, hospital, departamento, medico));
+        btnRevisar.setOnAction(e -> handleRevisarUnidad(unidad, hospital, departamento, medico, alertaBox));
 
         alertaBox.getChildren().addAll(lblUnidad, lblHospital, lblMedico, btnRevisar);
         vboxAlertas.getChildren().add(alertaBox);
     }
 
-    private void handleRevisarUnidad(String unidad, String hospital, String departamento, String medico) {
-        System.out.println("Revisar: " + unidad + " - " + hospital + " - " + departamento + " - " + medico);
+    private void handleRevisarUnidad(String unidad, String hospital, String departamento, String medico, VBox alertaBox) {
+        try {
+            Stage ventana = new Stage();
+            ventana.initModality(Modality.APPLICATION_MODAL);
+            ventana.setTitle("Detalle del Turno - Revisión");
+            ventana.setWidth(500);
+            ventana.setHeight(480);
+            ventana.setResizable(false);
+
+            VBox content = new VBox(15);
+            content.setPadding(new Insets(25));
+            content.setStyle("-fx-background-color: #f5f5f5;");
+
+            Label titulo = new Label("📋 Detalle del Turno");
+            titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+            VBox infoBox = new VBox(8);
+            infoBox.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);");
+
+            Label lblHospital = new Label("🏥 Hospital: " + hospital);
+            Label lblDepartamento = new Label("📂 Departamento: " + departamento);
+            Label lblUnidad = new Label("🏛️ Unidad: " + unidad);
+            Label lblMedico = new Label("👨‍⚕️ Médico: " + medico);
+            Label lblEstado = new Label("🔵 Estado: 🔴 Revisar");
+
+            String labelStyle = "-fx-font-size: 14px;";
+            lblHospital.setStyle(labelStyle);
+            lblDepartamento.setStyle(labelStyle);
+            lblUnidad.setStyle(labelStyle);
+            lblMedico.setStyle(labelStyle);
+            lblEstado.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
+
+            infoBox.getChildren().addAll(lblHospital, lblDepartamento, lblUnidad, lblMedico, lblEstado);
+
+            Button btnRevisar = new Button("✅ Marcar como Revisado");
+            btnRevisar.setStyle(
+                "-fx-background-color: #27ae60; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 14px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-padding: 10 20; " +
+                "-fx-background-radius: 5; " +
+                "-fx-cursor: hand;"
+            );
+            btnRevisar.setMaxWidth(Double.MAX_VALUE);
+
+            btnRevisar.setOnAction(e -> {
+                manager.marcarComoRevisado(hospital, departamento, unidad, medico);
+                ventana.close();
+            });
+
+            Button btnCerrar = new Button("✖ Cerrar");
+            btnCerrar.setStyle(
+                "-fx-background-color: #e74c3c; " +
+                "-fx-text-fill: white; " +
+                "-fx-font-size: 14px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-padding: 10 20; " +
+                "-fx-background-radius: 5; " +
+                "-fx-cursor: hand;"
+            );
+            btnCerrar.setMaxWidth(Double.MAX_VALUE);
+            btnCerrar.setOnAction(e -> ventana.close());
+
+            content.getChildren().addAll(titulo, infoBox, btnRevisar, btnCerrar);
+
+            Scene scene = new Scene(content);
+            ventana.setScene(scene);
+            ventana.showAndWait();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Label errorLabel = new Label("❌ Error al abrir detalle: " + ex.getMessage());
+            errorLabel.setStyle("-fx-text-fill: red; -fx-padding: 10;");
+            if (vboxAlertas != null) {
+                vboxAlertas.getChildren().add(errorLabel);
+            }
+        }
     }
 }
