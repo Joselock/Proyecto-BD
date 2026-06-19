@@ -7,80 +7,69 @@ import java.util.ResourceBundle;
 import com.mycompany.gestorui.model.entidades.Hospital;
 import com.mycompany.gestorui.model.services.reportes.HospitalService;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 
 public class TopHospitalesController implements Initializable {
 
     @FXML
-    private TableView<TopHospitalRow> tablaHospitales;
-    
-    @FXML
-    private TableColumn<TopHospitalRow, String> colPosicion;
-    
-    @FXML
-    private TableColumn<TopHospitalRow, String> colNombre;
-    
-    @FXML
-    private TableColumn<TopHospitalRow, String> colPacientes;
+    private BarChart<String, Number> chartTopHospitales;
     
     @FXML
     private Label lblInfo;
     
-    private ObservableList<TopHospitalRow> hospitalesData = FXCollections.observableArrayList();
+    // ELIMINA esta línea porque ya no existe en el FXML
+    // @FXML
+    // private Label lblTitulo;
+    
     private HospitalService hospitalService = new HospitalService();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        configurarColumnas();
         cargarDatos();
     }
     
-    private void configurarColumnas() {
-        colPosicion.setCellValueFactory(cellData -> cellData.getValue().posicionProperty());
-        colNombre.setCellValueFactory(cellData -> cellData.getValue().nombreProperty());
-        colPacientes.setCellValueFactory(cellData -> cellData.getValue().pacientesProperty());
-        
-        tablaHospitales.setItems(hospitalesData);
-    }
-    
     private void cargarDatos() {
-        LinkedList<Hospital> hospitales = hospitalService.hospitalesMayorCantidadPacientes();
-        
-        hospitalesData.clear();
-        int posicion = 1;
-        
-        for (Hospital h : hospitales) {
-            hospitalesData.add(new TopHospitalRow(
-                "#" + posicion,
-                h.getNombreHos(),
-                String.valueOf(h.getCantPac())
-            ));
-            posicion++;
+        try {
+            LinkedList<Hospital> hospitales = hospitalService.hospitalesMayorCantidadPacientes();
+            
+            if (hospitales == null || hospitales.isEmpty()) {
+                lblInfo.setText("⚠️ No hay hospitales con más de 100 pacientes");
+                return;
+            }
+            
+            chartTopHospitales.getData().clear();
+            
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Pacientes");
+            
+            String[] colores = {"#2d7a2d", "#4a9e4a", "#6bb86b", "#8ccd8c", "#ade0ad"};
+            
+            for (int i = 0; i < hospitales.size(); i++) {
+                Hospital h = hospitales.get(i);
+                String nombre = h.getNombreHos() != null ? h.getNombreHos() : "Sin nombre";
+                int cantidad = h.getCantPac();
+                
+                XYChart.Data<String, Number> data = new XYChart.Data<>(nombre, cantidad);
+                series.getData().add(data);
+                
+                final int index = i;
+                data.nodeProperty().addListener((obs, oldNode, newNode) -> {
+                    if (newNode != null && index < colores.length) {
+                        newNode.setStyle("-fx-bar-fill: " + colores[index] + ";");
+                    }
+                });
+            }
+            
+            chartTopHospitales.getData().add(series);
+            lblInfo.setText("🏆 Mostrando " + hospitales.size() + " hospitales con más de 100 pacientes");
+            
+        } catch (Exception ex) {
+            lblInfo.setText("❌ Error al cargar datos: " + ex.getMessage());
+            ex.printStackTrace();
         }
-        
-        lblInfo.setText("🏆 Top " + hospitales.size() + " hospitales con más de 100 pacientes");
-    }
-    
-    public static class TopHospitalRow {
-        private final SimpleStringProperty posicion;
-        private final SimpleStringProperty nombre;
-        private final SimpleStringProperty pacientes;
-        
-        public TopHospitalRow(String posicion, String nombre, String pacientes) {
-            this.posicion = new SimpleStringProperty(posicion != null ? posicion : "");
-            this.nombre = new SimpleStringProperty(nombre != null ? nombre : "");
-            this.pacientes = new SimpleStringProperty(pacientes != null ? pacientes : "0");
-        }
-        
-        public SimpleStringProperty posicionProperty() { return posicion; }
-        public SimpleStringProperty nombreProperty() { return nombre; }
-        public SimpleStringProperty pacientesProperty() { return pacientes; }
     }
 }

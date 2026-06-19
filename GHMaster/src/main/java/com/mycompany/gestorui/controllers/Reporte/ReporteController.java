@@ -47,15 +47,15 @@ public class ReporteController implements Initializable {
     private static final Map<String, String> RUTAS_REPORTES = new HashMap<>();
     
     static {
-        TITULOS_REPORTES.put("listadoPacientes", "📋 Listado de Pacientes");
-        TITULOS_REPORTES.put("listadoMedicos", "👨‍⚕️ Listado de Médicos");
-        TITULOS_REPORTES.put("resumenHospital", "🏥 Resumen por Hospitales");
-        TITULOS_REPORTES.put("topHospitales", "🏆 Top 5 Hospitales con más Pacientes");
-        TITULOS_REPORTES.put("informesConsultas", "📊 Informe durante Consultas");
-        TITULOS_REPORTES.put("noAtendidos", "❌ Pacientes no Atendidos");
-        TITULOS_REPORTES.put("resumenProceso", "📈 Resumen del Proceso");
-        TITULOS_REPORTES.put("revisarTurnos", "🔄 Revisar Turnos");
-        TITULOS_REPORTES.put("consultasExitosas", "✅ Consultas Exitosas");
+        TITULOS_REPORTES.put("listadoPacientes", "Listado de Pacientes");
+        TITULOS_REPORTES.put("listadoMedicos", "Listado de Médicos");
+        TITULOS_REPORTES.put("resumenHospital", "Resumen por Hospitales");
+        TITULOS_REPORTES.put("topHospitales", "Top 5 Hospitales con más Pacientes");
+        TITULOS_REPORTES.put("informesConsultas", "Informe durante Consultas");
+        TITULOS_REPORTES.put("noAtendidos", "Pacientes no Atendidos");
+        TITULOS_REPORTES.put("resumenProceso", "Resumen del Proceso");
+        TITULOS_REPORTES.put("revisarTurnos", "Revisar Turnos");
+        TITULOS_REPORTES.put("consultasExitosas", "Consultas Exitosas");
         
         RUTAS_REPORTES.put("listadoPacientes", "com/mycompany/gestorui/views/Reportes/ListadoPacientes.fxml");
         RUTAS_REPORTES.put("listadoMedicos", "com/mycompany/gestorui/views/Reportes/ListadoMedicos.fxml");
