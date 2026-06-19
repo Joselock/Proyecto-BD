@@ -3,6 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -31,7 +33,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">📋</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/pacientes.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Listado de pacientes" wrapText="true" />
                            </children>
                         </VBox>
@@ -42,7 +46,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">👨‍⚕️</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/medico.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Listado de médicos" wrapText="true" />
                            </children>
                         </VBox>
@@ -53,7 +59,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">🏥</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/hospitales.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Resumen por hospitales" wrapText="true" />
                            </children>
                         </VBox>
@@ -64,7 +72,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">🏆</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/trofeo.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Top 5 hospitales" wrapText="true" />
                            </children>
                         </VBox>
@@ -80,7 +90,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">📊</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/informes.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Informe durante consultas" wrapText="true" />
                            </children>
                         </VBox>
@@ -91,7 +103,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">❌</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/no_atendido.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Pacientes no atendidos" wrapText="true" />
                            </children>
                         </VBox>
@@ -102,7 +116,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">📈</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/proceso.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Resumen del proceso" wrapText="true" />
                            </children>
                         </VBox>
@@ -113,7 +129,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">🔄</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/revisar.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Revisar turnos" wrapText="true" />
                            </children>
                         </VBox>
@@ -129,7 +147,9 @@
                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                            </padding>
                            <children>
-                              <Label style="-fx-font-size: 32px;">✅</Label>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@/com/mycompany/gestorui/icons/exitoso.png" />
+                              </ImageView>
                               <Label alignment="CENTER" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-alignment: center;" text="Consultas exitosas" wrapText="true" />
                            </children>
                         </VBox>
