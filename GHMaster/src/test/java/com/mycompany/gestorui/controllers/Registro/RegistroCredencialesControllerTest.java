@@ -1,7 +1,5 @@
 package com.mycompany.gestorui.controllers.Registro;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
