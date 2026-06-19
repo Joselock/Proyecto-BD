@@ -10,13 +10,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="946.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Gestion.GestionTurnoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Gestion.GestionTurnoController">
     <children>
         
         <!-- Botón para mostrar/ocultar el panel -->
-        <Button fx:id="btnTogglePanel" layoutX="799.0" layoutY="60.0" prefWidth="120.0" styleClass="toggle-panel-btn" text="Ocultar Panel" />
+        <Button fx:id="btnTogglePanel" layoutX="852.0" layoutY="91.0" prefWidth="120.0" styleClass="toggle-panel-btn" text="Ocultar Panel" />
         
-        <TableView fx:id="tablaTurnos" layoutX="33.0" layoutY="91.0" prefHeight="497.0" prefWidth="562.0" stylesheets="@style/gestion.css">
+        <TableView fx:id="tablaTurnos" layoutX="33.0" layoutY="91.0" prefHeight="580.0" prefWidth="613.0" stylesheets="@style/gestion.css">
             <columns>
                 <TableColumn fx:id="colSeleccion" prefWidth="60.0" text="" />
                 <TableColumn fx:id="colNumero" prefWidth="100.0" text="Nº Turno" />
@@ -27,7 +27,7 @@
             </columns>
         </TableView>
         
-        <AnchorPane fx:id="panelCrud" layoutX="614.0" layoutY="91.0" prefHeight="497.0" prefWidth="305.0" style="-fx-background-color: #ffffff;" styleClass="crud-panel" stylesheets="@style/gestion.css">
+        <AnchorPane fx:id="panelCrud" layoutX="667.0" layoutY="133.0" prefHeight="497.0" prefWidth="305.0" style="-fx-background-color: #ffffff;" styleClass="crud-panel" stylesheets="@style/gestion.css">
             <children>
                 <!-- Título del panel -->
                 <Label layoutX="73.0" layoutY="24.0" prefHeight="41.0" prefWidth="181.0" text="Panel de control">
@@ -55,7 +55,7 @@
                 <Button fx:id="btnLimpiar" contentDisplay="TOP" layoutX="108.0" layoutY="421.0" prefHeight="48.0" prefWidth="89.0" styleClass="icon-limpiar" stylesheets="@style/gestion.css" text="Limpiar" />
             </children>
         </AnchorPane>
-      <Label layoutX="439.0" layoutY="24.0" text="Turnos">
+      <Label layoutX="466.0" layoutY="23.0" text="Turnos">
          <font>
             <Font size="20.0" />
          </font>

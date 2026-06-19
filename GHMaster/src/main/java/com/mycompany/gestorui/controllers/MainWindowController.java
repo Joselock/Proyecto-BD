@@ -13,6 +13,7 @@ import com.mycompany.gestorui.components.MainWindow;
 import com.mycompany.gestorui.components.Reporte;
 import com.mycompany.gestorui.model.entidades.Departamento;
 import com.mycompany.gestorui.model.entidades.Hospital;
+import com.mycompany.gestorui.model.entidades.Informe;
 import com.mycompany.gestorui.model.entidades.Medico;
 import com.mycompany.gestorui.model.entidades.Unidad;
 import com.mycompany.gestorui.model.services.reportes.HospitalService;
@@ -169,40 +170,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         popupMenu.show(btnMenu, x, y);
     }
 
-    /*
-     * @FXML
-     * private void mostrarGestion(ActionEvent event) {
-     * try {
-     * Gestion.mostrarVentanaGestion();
-     * } catch (Exception ex) {
-     * System.getLogger(MainWindowController.class.getName()).log(System.Logger.
-     * Level.ERROR, (String) null, ex);
-     * }
-     * }
-     * 
-     * @FXML
-     * private void mostrarReportes(ActionEvent event) {
-     * try {
-     * Reporte.mostrarVentanaReportes();
-     * } catch (Exception ex) {
-     * System.getLogger(MainWindowController.class.getName()).log(System.Logger.
-     * Level.ERROR, (String) null, ex);
-     * }
-     * }
-     * 
-     * @FXML
-     * private void mostrarCuenta(ActionEvent event) {
-     * try {
-     * Cuenta.mostrarVentanaCuenta();
-     * } catch (Exception ex) {
-     * System.getLogger(MainWindowController.class.getName()).log(System.Logger.
-     * Level.ERROR, (String) null, ex);
-     * }
-     * }
-     */
-
-    // En el método mostrarGestion y mostrarReportes, ya no cambian porque usan los
-    // componentes
     @FXML
     private void mostrarGestion(ActionEvent event) {
         try {
@@ -287,20 +254,17 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
         Timeline timeline = new Timeline();
 
-        // Crear KeyFrames para cada paso
         for (int paso = 0; paso <= pasos; paso++) {
             double progreso = (double) paso / pasos;
             double valorEasing = 1 - Math.pow(1 - progreso, 1.8);
             Duration tiempo = duracionTotal.multiply(progreso);
 
-            // Usar una variable final para el lambda
             final double valorEasingFinal = valorEasing;
             final int pasoFinal = paso;
 
             KeyFrame keyFrame = new KeyFrame(
                     tiempo,
                     event -> {
-                        // Actualizar cada barra con su valor correspondiente
                         for (int j = 0; j < series.getData().size() && j < datosHospitales.size(); j++) {
                             XYChart.Data<String, Number> data = series.getData().get(j);
                             Hospital hospital = datosHospitales.get(j);
@@ -317,7 +281,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
             timeline.getKeyFrames().add(keyFrame);
         }
 
-        // Frame final para asegurar los valores exactos
         KeyFrame frameFinal = new KeyFrame(
                 duracionTotal,
                 event -> {
@@ -452,38 +415,48 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     private void handleRevisarUnidad(String unidad, String hospital, String departamento, String medico,
             VBox alertaBox) {
         try {
+            // Buscar los datos adicionales del turno
+            DatosTurno datos = obtenerDatosTurno(hospital, departamento, unidad, medico);
+
             Stage ventana = new Stage();
             ventana.initModality(Modality.APPLICATION_MODAL);
             ventana.setTitle("Detalle del Turno - Revisión");
             ventana.setWidth(500);
-            ventana.setHeight(480);
+            ventana.setHeight(550);
             ventana.setResizable(false);
 
             VBox content = new VBox(15);
             content.setPadding(new Insets(25));
             content.setStyle("-fx-background-color: #f5f5f5;");
 
-            Label titulo = new Label("📋 Detalle del Turno");
+            Label titulo = new Label("Detalle del Turno");
             titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
             VBox infoBox = new VBox(8);
             infoBox.setStyle(
                     "-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);");
 
-            Label lblHospital = new Label("🏥 Hospital: " + hospital);
-            Label lblDepartamento = new Label("📂 Departamento: " + departamento);
-            Label lblUnidad = new Label("🏛️ Unidad: " + unidad);
-            Label lblMedico = new Label("👨‍⚕️ Médico: " + medico);
-            Label lblEstado = new Label("🔵 Estado: 🔴 Revisar");
+            Label lblHospital = new Label("Hospital: " + hospital);
+            Label lblDepartamento = new Label("Departamento: " + departamento);
+            Label lblUnidad = new Label("Unidad: " + unidad);
+            Label lblMedico = new Label("Médico: " + medico);
+            Label lblTotalPac = new Label("Total Pacientes: " + datos.totalPacientes);
+            Label lblPacAtend = new Label("Pacientes Atendidos: " + datos.pacAtendidos);
+            Label lblPorcentaje = new Label("Porcentaje Atención: " + datos.porcentaje);
+            Label lblEstado = new Label("Estado Actual: " + datos.estado);
 
             String labelStyle = "-fx-font-size: 14px;";
             lblHospital.setStyle(labelStyle);
             lblDepartamento.setStyle(labelStyle);
             lblUnidad.setStyle(labelStyle);
             lblMedico.setStyle(labelStyle);
+            lblTotalPac.setStyle(labelStyle);
+            lblPacAtend.setStyle(labelStyle);
+            lblPorcentaje.setStyle(labelStyle);
             lblEstado.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;");
 
-            infoBox.getChildren().addAll(lblHospital, lblDepartamento, lblUnidad, lblMedico, lblEstado);
+            infoBox.getChildren().addAll(lblHospital, lblDepartamento, lblUnidad, lblMedico,
+                    lblTotalPac, lblPacAtend, lblPorcentaje, lblEstado);
 
             Button btnRevisar = new Button("✅ Marcar como Revisado");
             btnRevisar.setStyle(
@@ -495,6 +468,19 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
                             "-fx-background-radius: 5; " +
                             "-fx-cursor: hand;");
             btnRevisar.setMaxWidth(Double.MAX_VALUE);
+
+            // Si ya está revisado, deshabilitar
+            if (datos.estado.contains("Revisado") || datos.estado.contains("Extioso") || datos.estado.contains("OK")) {
+                btnRevisar.setText("✅ Ya revisado");
+                btnRevisar.setStyle(
+                        "-fx-background-color: #95a5a6; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-font-size: 14px; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-padding: 10 20; " +
+                                "-fx-background-radius: 5;");
+                btnRevisar.setDisable(true);
+            }
 
             btnRevisar.setOnAction(e -> {
                 manager.marcarComoRevisado(hospital, departamento, unidad, medico);
@@ -527,5 +513,67 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
                 vboxAlertas.getChildren().add(errorLabel);
             }
         }
+    }
+
+    /**
+     * Obtiene los datos del turno desde la base de datos
+     */
+    private DatosTurno obtenerDatosTurno(String hospital, String departamento, String unidad, String medico) {
+        DatosTurno datos = new DatosTurno();
+
+        try {
+            UnidadService us = new UnidadService();
+            LinkedList<Hospital> hospitales = us.listadoUnidades();
+
+            for (Hospital h : hospitales) {
+                if (!h.getNombreHos().equals(hospital)) continue;
+
+                for (Departamento d : h.getDepartamentos()) {
+                    if (!d.getNombreDep().equals(departamento)) continue;
+
+                    for (Unidad u : d.getUnidades()) {
+                        if (!u.getNombreUni().equals(unidad)) continue;
+
+                        for (Medico m : u.getMedicos()) {
+                            if (!m.getNombreMed().equals(medico)) continue;
+
+                            // Encontrar el informe correspondiente
+                            int size = Math.min(u.getInformes().size(), u.getMedicos().size());
+                            for (int i = 0; i < size; i++) {
+                                Informe informe = u.getInformes().get(i);
+                                Medico med = u.getMedicos().get(i);
+                                if (med.getNombreMed().equals(medico) && informe != null) {
+                                    datos.totalPacientes = String.valueOf(informe.getTotal());
+                                    datos.pacAtendidos = String.valueOf(informe.getPacAtend());
+                                    float porcentaje = informe.getPorcentajePacAtend();
+                                    datos.porcentaje = String.format("%.1f%%", porcentaje);
+                                    datos.estado = porcentaje >= 80 ? "🟢 OK" : "🔴 Revisar";
+                                    return datos;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Si no se encontraron datos
+            datos.totalPacientes = "0";
+            datos.pacAtendidos = "0";
+            datos.porcentaje = "0%";
+            datos.estado = "🔴 Revisar";
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return datos;
+    }
+
+    // Clase interna para almacenar los datos del turno
+    private static class DatosTurno {
+        String totalPacientes = "0";
+        String pacAtendidos = "0";
+        String porcentaje = "0%";
+        String estado = "🔴 Revisar";
     }
 }

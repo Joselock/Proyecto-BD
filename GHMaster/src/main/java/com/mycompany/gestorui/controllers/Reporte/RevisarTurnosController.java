@@ -118,20 +118,20 @@ public class RevisarTurnosController implements Initializable {
         root.setPadding(new Insets(25));
         root.setStyle("-fx-background-color: #f5f5f5;");
         
-        Label titulo = new Label("📋 Detalle del Turno");
+        Label titulo = new Label("Detalle del Turno");
         titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
         
         VBox infoBox = new VBox(8);
         infoBox.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);");
         
-        Label lblHospital = new Label("🏥 Hospital: " + turno.getHospital());
-        Label lblDepartamento = new Label("📂 Departamento: " + turno.getDepartamento());
-        Label lblUnidad = new Label("🏛️ Unidad: " + turno.getUnidad());
-        Label lblMedico = new Label("👨‍⚕️ Médico: " + turno.getMedico());
-        Label lblTotalPac = new Label("📊 Total Pacientes: " + turno.getTotalPacientes());
-        Label lblPacAtend = new Label("✅ Pacientes Atendidos: " + turno.getCantPacAten());
-        Label lblPorcentaje = new Label("📈 Porcentaje Atención: " + turno.getPorcentajeAten());
-        Label lblEstado = new Label("🔵 Estado Actual: " + turno.getEstado());
+        Label lblHospital = new Label("Hospital: " + turno.getHospital());
+        Label lblDepartamento = new Label("Departamento: " + turno.getDepartamento());
+        Label lblUnidad = new Label("Unidad: " + turno.getUnidad());
+        Label lblMedico = new Label("Médico: " + turno.getMedico());
+        Label lblTotalPac = new Label("Total Pacientes: " + turno.getTotalPacientes());
+        Label lblPacAtend = new Label("Pacientes Atendidos: " + turno.getCantPacAten());
+        Label lblPorcentaje = new Label("Porcentaje Atención: " + turno.getPorcentajeAten());
+        Label lblEstado = new Label("Estado Actual: " + turno.getEstado());
         
         lblHospital.setStyle("-fx-font-size: 14px;");
         lblDepartamento.setStyle("-fx-font-size: 14px;");
