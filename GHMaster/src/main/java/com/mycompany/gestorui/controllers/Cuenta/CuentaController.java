@@ -9,6 +9,8 @@ import com.mycompany.gestorui.components.Cuenta;
 import com.mycompany.gestorui.controllers.LoginController;
 import com.mycompany.gestorui.model.login.entidad.User;
 import com.mycompany.gestorui.model.login.loginSevice.Verificacion;
+import com.mycompany.gestorui.model.utils.VentanaManager;
+
 import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
@@ -34,19 +36,19 @@ import javafx.stage.Stage;
  * @author ignacio
  */
 public class CuentaController implements Initializable {
-    
+
     @FXML
     private Label nombre;
-    
+
     @FXML
     private Label gmail;
-    
+
     @FXML
     private Label especialidad;
-    
+
     @FXML
     private Label direccion;
-    
+
     @FXML
     private Label telefono;
 
@@ -67,33 +69,33 @@ public class CuentaController implements Initializable {
 
     @FXML
     private Button btnMenu;
-    
+
     @FXML
     private Label lblUsername;
 
     private PopupControl popupMenu;
     private VBox menuContent;
-    
+
     private String usuarioActual;
     private boolean tieneImagen = false;
-    
-    private Circle clipCircle;  // Círculo separado para el clip
+
+    private Circle clipCircle; // Círculo separado para el clip
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Obtener el usuario actual desde LoginController
         usuarioActual = LoginController.getUsuarioActual();
-        
+
         // Mostrar el usuario en el Label
         if (lblUsername != null) {
             lblUsername.setText(usuarioActual != null ? usuarioActual : "Usuario");
         }
-        
+
         // ✅ CREAR UN CÍRCULO NUEVO EXCLUSIVAMENTE PARA EL CLIP
-        clipCircle = new Circle(84);  // 84 es el radio del círculo
+        clipCircle = new Circle(84); // 84 es el radio del círculo
         clipCircle.setCenterX(84);
         clipCircle.setCenterY(84);
-        
+
         // Aplicar el clip al ImageView (usando el círculo nuevo, no el de la UI)
         avatarImage.setClip(clipCircle);
         avatarImage.setPreserveRatio(false);
@@ -119,14 +121,13 @@ public class CuentaController implements Initializable {
             seleccionarNuevaImagen();
         }
     }
-    
+
     private void seleccionarNuevaImagen() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar imagen de perfil");
 
         FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter(
-                "Archivos de imagen", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"
-        );
+                "Archivos de imagen", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp");
         fileChooser.getExtensionFilters().add(imageFilter);
 
         Stage stage = (Stage) btnChangeAvatar.getScene().getWindow();
@@ -149,8 +150,7 @@ public class CuentaController implements Initializable {
                 java.nio.file.Files.copy(
                         selectedFile.toPath(),
                         destFile.toPath(),
-                        java.nio.file.StandardCopyOption.REPLACE_EXISTING
-                );
+                        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
                 tieneImagen = true;
                 actualizarBotonAvatar();
@@ -161,30 +161,32 @@ public class CuentaController implements Initializable {
             }
         }
     }
-    
+
     private void borrarAvatar() {
         avatarImage.setImage(null);
-        
+
         String usuario = usuarioActual != null ? usuarioActual : "default";
         String avatarPath = System.getProperty("user.home") + "/.gestorui/avatars/avatar_" + usuario + ".png";
         File avatarFile = new File(avatarPath);
-        
+
         if (avatarFile.exists()) {
             avatarFile.delete();
             System.out.println("Avatar borrado: " + avatarPath);
         }
-        
+
         tieneImagen = false;
         actualizarBotonAvatar();
     }
-    
+
     private void actualizarBotonAvatar() {
         if (tieneImagen) {
             btnChangeAvatar.setText("🗑️ Borrar foto");
-            btnChangeAvatar.setStyle("-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 15px; -fx-cursor: hand;");
+            btnChangeAvatar.setStyle(
+                    "-fx-background-color: #d32f2f; -fx-text-fill: white; -fx-background-radius: 15px; -fx-cursor: hand;");
         } else {
             btnChangeAvatar.setText("📷 Cambiar foto");
-            btnChangeAvatar.setStyle("-fx-background-color: #2d7a2d; -fx-text-fill: white; -fx-background-radius: 15px; -fx-cursor: hand;");
+            btnChangeAvatar.setStyle(
+                    "-fx-background-color: #2d7a2d; -fx-text-fill: white; -fx-background-radius: 15px; -fx-cursor: hand;");
         }
     }
 
@@ -206,30 +208,29 @@ public class CuentaController implements Initializable {
             tieneImagen = false;
         }
     }
-    
-    
-    private void cargarDatosUsuario() throws SQLException{
-        
+
+    private void cargarDatosUsuario() throws SQLException {
+
         User u = Verificacion.obtenerUsuario(usuarioActual);
-        
+
         String correo = u.getEmail();
         String nom = u.getDatosUsuario().getNombreCompleto();
         String esp = u.getDatosUsuario().getEspecialidad();
         String dir = u.getDatosUsuario().getDireccion();
         String tel = u.getDatosUsuario().getTelefono();
-        
+
         System.out.println(correo);
         System.out.println(nom);
         System.out.println(esp);
         System.out.println(dir);
         System.out.println(tel);
-        
-        nombre.setText("Nombre y Apellidos: "+nom);
-        gmail.setText("Correo electronico: "+correo);
-        especialidad.setText("Especialidad :"+esp);
-        direccion.setText("Direccion: "+dir);
-        telefono.setText("Telefono: "+tel);
-        
+
+        nombre.setText("Nombre y Apellidos: " + nom);
+        gmail.setText("Correo electronico: " + correo);
+        especialidad.setText("Especialidad :" + esp);
+        direccion.setText("Direccion: " + dir);
+        telefono.setText("Telefono: " + tel);
+
     }
 
     private void crearMenu() {
@@ -241,7 +242,7 @@ public class CuentaController implements Initializable {
 
         Button itemPassword = crearItemMenu("Cambiar Contraseña", this::mostrarPassword);
         Button itemProfile = crearItemMenu("Modificar Perfil", this::mostrarProfile);
-        Button itemEliminar = crearItemMenu("Eliminar Cuenta", this::mostrarEliminar) ;
+        Button itemEliminar = crearItemMenu("Eliminar Cuenta", this::mostrarEliminar);
 
         menuContent.getChildren().addAll(itemPassword, itemProfile, itemEliminar);
 
@@ -284,10 +285,38 @@ public class CuentaController implements Initializable {
         popupMenu.show(btnMenu, x, y);
     }
 
+    /*
+     * @FXML
+     * private void mostrarPassword(ActionEvent event) {
+     * try {
+     * Cuenta.mostrarVentanaCambioContrasena();
+     * } catch (Exception ex) {
+     * System.getLogger(CuentaController.class.getName()).log(System.Logger.Level.
+     * ERROR, (String) null, ex);
+     * }
+     * }
+     * 
+     * @FXML
+     * private void mostrarProfile(ActionEvent event) {
+     * try {
+     * Cuenta.mostrarVentanaCambioDatos();
+     * } catch (Exception ex) {
+     * System.getLogger(CuentaController.class.getName()).log(System.Logger.Level.
+     * ERROR, (String) null, ex);
+     * }
+     * }
+     */
+
+    // En CuentaController, cuando se abren las ventanas secundarias
     @FXML
     private void mostrarPassword(ActionEvent event) {
         try {
-            Cuenta.mostrarVentanaCambioContrasena();
+            Stage stageActual = (Stage) btnMenu.getScene().getWindow();
+            VentanaManager.getInstance().abrirVentanaModal(
+                    VentanaManager.VENTANA_CAMBIO_PASSWORD,
+                    "/com/mycompany/gestorui/views/Cuenta/CambiarPassword.fxml",
+                    "Cambiar Contraseña",
+                    stageActual);
         } catch (Exception ex) {
             System.getLogger(CuentaController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -296,7 +325,12 @@ public class CuentaController implements Initializable {
     @FXML
     private void mostrarProfile(ActionEvent event) {
         try {
-            Cuenta.mostrarVentanaCambioDatos();
+            Stage stageActual = (Stage) btnMenu.getScene().getWindow();
+            VentanaManager.getInstance().abrirVentanaModal(
+                    VentanaManager.VENTANA_MODIFICAR_PERFIL,
+                    "/com/mycompany/gestorui/views/Cuenta/ModificarPerfil.fxml",
+                    "Modificar Perfil",
+                    stageActual);
         } catch (Exception ex) {
             System.getLogger(CuentaController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }

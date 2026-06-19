@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.mycompany.gestorui.controllers;
 
 import com.jfoenix.controls.JFXButton;
@@ -9,6 +5,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.mycompany.gestorui.components.MainWindow;
 import com.mycompany.gestorui.model.login.loginSevice.Verificacion;
+import com.mycompany.gestorui.model.utils.VentanaManager;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -52,17 +49,16 @@ public class LoginController implements Initializable {
     private JFXButton btnCancelar;
     
     @FXML
-    private ImageView toggleIcon;  // ← Referencia a la imagen dentro del Label    
+    private ImageView toggleIcon;
+    
     private boolean passwordVisible = false;
     
-    // Cargar las imágenes una sola vez
     private final Image EYE_OPEN = new Image(getClass().getResourceAsStream("/com/mycompany/gestorui/images/eye-open.png"));
     private final Image EYE_CLOSED = new Image(getClass().getResourceAsStream("/com/mycompany/gestorui/images/eye-closed.png"));
     
     @FXML
     private void togglePasswordVisibility(MouseEvent event) {
         if (passwordVisible) {
-            // Cambiar a modo oculto
             String currentPassword = visiblePasswordField.getText();
             passwordField.setText(currentPassword);
             passwordField.setVisible(true);
@@ -72,7 +68,6 @@ public class LoginController implements Initializable {
             toggleIcon.setImage(EYE_OPEN);  
             passwordVisible = false;
         } else {
-            // Cambiar a modo visible
             String currentPassword = passwordField.getText();
             visiblePasswordField.setText(currentPassword);
             visiblePasswordField.setVisible(true);
@@ -94,23 +89,21 @@ public class LoginController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initStyle(StageStyle.UNDECORATED);
             alert.setTitle("Error de inicio de sesión");
-            alert.setHeaderText(null); // Sin encabezado extra
+            alert.setHeaderText(null);
             alert.setContentText("Todos los campos son obligatorios.\nPor favor, completa tu usuario y contraseña.");
-            alert.showAndWait(); // Muestra la ventana y espera a que la cierren
+            alert.showAndWait();
             return;
             
-        }else if (Verificacion.verificarUsuario(username,password)) {
+        } else if (Verificacion.verificarUsuario(username, password)) {
             try {
-                
                 usuarioActual = username;
-                // 1. Cerrar ventana de login
                 Stage stageLogin = (Stage) usernameField.getScene().getWindow();
                 stageLogin.close();
                 
-                // 2. Cerrar la ventana Principal 
                 PrincipalController.cerrarVentanaPrincipal();
                 
-                // 3. Abrir MainWindow (ventana principal de la app)
+                // Cerrar cualquier ventana abierta antes de abrir MainWindow
+                VentanaManager.getInstance().cerrarTodas();
                 MainWindow.mostrarVentanaPrincipal();
                 
             } catch (Exception e) {
@@ -124,11 +117,9 @@ public class LoginController implements Initializable {
     
     @FXML
     private void handleCancelar(ActionEvent event) {
-        // Cerrar login y mostrar Principal nuevamente
         Stage stageLogin = (Stage) btnCancelar.getScene().getWindow();
         stageLogin.close();
         
-        // Mostrar Principal (que estaba oculta)
         Stage stagePrincipal = PrincipalController.getStagePrincipal();
         if (stagePrincipal != null) {
             stagePrincipal.show();
@@ -137,12 +128,9 @@ public class LoginController implements Initializable {
     
     @FXML
     private void handleMinimize(MouseEvent event){
-        // Obtener el Stage (ventana) desde el elemento que disparó el evento
         Stage stage = (Stage) ((Label) event.getSource()).getScene().getWindow();
-        // Minimizar la ventana
         stage.setIconified(true);
     }
-    
     
     @FXML
     private void handleClose(MouseEvent event) {
@@ -150,11 +138,8 @@ public class LoginController implements Initializable {
         stage.close();
     }
     
-    
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Sincronizar los textos entre ambos campos
         visiblePasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (passwordVisible) {
                 passwordField.setText(newVal);
@@ -167,19 +152,15 @@ public class LoginController implements Initializable {
             }
         });
         
-        // Ocultar mensaje de error cuando el usuario empieza a escribir en el campo de usuario
         usernameField.textProperty().addListener((obs, oldVal, newVal) -> {
             errorLabel.setVisible(false);
         });
         
-        // Ocultar mensaje de error cuando el usuario empieza a escribir en el campo de contraseña
         passwordField.textProperty().addListener((obs, oldVal, newVal) -> {
             errorLabel.setVisible(false);
         });
         
-        // Asegurar que el mensaje de error comienza oculto
         errorLabel.setVisible(false);
-        
         System.out.println("LoginController inicializado correctamente");
     }
     
@@ -190,7 +171,4 @@ public class LoginController implements Initializable {
     public static void setUsuarioActual(String usuarioActual) {
         LoginController.usuarioActual = usuarioActual;
     }
-    
-    
-    
 }

@@ -71,13 +71,13 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     private PopupControl popupMenu;
     private VBox menuContent;
     private TurnosRevisadosManager manager = TurnosRevisadosManager.getInstance();
-    
+
     private int totalHospitales = 0;
     private int totalDepartamentos = 0;
     private int totalUnidades = 0;
     private int totalMedicos = 0;
     private int totalPacientes = 0;
-    
+
     private LinkedList<Hospital> datosHospitales = new LinkedList<>();
     private boolean animacionGraficoIniciada = false;
 
@@ -106,7 +106,8 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     @Override
     public void onTurnoRevisado(String hospital, String departamento, String unidad, String medico) {
         Platform.runLater(() -> {
-            System.out.println("🔔 Notificación: Turno revisado - " + hospital + " | " + departamento + " | " + unidad + " | " + medico);
+            System.out.println("🔔 Notificación: Turno revisado - " + hospital + " | " + departamento + " | " + unidad
+                    + " | " + medico);
             try {
                 cargarAlertas();
             } catch (SQLException ex) {
@@ -168,6 +169,40 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         popupMenu.show(btnMenu, x, y);
     }
 
+    /*
+     * @FXML
+     * private void mostrarGestion(ActionEvent event) {
+     * try {
+     * Gestion.mostrarVentanaGestion();
+     * } catch (Exception ex) {
+     * System.getLogger(MainWindowController.class.getName()).log(System.Logger.
+     * Level.ERROR, (String) null, ex);
+     * }
+     * }
+     * 
+     * @FXML
+     * private void mostrarReportes(ActionEvent event) {
+     * try {
+     * Reporte.mostrarVentanaReportes();
+     * } catch (Exception ex) {
+     * System.getLogger(MainWindowController.class.getName()).log(System.Logger.
+     * Level.ERROR, (String) null, ex);
+     * }
+     * }
+     * 
+     * @FXML
+     * private void mostrarCuenta(ActionEvent event) {
+     * try {
+     * Cuenta.mostrarVentanaCuenta();
+     * } catch (Exception ex) {
+     * System.getLogger(MainWindowController.class.getName()).log(System.Logger.
+     * Level.ERROR, (String) null, ex);
+     * }
+     * }
+     */
+
+    // En el método mostrarGestion y mostrarReportes, ya no cambian porque usan los
+    // componentes
     @FXML
     private void mostrarGestion(ActionEvent event) {
         try {
@@ -208,13 +243,13 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
     private void cargarIndicadores() throws SQLException {
         HashMap<String, Integer> indicadores = new HashMap<>(MainWindow.cantIndicadores());
-        
+
         totalHospitales = indicadores.get("hospitales");
         totalDepartamentos = indicadores.get("departamentos");
         totalUnidades = indicadores.get("unidades");
         totalMedicos = indicadores.get("medicos");
         totalPacientes = indicadores.get("pacientes");
-        
+
         lblTotalHospitales.setText("0");
         lblTotalDepartamentos.setText("0");
         lblTotalUnidades.setText("0");
@@ -225,11 +260,11 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     private void cargarDatosGrafico() throws SQLException {
         HospitalService hs = new HospitalService();
         datosHospitales = new LinkedList<>(hs.hospitalesMayorCantidadPacientes());
-        
+
         chartTopHospitales.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Pacientes");
-        
+
         for (Hospital h : datosHospitales) {
             series.getData().add(new XYChart.Data<>(h.getNombreHos(), 0));
         }
@@ -240,62 +275,60 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         if (datosHospitales == null || datosHospitales.isEmpty()) {
             return;
         }
-        
+
         if (animacionGraficoIniciada) {
             return;
         }
         animacionGraficoIniciada = true;
-        
+
         XYChart.Series<String, Number> series = chartTopHospitales.getData().get(0);
         Duration duracionTotal = Duration.millis(1200);
         int pasos = 30;
-        
+
         Timeline timeline = new Timeline();
-        
+
         // Crear KeyFrames para cada paso
         for (int paso = 0; paso <= pasos; paso++) {
             double progreso = (double) paso / pasos;
             double valorEasing = 1 - Math.pow(1 - progreso, 1.8);
             Duration tiempo = duracionTotal.multiply(progreso);
-            
+
             // Usar una variable final para el lambda
             final double valorEasingFinal = valorEasing;
             final int pasoFinal = paso;
-            
+
             KeyFrame keyFrame = new KeyFrame(
-                tiempo,
+                    tiempo,
+                    event -> {
+                        // Actualizar cada barra con su valor correspondiente
+                        for (int j = 0; j < series.getData().size() && j < datosHospitales.size(); j++) {
+                            XYChart.Data<String, Number> data = series.getData().get(j);
+                            Hospital hospital = datosHospitales.get(j);
+                            int valorReal = hospital.getCantPac();
+                            int valorActual = (int) (valorReal * valorEasingFinal);
+
+                            if (pasoFinal == pasos) {
+                                valorActual = valorReal;
+                            }
+
+                            data.setYValue(valorActual);
+                        }
+                    });
+            timeline.getKeyFrames().add(keyFrame);
+        }
+
+        // Frame final para asegurar los valores exactos
+        KeyFrame frameFinal = new KeyFrame(
+                duracionTotal,
                 event -> {
-                    // Actualizar cada barra con su valor correspondiente
                     for (int j = 0; j < series.getData().size() && j < datosHospitales.size(); j++) {
                         XYChart.Data<String, Number> data = series.getData().get(j);
                         Hospital hospital = datosHospitales.get(j);
-                        int valorReal = hospital.getCantPac();
-                        int valorActual = (int) (valorReal * valorEasingFinal);
-                        
-                        if (pasoFinal == pasos) {
-                            valorActual = valorReal;
-                        }
-                        
-                        data.setYValue(valorActual);
+                        data.setYValue(hospital.getCantPac());
                     }
-                }
-            );
-            timeline.getKeyFrames().add(keyFrame);
-        }
-        
-        // Frame final para asegurar los valores exactos
-        KeyFrame frameFinal = new KeyFrame(
-            duracionTotal,
-            event -> {
-                for (int j = 0; j < series.getData().size() && j < datosHospitales.size(); j++) {
-                    XYChart.Data<String, Number> data = series.getData().get(j);
-                    Hospital hospital = datosHospitales.get(j);
-                    data.setYValue(hospital.getCantPac());
-                }
-            }
-        );
+                });
         timeline.getKeyFrames().add(frameFinal);
-        
+
         timeline.play();
     }
 
@@ -305,10 +338,9 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         animarNumero(lblTotalUnidades, totalUnidades, 600);
         animarNumero(lblTotalMedicos, totalMedicos, 900);
         animarNumero(lblTotalPacientes, totalPacientes, 1200);
-        
+
         Timeline delay = new Timeline(
-            new KeyFrame(Duration.millis(1500), e -> animarGrafico())
-        );
+                new KeyFrame(Duration.millis(1500), e -> animarGrafico()));
         delay.play();
     }
 
@@ -319,7 +351,7 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         }
 
         Timeline timeline = new Timeline();
-        
+
         Duration duracion;
         if (valorFinal < 10) {
             duracion = Duration.millis(500);
@@ -328,34 +360,32 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         } else {
             duracion = Duration.millis(1000);
         }
-        
+
         int pasos = Math.min(valorFinal, 50);
-        
+
         for (int paso = 0; paso <= pasos; paso++) {
             double progreso = (double) paso / pasos;
             double valorEasing = 1 - Math.pow(1 - progreso, 1.5);
             int valorEnPaso = (int) (valorFinal * valorEasing);
-            
+
             if (paso == pasos) {
                 valorEnPaso = valorFinal;
             }
-            
+
             final int valorMostrar = valorEnPaso;
             Duration tiempo = duracion.multiply(progreso);
-            
+
             KeyFrame keyFrame = new KeyFrame(
-                tiempo,
-                event -> label.setText(String.valueOf(valorMostrar))
-            );
+                    tiempo,
+                    event -> label.setText(String.valueOf(valorMostrar)));
             timeline.getKeyFrames().add(keyFrame);
         }
-        
+
         KeyFrame frameFinal = new KeyFrame(
-            duracion,
-            event -> label.setText(String.valueOf(valorFinal))
-        );
+                duracion,
+                event -> label.setText(String.valueOf(valorFinal)));
         timeline.getKeyFrames().add(frameFinal);
-        
+
         timeline.setDelay(Duration.millis(delayInicio));
         timeline.play();
     }
@@ -397,7 +427,8 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
     private void agregarAlerta(String unidad, String departamento, String hospital, String medico) {
         VBox alertaBox = new VBox(5);
-        alertaBox.setStyle("-fx-background-color: #fff3cd; -fx-background-radius: 5; -fx-border-color: #ffc107; -fx-border-radius: 5; -fx-border-width: 1;");
+        alertaBox.setStyle(
+                "-fx-background-color: #fff3cd; -fx-background-radius: 5; -fx-border-color: #ffc107; -fx-border-radius: 5; -fx-border-width: 1;");
         alertaBox.setPadding(new Insets(10));
 
         Label lblUnidad = new Label("• " + unidad + " (" + departamento + ")");
@@ -410,14 +441,16 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         lblMedico.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666;");
 
         Button btnRevisar = new Button("🔍 Revisar");
-        btnRevisar.setStyle("-fx-background-color: #2d7a2d; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;");
+        btnRevisar.setStyle(
+                "-fx-background-color: #2d7a2d; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;");
         btnRevisar.setOnAction(e -> handleRevisarUnidad(unidad, hospital, departamento, medico, alertaBox));
 
         alertaBox.getChildren().addAll(lblUnidad, lblHospital, lblMedico, btnRevisar);
         vboxAlertas.getChildren().add(alertaBox);
     }
 
-    private void handleRevisarUnidad(String unidad, String hospital, String departamento, String medico, VBox alertaBox) {
+    private void handleRevisarUnidad(String unidad, String hospital, String departamento, String medico,
+            VBox alertaBox) {
         try {
             Stage ventana = new Stage();
             ventana.initModality(Modality.APPLICATION_MODAL);
@@ -434,7 +467,8 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
             titulo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
             VBox infoBox = new VBox(8);
-            infoBox.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);");
+            infoBox.setStyle(
+                    "-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);");
 
             Label lblHospital = new Label("🏥 Hospital: " + hospital);
             Label lblDepartamento = new Label("📂 Departamento: " + departamento);
@@ -453,14 +487,13 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
             Button btnRevisar = new Button("✅ Marcar como Revisado");
             btnRevisar.setStyle(
-                "-fx-background-color: #27ae60; " +
-                "-fx-text-fill: white; " +
-                "-fx-font-size: 14px; " +
-                "-fx-font-weight: bold; " +
-                "-fx-padding: 10 20; " +
-                "-fx-background-radius: 5; " +
-                "-fx-cursor: hand;"
-            );
+                    "-fx-background-color: #27ae60; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-weight: bold; " +
+                            "-fx-padding: 10 20; " +
+                            "-fx-background-radius: 5; " +
+                            "-fx-cursor: hand;");
             btnRevisar.setMaxWidth(Double.MAX_VALUE);
 
             btnRevisar.setOnAction(e -> {
@@ -470,14 +503,13 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
             Button btnCerrar = new Button("✖ Cerrar");
             btnCerrar.setStyle(
-                "-fx-background-color: #e74c3c; " +
-                "-fx-text-fill: white; " +
-                "-fx-font-size: 14px; " +
-                "-fx-font-weight: bold; " +
-                "-fx-padding: 10 20; " +
-                "-fx-background-radius: 5; " +
-                "-fx-cursor: hand;"
-            );
+                    "-fx-background-color: #e74c3c; " +
+                            "-fx-text-fill: white; " +
+                            "-fx-font-size: 14px; " +
+                            "-fx-font-weight: bold; " +
+                            "-fx-padding: 10 20; " +
+                            "-fx-background-radius: 5; " +
+                            "-fx-cursor: hand;");
             btnCerrar.setMaxWidth(Double.MAX_VALUE);
             btnCerrar.setOnAction(e -> ventana.close());
 

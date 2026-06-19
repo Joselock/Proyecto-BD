@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.gestorui.controllers.Gestion;
 
 import java.net.URL;
@@ -20,11 +16,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import com.mycompany.gestorui.model.utils.VentanaManager;
 
-/**
- *
- * @author ignacio
- */
 public class GestionController implements Initializable {
     
     @FXML
@@ -43,6 +36,7 @@ public class GestionController implements Initializable {
     private Button btnBack;
 
     private Map<String, Node> views = new HashMap<>();
+    private VentanaManager ventanaManager = VentanaManager.getInstance();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -142,9 +136,7 @@ public class GestionController implements Initializable {
 
     @FXML
     private void handleMinimize(MouseEvent event) {
-        // Obtener el Stage (ventana) desde el elemento que disparó el evento
         Stage stage = (Stage) ((Label) event.getSource()).getScene().getWindow();
-        // Minimizar la ventana
         stage.setIconified(true);
     }
 
@@ -153,5 +145,4 @@ public class GestionController implements Initializable {
         Stage stage = (Stage) cerrar.getScene().getWindow();
         stage.close();
     }
-
 }

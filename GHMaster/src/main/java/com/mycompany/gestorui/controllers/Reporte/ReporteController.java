@@ -17,6 +17,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import com.mycompany.gestorui.model.utils.VentanaManager;
 
 public class ReporteController implements Initializable {
     
@@ -42,6 +43,7 @@ public class ReporteController implements Initializable {
     private Label lblTituloReporte;
 
     private Node currentView;
+    private VentanaManager ventanaManager = VentanaManager.getInstance();
     
     private static final Map<String, String> TITULOS_REPORTES = new HashMap<>();
     private static final Map<String, String> RUTAS_REPORTES = new HashMap<>();
@@ -81,11 +83,9 @@ public class ReporteController implements Initializable {
         }
         
         try {
-            // Intentar cargar con getResource (ruta absoluta con /)
             URL resource = getClass().getResource(fxmlPath);
             System.out.println("Intentando cargar: " + fxmlPath + " -> " + resource);
             
-            // Si no funciona, intentar con ClassLoader (sin / inicial)
             if (resource == null) {
                 String pathSinBarra = fxmlPath.startsWith("/") ? fxmlPath.substring(1) : fxmlPath;
                 resource = getClass().getClassLoader().getResource(pathSinBarra);
@@ -99,7 +99,6 @@ public class ReporteController implements Initializable {
             
             Parent view = FXMLLoader.load(resource);
             
-            // Reemplazar vista actual (excepto menú)
             if (currentView != null && currentView != menuPane) {
                 contentPane.getChildren().remove(currentView);
             }
@@ -107,7 +106,6 @@ public class ReporteController implements Initializable {
             contentPane.getChildren().add(view);
             currentView = view;
             
-            // Hacer que la vista ocupe todo el espacio disponible en el StackPane
             StackPane.setAlignment(view, javafx.geometry.Pos.CENTER);
             ((Region) view).setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
             
@@ -120,8 +118,6 @@ public class ReporteController implements Initializable {
             showErrorView("Error al cargar: " + fxmlPath + "\n" + ex.getMessage());
         }
     }
-    
-    
     
     private void showErrorView(String mensaje) {
         Label errorLabel = new Label("❌ " + mensaje);
@@ -182,6 +178,8 @@ public class ReporteController implements Initializable {
     private void handleVolverMenu(ActionEvent event) {
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
+        // Cerrar todas las ventanas abiertas al salir
+        ventanaManager.cerrarTodas();
     }
 
     @FXML  
@@ -213,6 +211,6 @@ public class ReporteController implements Initializable {
     private void handleClose(MouseEvent event) {
         Stage stage = (Stage) cerrar.getScene().getWindow();
         stage.close();
+        ventanaManager.cerrarTodas();
     }
 }
-
