@@ -78,10 +78,10 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     private Button btnMenu;
 
     @FXML
-    private ImageView imgAvatar; // Añadir este ImageView en el FXML
+    private ImageView imgAvatar;
 
     @FXML
-    private HBox hboxUsuario; // Contenedor para usuario y avatar
+    private HBox hboxUsuario;
 
     private PopupControl popupMenu;
     private VBox menuContent;
@@ -103,8 +103,13 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         manager.agregarListener(this);
         datosManager.agregarListener(this);
 
-        // Registrar listener para cambios de perfil
-        PerfilListener.agregarListener(this::actualizarDatosUsuario);
+        // Registrar listener para cambios de perfil (implementado como lambda)
+        PerfilListener.agregarListener(() -> {
+            Platform.runLater(() -> {
+                System.out.println("🔄 Perfil actualizado - Recargando avatar...");
+                actualizarDatosUsuario();
+            });
+        });
 
         // Configurar avatar
         configurarAvatar();
@@ -126,7 +131,7 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
             imgAvatar.setFitWidth(35);
             imgAvatar.setFitHeight(35);
             imgAvatar.setPreserveRatio(true);
-            // Hacerlo circular (opcional)
+            // Hacerlo circular
             imgAvatar.setClip(new javafx.scene.shape.Circle(17.5, 17.5, 17.5));
         }
     }
@@ -138,12 +143,12 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         Platform.runLater(() -> {
             String usuario = LoginController.getUsuarioActual();
             if (usuario != null && !usuario.isEmpty()) {
-                lblUsuario.setText("👤 " + usuario);
+                lblUsuario.setText(usuario);
             } else {
-                lblUsuario.setText("👤 Usuario");
+                lblUsuario.setText("Usuario");
             }
 
-            // Cargar avatar
+            // Recargar avatar
             cargarAvatar();
         });
     }
@@ -152,8 +157,7 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
      * Carga el avatar del usuario desde el sistema de archivos
      */
     private void cargarAvatar() {
-        if (imgAvatar == null)
-            return;
+        if (imgAvatar == null) return;
 
         String usuario = LoginController.getUsuarioActual();
         if (usuario == null || usuario.isEmpty()) {
@@ -161,20 +165,34 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
             return;
         }
 
+        // Ruta donde se guardan los avatares
         String avatarPath = System.getProperty("user.home") + "/.gestorui/avatars/avatar_" + usuario + ".png";
         File avatarFile = new File(avatarPath);
 
-        if (avatarFile.exists()) {
-            try {
+        try {
+            if (avatarFile.exists()) {
                 Image image = new Image(avatarFile.toURI().toString(), 35, 35, false, true);
-                imgAvatar.setImage(image);
-            } catch (Exception e) {
-                System.err.println("Error al cargar avatar en MainWindow: " + e.getMessage());
-                imgAvatar.setImage(null);
+                if (!image.isError()) {
+                    imgAvatar.setImage(image);
+                    System.out.println("✅ Avatar cargado: " + avatarPath);
+                    return;
+                }
             }
-        } else {
+            // Si no existe o hay error, usar imagen por defecto (null)
+            imgAvatar.setImage(null);
+            System.out.println("ℹ️ No hay avatar para: " + usuario);
+
+        } catch (Exception e) {
+            System.err.println("❌ Error al cargar avatar: " + e.getMessage());
             imgAvatar.setImage(null);
         }
+    }
+
+    /**
+     * Método público para forzar la recarga del avatar desde fuera
+     */
+    public void recargarAvatar() {
+        actualizarDatosUsuario();
     }
 
     @Override
@@ -192,11 +210,9 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
     @Override
     public void onDatosCambiados() {
-        // Este método se ejecuta cuando se agrega, modifica o elimina un dato
         Platform.runLater(() -> {
             System.out.println("🔄 Datos cambiados - Recargando indicadores...");
             try {
-                // Recargar indicadores
                 cargarIndicadores();
                 cargarDatosGrafico();
                 cargarAlertas();
@@ -263,13 +279,7 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     @FXML
     private void mostrarGestion(ActionEvent event) {
         try {
-            // Cuando se abra la ventana de gestión, registrar un listener para cuando se
-            // cierre
-            Stage stage = new Stage();
             Gestion.mostrarVentanaGestion();
-
-            // Notificar cambio después de cerrar la ventana de gestión
-            // (la notificación se hará desde GestionController al guardar/eliminar)
         } catch (Exception ex) {
             System.getLogger(MainWindowController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -313,7 +323,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         totalMedicos = indicadores.get("medicos");
         totalPacientes = indicadores.get("pacientes");
 
-        // Actualizar labels directamente
         lblTotalHospitales.setText(String.valueOf(totalHospitales));
         lblTotalDepartamentos.setText(String.valueOf(totalDepartamentos));
         lblTotalUnidades.setText(String.valueOf(totalUnidades));
@@ -334,7 +343,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         }
         chartTopHospitales.getData().add(series);
 
-        // Reiniciar animación del gráfico
         animacionGraficoIniciada = false;
     }
 
@@ -408,10 +416,8 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     }
 
     private void reiniciarAnimaciones() {
-        // Reiniciar la animación del gráfico
         animacionGraficoIniciada = false;
 
-        // Volver a animar los números
         lblTotalHospitales.setText("0");
         lblTotalDepartamentos.setText("0");
         lblTotalUnidades.setText("0");
@@ -537,7 +543,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     private void handleRevisarUnidad(String unidad, String hospital, String departamento, String medico,
             VBox alertaBox) {
         try {
-            // Buscar los datos adicionales del turno
             DatosTurno datos = obtenerDatosTurno(hospital, departamento, unidad, medico);
 
             Stage ventana = new Stage();
@@ -591,7 +596,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
                             "-fx-cursor: hand;");
             btnRevisar.setMaxWidth(Double.MAX_VALUE);
 
-            // Si ya está revisado, deshabilitar
             if (datos.estado.contains("Revisado") || datos.estado.contains("Extioso") || datos.estado.contains("OK")) {
                 btnRevisar.setText("✅ Ya revisado");
                 btnRevisar.setStyle(
@@ -637,9 +641,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         }
     }
 
-    /**
-     * Obtiene los datos del turno desde la base de datos
-     */
     private DatosTurno obtenerDatosTurno(String hospital, String departamento, String unidad, String medico) {
         DatosTurno datos = new DatosTurno();
 
@@ -663,7 +664,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
                             if (!m.getNombreMed().equals(medico))
                                 continue;
 
-                            // Encontrar el informe correspondiente
                             int size = Math.min(u.getInformes().size(), u.getMedicos().size());
                             for (int i = 0; i < size; i++) {
                                 Informe informe = u.getInformes().get(i);
@@ -682,7 +682,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
                 }
             }
 
-            // Si no se encontraron datos
             datos.totalPacientes = "0";
             datos.pacAtendidos = "0";
             datos.porcentaje = "0%";
@@ -695,7 +694,6 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         return datos;
     }
 
-    // Clase interna para almacenar los datos del turno
     private static class DatosTurno {
         String totalPacientes = "0";
         String pacAtendidos = "0";
