@@ -14,7 +14,7 @@
     <children>
         
         <!-- Botón para mostrar/ocultar el panel -->
-        <Button fx:id="btnTogglePanel" layoutX="847.0" layoutY="91.0" prefWidth="120.0" styleClass="toggle-panel-btn" text="Ocultar Panel" />
+        <Button fx:id="btnTogglePanel" layoutX="913.0" layoutY="91.0" prefHeight="24.0" prefWidth="54.0" styleClass="toggle-panel-btn" text="Panel" />
         
         <TableView fx:id="tablaConsultas" layoutX="33.0" layoutY="91.0" prefHeight="580.0" prefWidth="613.0" stylesheets="@style/gestion.css">
             <columns>

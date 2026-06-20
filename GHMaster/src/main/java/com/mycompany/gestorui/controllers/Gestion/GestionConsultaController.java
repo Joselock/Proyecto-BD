@@ -188,7 +188,7 @@ public class GestionConsultaController implements Initializable {
             tablaConsultas.setPrefWidth(880);
         });
         timeline.play();
-        btnTogglePanel.setText("Mostrar Panel");
+        //btnTogglePanel.setText("Mostrar Panel");
         panelVisible = false;
     }
 
@@ -202,7 +202,7 @@ public class GestionConsultaController implements Initializable {
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaConsultas.setPrefWidth(562);
-        btnTogglePanel.setText("Ocultar Panel");
+        //btnTogglePanel.setText("Ocultar Panel");
         panelVisible = true;
     }
 

@@ -67,8 +67,8 @@ public class VentanaManager {
             Stage stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(padre);
-            stage.initStyle(StageStyle.UNDECORATED);
-            //stage.initStyle(StageStyle.DECORATED);
+            //stage.initStyle(StageStyle.UNDECORATED);
+            stage.initStyle(StageStyle.DECORATED);
             stage.setTitle(titulo);
             
             

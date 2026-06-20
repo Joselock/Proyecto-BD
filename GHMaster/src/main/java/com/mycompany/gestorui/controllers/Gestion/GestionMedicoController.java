@@ -220,7 +220,7 @@ public class GestionMedicoController implements Initializable {
             tablaMedicos.setPrefWidth(880);
         });
         timeline.play();
-        btnTogglePanel.setText("Mostrar Panel");
+        //btnTogglePanel.setText("Mostrar Panel");
         panelVisible = false;
     }
 
@@ -234,7 +234,7 @@ public class GestionMedicoController implements Initializable {
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaMedicos.setPrefWidth(562);
-        btnTogglePanel.setText("Ocultar Panel");
+        //btnTogglePanel.setText("Ocultar Panel");
         panelVisible = true;
     }
 

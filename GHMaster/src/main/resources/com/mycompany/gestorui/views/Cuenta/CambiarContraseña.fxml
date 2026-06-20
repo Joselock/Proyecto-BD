@@ -8,7 +8,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="413.0" styleClass="change-panel" stylesheets="@style/cuenta.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Cuenta.CambiarContrasenaController">
    <children>
-      <Label alignment="CENTER" layoutX="77.0" layoutY="34.0" prefHeight="77.0" prefWidth="259.0" text="Cambio de Contraseña">
+      <Label alignment="CENTER" layoutX="77.0" layoutY="34.0" prefHeight="77.0" prefWidth="259.0" text="Cambiar de Contraseña" textFill="#2d7a2d">
          <font>
             <Font size="20.0" />
          </font>

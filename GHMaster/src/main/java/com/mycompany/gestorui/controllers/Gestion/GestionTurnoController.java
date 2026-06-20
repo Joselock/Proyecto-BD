@@ -280,7 +280,7 @@ public class GestionTurnoController implements Initializable {
             tablaTurnos.setPrefWidth(880);
         });
         timeline.play();
-        btnTogglePanel.setText("Mostrar Panel");
+        //btnTogglePanel.setText("Mostrar Panel");
         panelVisible = false;
     }
 
@@ -294,7 +294,7 @@ public class GestionTurnoController implements Initializable {
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaTurnos.setPrefWidth(562);
-        btnTogglePanel.setText("Ocultar Panel");
+        //btnTogglePanel.setText("Ocultar Panel");
         panelVisible = true;
     }
 

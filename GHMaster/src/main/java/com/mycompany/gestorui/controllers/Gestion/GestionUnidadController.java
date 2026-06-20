@@ -95,11 +95,10 @@ public class GestionUnidadController implements Initializable {
         colSeleccion.setPrefWidth(60);
         colSeleccion.setText("");
 
-        // CORRECCIÓN: Usar el nombre correcto de la propiedad en la entidad
         colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigoUni"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreUni"));
         colUbicacion.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
-        colDepartamento.setCellValueFactory(new PropertyValueFactory<>("codigoDep")); // Cambiado de codDep a codigoDep
+        colDepartamento.setCellValueFactory(new PropertyValueFactory<>("codigoDep"));
 
         tablaUnidades.setItems(items);
 
@@ -111,7 +110,7 @@ public class GestionUnidadController implements Initializable {
                     txtNombre.setText(u.getNombreUni());
                     txtUbicacion.setText(u.getUbicacion());
 
-                    // CORRECCIÓN: Usar codigoDep en lugar de codDep
+                    
                     if (u.getCodigoDep() != null && !u.getCodigoDep().isEmpty()) {
                         String display = departamentoMap.get(u.getCodigoDep());
                         cmbDepartamento.setValue(display != null ? display : u.getCodigoDep());
@@ -229,7 +228,7 @@ public class GestionUnidadController implements Initializable {
             tablaUnidades.setPrefWidth(880);
         });
         timeline.play();
-        btnTogglePanel.setText("Mostrar Panel");
+        //btnTogglePanel.setText("Mostrar Panel");
         panelVisible = false;
     }
 
@@ -243,7 +242,7 @@ public class GestionUnidadController implements Initializable {
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaUnidades.setPrefWidth(562);
-        btnTogglePanel.setText("Ocultar Panel");
+        //btnTogglePanel.setText("Ocultar Panel");
         panelVisible = true;
     }
 

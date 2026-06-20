@@ -6,10 +6,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="552.0" prefWidth="667.0" styleClass="change-panel" stylesheets="@style/cuenta.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Cuenta.CambiarDatosController">
    <children>
-      <Label alignment="CENTER" layoutX="222.0" layoutY="50.0" prefHeight="61.0" prefWidth="224.0" text="Modificar Datos">
+      <Label alignment="CENTER" layoutX="222.0" layoutY="50.0" prefHeight="61.0" prefWidth="224.0" text="Modificar Datos" textFill="#2d7a2d">
          <font>
             <Font size="20.0" />
          </font>

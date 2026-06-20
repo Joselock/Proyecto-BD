@@ -217,7 +217,7 @@ public class GestionDepartamentoController implements Initializable {
             tablaDepartamentos.setPrefWidth(880);
         });
         timeline.play();
-        btnTogglePanel.setText("Mostrar Panel");
+        //btnTogglePanel.setText("Mostrar Panel");
         panelVisible = false;
     }
 
@@ -231,7 +231,7 @@ public class GestionDepartamentoController implements Initializable {
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaDepartamentos.setPrefWidth(562);
-        btnTogglePanel.setText("Ocultar Panel");
+        //btnTogglePanel.setText("Ocultar Panel");
         panelVisible = true;
     }
 

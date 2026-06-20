@@ -13,7 +13,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Gestion.GestionDepartamentoController">
     <children>
         
-        <Button fx:id="btnTogglePanel" layoutX="851.0" layoutY="91.0" prefWidth="120.0" styleClass="toggle-panel-btn" text="Ocultar Panel" />
+        <Button fx:id="btnTogglePanel" layoutX="917.0" layoutY="91.0" prefHeight="24.0" prefWidth="54.0" styleClass="toggle-panel-btn" text="Panel" />
         
         <TableView fx:id="tablaDepartamentos" layoutX="33.0" layoutY="91.0" prefHeight="580.0" prefWidth="613.0" stylesheets="@style/gestion.css">
             <columns>
