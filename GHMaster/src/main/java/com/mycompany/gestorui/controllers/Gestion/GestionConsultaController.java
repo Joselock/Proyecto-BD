@@ -1,6 +1,7 @@
 package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
 import com.mycompany.gestorui.model.entidades.Consulta;
 import com.mycompany.gestorui.model.services.crud.crudConsulta;
 
@@ -26,16 +27,26 @@ import java.util.Set;
 
 public class GestionConsultaController implements Initializable {
 
-    @FXML private TableView<Consulta> tablaConsultas;
-    @FXML private TableColumn<Consulta, Boolean> colSeleccion;
-    @FXML private TableColumn<Consulta, Integer> colNumTurno;
-    @FXML private TableColumn<Consulta, String> colNumHistoria, colCausa;
-    @FXML private TableColumn<Consulta, Boolean> colAtendido;
-    @FXML private JFXTextField txtNumTurno, txtNumHistoria, txtCausa;
-    @FXML private CheckBox chkAtendido;
-    @FXML private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
-    @FXML private AnchorPane panelCrud;
-    @FXML private Button btnTogglePanel;
+    @FXML
+    private TableView<Consulta> tablaConsultas;
+    @FXML
+    private TableColumn<Consulta, Boolean> colSeleccion;
+    @FXML
+    private TableColumn<Consulta, Integer> colNumTurno;
+    @FXML
+    private TableColumn<Consulta, String> colNumHistoria, colCausa;
+    @FXML
+    private TableColumn<Consulta, Boolean> colAtendido;
+    @FXML
+    private JFXTextField txtNumTurno, txtNumHistoria, txtCausa;
+    @FXML
+    private CheckBox chkAtendido;
+    @FXML
+    private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
+    @FXML
+    private AnchorPane panelCrud;
+    @FXML
+    private Button btnTogglePanel;
 
     private ObservableList<Consulta> items = FXCollections.observableArrayList();
     private Set<Consulta> seleccionados = new HashSet<>();
@@ -57,11 +68,14 @@ public class GestionConsultaController implements Initializable {
                 cb.setOnAction(e -> {
                     Consulta c = getTableRow().getItem();
                     if (c != null) {
-                        if (cb.isSelected()) seleccionados.add(c);
-                        else seleccionados.remove(c);
+                        if (cb.isSelected())
+                            seleccionados.add(c);
+                        else
+                            seleccionados.remove(c);
                     }
                 });
             }
+
             @Override
             public void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
@@ -82,9 +96,9 @@ public class GestionConsultaController implements Initializable {
         colNumHistoria.setCellValueFactory(new PropertyValueFactory<>("numH"));
         colAtendido.setCellValueFactory(new PropertyValueFactory<>("atend"));
         colCausa.setCellValueFactory(new PropertyValueFactory<>("causa"));
-        
+
         tablaConsultas.setItems(items);
-        
+
         tablaConsultas.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2) {
                 Consulta c = tablaConsultas.getSelectionModel().getSelectedItem();
@@ -93,7 +107,8 @@ public class GestionConsultaController implements Initializable {
                     txtNumHistoria.setText(c.getNumH());
                     chkAtendido.setSelected(c.isAtend());
                     txtCausa.setText(c.getCausa());
-                    if (!panelVisible) mostrarPanel();
+                    if (!panelVisible)
+                        mostrarPanel();
                 }
             }
         });
@@ -103,8 +118,10 @@ public class GestionConsultaController implements Initializable {
         CheckBox cbTodos = new CheckBox("Seleccionar todos");
         cbTodos.setStyle("-fx-font-size: 11px;");
         cbTodos.selectedProperty().addListener((obs, old, val) -> {
-            if (val) seleccionados.addAll(items);
-            else seleccionados.clear();
+            if (val)
+                seleccionados.addAll(items);
+            else
+                seleccionados.clear();
             tablaConsultas.refresh();
         });
         HBox header = new HBox(cbTodos);
@@ -114,17 +131,17 @@ public class GestionConsultaController implements Initializable {
     }
 
     private void cargarDatos() {
-         tablaConsultas.setPlaceholder(new ProgressIndicator());
-        
+        tablaConsultas.setPlaceholder(new ProgressIndicator());
+
         new Thread(() -> {
             try {
                 List<Consulta> lista = crudConsulta.obtenerConsultas();
-                
+
                 Platform.runLater(() -> {
                     items.clear();
                     items.addAll(lista);
                     tablaConsultas.setPlaceholder(new Label("No hay consultas"));
-                    
+
                     if (lista.isEmpty()) {
                         mostrarAlerta("No se encontraron consultas", Alert.AlertType.INFORMATION);
                     }
@@ -153,16 +170,17 @@ public class GestionConsultaController implements Initializable {
     }
 
     private void togglePanel() {
-        if (panelVisible) ocultarPanel();
-        else mostrarPanel();
+        if (panelVisible)
+            ocultarPanel();
+        else
+            mostrarPanel();
     }
 
     private void ocultarPanel() {
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 305),
-            new KeyValue(panelCrud.opacityProperty(), 0)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 305),
+                new KeyValue(panelCrud.opacityProperty(), 0));
         timeline.getKeyFrames().add(keyFrame);
         timeline.setOnFinished(e -> {
             panelCrud.setVisible(false);
@@ -179,9 +197,8 @@ public class GestionConsultaController implements Initializable {
         panelCrud.setManaged(true);
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 0),
-            new KeyValue(panelCrud.opacityProperty(), 1)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 0),
+                new KeyValue(panelCrud.opacityProperty(), 1));
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaConsultas.setPrefWidth(562);
@@ -197,35 +214,38 @@ public class GestionConsultaController implements Initializable {
                 return;
             }
             int numTurno = Integer.parseInt(numTurnoStr);
-            
+
             String numHistoria = txtNumHistoria.getText().trim();
             if (numHistoria.isEmpty()) {
                 mostrarAlerta("Número de historia clínica es obligatorio");
                 return;
             }
-            
+
             boolean atendido = chkAtendido.isSelected();
             String causa = atendido ? "" : txtCausa.getText().trim();
-            
+
             // Verificar si ya existe
             boolean existe = items.stream().anyMatch(c -> c.getNumeroT() == numTurno);
             if (existe) {
                 mostrarAlerta("Ya existe una consulta con ese número de turno");
                 return;
             }
-            
+
             // Insertar en BD
             Map<String, Object> resultado = crudConsulta.insertarConsulta(numTurno, numHistoria, atendido, causa);
-            
+
             if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
                 Consulta c = new Consulta(numHistoria, numTurno, atendido, causa, null);
                 items.add(c);
                 limpiarCampos();
                 mostrarAlerta("Consulta agregada correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
             } else {
                 String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
                 mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
             }
+
         } catch (NumberFormatException e) {
             mostrarAlerta("El número de turno debe ser un valor numérico");
         }
@@ -237,16 +257,16 @@ public class GestionConsultaController implements Initializable {
             mostrarAlerta("Seleccione una consulta de la tabla");
             return;
         }
-        
+
         try {
             int nuevoNumTurno = Integer.parseInt(txtNumTurno.getText().trim());
             String nuevoNumHistoria = txtNumHistoria.getText().trim();
-            
+
             if (nuevoNumHistoria.isEmpty()) {
                 mostrarAlerta("Número de historia clínica es obligatorio");
                 return;
             }
-            
+
             // Verificar si el nuevo número de turno ya existe
             if (nuevoNumTurno != c.getNumeroT()) {
                 boolean existe = items.stream().anyMatch(cons -> cons.getNumeroT() == nuevoNumTurno);
@@ -255,16 +275,17 @@ public class GestionConsultaController implements Initializable {
                     return;
                 }
             }
-            
+
             boolean atendido = chkAtendido.isSelected();
             String causa = atendido ? "" : txtCausa.getText().trim();
-            
+
             // Guardar valores originales
             int numOriginal = c.getNumeroT();
-            
+
             // Actualizar en BD
-            Map<String, Object> resultado = crudConsulta.modificarConsulta(numOriginal, nuevoNumTurno, nuevoNumHistoria, atendido, causa);
-            
+            Map<String, Object> resultado = crudConsulta.modificarConsulta(numOriginal, nuevoNumTurno, nuevoNumHistoria,
+                    atendido, causa);
+
             if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
                 c.setNumeroT(nuevoNumTurno);
                 c.setNumH(nuevoNumHistoria);
@@ -287,20 +308,20 @@ public class GestionConsultaController implements Initializable {
             mostrarAlerta("Seleccione al menos una consulta");
             return;
         }
-        
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar eliminación");
         alert.setHeaderText(null);
         alert.setContentText("¿Eliminar " + seleccionados.size() + " consulta(s)?");
-        
+
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             List<Consulta> aEliminar = List.copyOf(seleccionados);
             boolean todosEliminados = true;
             StringBuilder errores = new StringBuilder();
-            
+
             for (Consulta c : aEliminar) {
                 Map<String, Object> resultado = crudConsulta.eliminarConsulta(c.getNumeroT(), c.getNumH());
-                
+
                 if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
                     items.remove(c);
                     seleccionados.remove(c);
@@ -310,13 +331,17 @@ public class GestionConsultaController implements Initializable {
                     errores.append("• Turno ").append(c.getNumeroT()).append(": ").append(mensaje).append("\n");
                 }
             }
-            
+
             if (todosEliminados) {
                 mostrarAlerta("Consulta(s) eliminada(s) correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
+
             } else {
                 mostrarAlerta("Algunas consultas no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
                 cargarDatos(); // Recargar para sincronizar
             }
+
         }
     }
 
@@ -331,7 +356,7 @@ public class GestionConsultaController implements Initializable {
     private void mostrarAlerta(String msg) {
         mostrarAlerta(msg, Alert.AlertType.WARNING);
     }
-    
+
     private void mostrarAlerta(String msg, Alert.AlertType tipo) {
         Alert a = new Alert(tipo);
         a.setHeaderText(null);

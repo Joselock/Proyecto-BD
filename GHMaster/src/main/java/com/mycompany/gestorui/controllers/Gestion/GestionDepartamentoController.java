@@ -1,6 +1,7 @@
 package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
 import com.mycompany.gestorui.model.entidades.Departamento;
 import com.mycompany.gestorui.model.entidades.Hospital;
 import com.mycompany.gestorui.model.services.crud.crudDepartamento;
@@ -8,7 +9,6 @@ import com.mycompany.gestorui.model.services.crud.crudHospital;
 
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.scene.control.ComboBox;
 
 import java.util.HashMap;
 import javafx.collections.FXCollections;
@@ -107,7 +107,9 @@ public class GestionDepartamentoController implements Initializable {
                 if (d != null) {
                     txtCodigo.setText(d.getCodigoDep());
                     txtNombre.setText(d.getNombreDep());
-                    cmbHospital.setValue(d.getCodigoHos() != null ? hospitalMap.getOrDefault(d.getCodigoHos(), d.getCodigoHos()) : null);
+                    cmbHospital.setValue(
+                            d.getCodigoHos() != null ? hospitalMap.getOrDefault(d.getCodigoHos(), d.getCodigoHos())
+                                    : null);
                     if (!panelVisible)
                         mostrarPanel();
                 }
@@ -168,7 +170,8 @@ public class GestionDepartamentoController implements Initializable {
                     cmbHospital.setItems(hospitalItems);
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> mostrarAlerta("Error al cargar hospitales: " + e.getMessage(), Alert.AlertType.ERROR));
+                Platform.runLater(
+                        () -> mostrarAlerta("Error al cargar hospitales: " + e.getMessage(), Alert.AlertType.ERROR));
                 e.printStackTrace();
             }
         }).start();
@@ -255,10 +258,13 @@ public class GestionDepartamentoController implements Initializable {
             items.add(d);
             limpiarCampos();
             mostrarAlerta("Departamento agregado correctamente", Alert.AlertType.INFORMATION);
+            // Notificar cambio
+            DatosCambiadosManager.getInstance().notificarCambios();
         } else {
             String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
             mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
         }
+
     }
 
     private void modificar() {
@@ -267,15 +273,15 @@ public class GestionDepartamentoController implements Initializable {
             mostrarAlerta("Seleccione un departamento de la tabla");
             return;
         }
-        
+
         String nuevoCodigo = txtCodigo.getText().trim();
         String nuevoNombre = txtNombre.getText().trim();
-        
+
         if (nuevoCodigo.isEmpty() || nuevoNombre.isEmpty()) {
             mostrarAlerta("Complete código y nombre");
             return;
         }
-        
+
         if (!nuevoCodigo.equals(d.getCodigoDep())) {
             boolean existe = items.stream().anyMatch(dep -> dep.getCodigoDep().equals(nuevoCodigo));
             if (existe) {
@@ -283,14 +289,15 @@ public class GestionDepartamentoController implements Initializable {
                 return;
             }
         }
-        
+
         String codOriginal = d.getCodigoDep();
         String nomOriginal = d.getNombreDep();
-        
+
         String codHos = obtenerCodigoHospitalSeleccionado();
-        
-        Map<String, Object> resultado = crudDepartamento.modificarDepartamento(codOriginal, nuevoCodigo, nuevoNombre, codHos);
-        
+
+        Map<String, Object> resultado = crudDepartamento.modificarDepartamento(codOriginal, nuevoCodigo, nuevoNombre,
+                codHos);
+
         if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
             d.setCodigoDep(nuevoCodigo);
             d.setNombreDep(nuevoNombre);
@@ -312,20 +319,20 @@ public class GestionDepartamentoController implements Initializable {
             mostrarAlerta("Seleccione al menos un departamento");
             return;
         }
-        
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar eliminación");
         alert.setHeaderText(null);
         alert.setContentText("¿Eliminar " + seleccionados.size() + " departamento(s)?");
-        
+
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             List<Departamento> aEliminar = List.copyOf(seleccionados);
             boolean todosEliminados = true;
             StringBuilder errores = new StringBuilder();
-            
+
             for (Departamento d : aEliminar) {
                 String resultado = crudDepartamento.eliminarDepartamento(d.getCodigoDep());
-                
+
                 if (resultado != null && !resultado.toLowerCase().contains("error")) {
                     items.remove(d);
                     seleccionados.remove(d);
@@ -334,13 +341,17 @@ public class GestionDepartamentoController implements Initializable {
                     errores.append("• ").append(d.getCodigoDep()).append(": ").append(resultado).append("\n");
                 }
             }
-            
+
             if (todosEliminados) {
                 mostrarAlerta("Departamento(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
             } else {
-                mostrarAlerta("Algunos departamentos no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
+                mostrarAlerta("Algunos departamentos no se eliminaron:\n" + errores.toString(),
+                        Alert.AlertType.WARNING);
                 cargarDatos();
             }
+
         }
     }
 

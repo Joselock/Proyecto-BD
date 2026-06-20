@@ -3,6 +3,7 @@ package com.mycompany.gestorui.controllers.Reporte.Manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mycompany.gestorui.controllers.Reporte.Listener.TurnosRevisadosListener;
 import com.mycompany.gestorui.model.services.reportes.TurnosRevisadosService;
 
 public class TurnosRevisadosManager {

@@ -11,33 +11,38 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="695.0" prefWidth="1200.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.MainWindowController">
+<AnchorPane prefHeight="695.0" prefWidth="1200.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.MainWindow.MainWindowController">
    
-       <children>
+   <children>
         <!-- HEADER (fijo arriba) -->
         <HBox alignment="CENTER_LEFT" prefHeight="70.0" prefWidth="1200.0" spacing="20.0" style="-fx-background-color: #2d7a2d;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <padding>
                 <Insets left="30.0" right="30.0" />
             </padding>
          
+            <!-- Título a la izquierda -->
             <Label text="Dashboard" textFill="WHITE">
                 <font>
                     <Font name="System Bold" size="24.0" />
                 </font>
             </Label>
-         
-            <HBox HBox.hgrow="ALWAYS" />
-         
-            <Label fx:id="lblUsuario" text="Usuario: Admin" textFill="WHITE">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </Label>
-         
-    
+            
+            <!-- REGIÓN QUE EMPUJA TODO A LA DERECHA -->
+            <Region HBox.hgrow="ALWAYS" />
+            
+            <!-- Usuario con foto -->
+            <HBox fx:id="hboxUsuario" alignment="CENTER_LEFT" spacing="10.0">
+                <children>
+                    <ImageView fx:id="imgAvatar" fitHeight="35.0" fitWidth="35.0" preserveRatio="true" />
+                    <Label fx:id="lblUsuario" prefHeight="16.0" prefWidth="63.0" text="Usuario" textFill="WHITE" />
+                </children>
+            </HBox>
+            
+            <!-- Botón de menú (último elemento, a la derecha) -->
             <Button fx:id="btnMenu" onAction="#mostrarMenu" style="-fx-font-size: 24px; -fx-background-color: transparent; -fx-text-fill: white;" text="☰" />
          
         </HBox>

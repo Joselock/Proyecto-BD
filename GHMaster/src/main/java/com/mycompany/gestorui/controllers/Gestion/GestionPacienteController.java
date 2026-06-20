@@ -1,6 +1,7 @@
 package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
 import com.mycompany.gestorui.model.entidades.Paciente;
 import com.mycompany.gestorui.model.entidades.Unidad;
 import com.mycompany.gestorui.model.services.crud.crudPaciente;
@@ -30,20 +31,33 @@ import java.util.Set;
 
 public class GestionPacienteController implements Initializable {
 
-    @FXML private TableView<Paciente> tablaPacientes;
-    @FXML private TableColumn<Paciente, Boolean> colSeleccion;
-    @FXML private TableColumn<Paciente, String> colNumHistoria;
-    @FXML private TableColumn<Paciente, String> colNombre;
-    @FXML private TableColumn<Paciente, String> colDireccion;
-    @FXML private TableColumn<Paciente, Date> colFechaNac;
-    @FXML private TableColumn<Paciente, String> colEstado;
-    @FXML private TableColumn<Paciente, String> colUnidad;
-    
-    @FXML private JFXTextField txtNumHistoria, txtNombre, txtDireccion, txtFechaNac, txtEstado;
-    @FXML private ComboBox<String> cmbUnidad;
-    @FXML private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
-    @FXML private AnchorPane panelCrud;
-    @FXML private Button btnTogglePanel;
+    @FXML
+    private TableView<Paciente> tablaPacientes;
+    @FXML
+    private TableColumn<Paciente, Boolean> colSeleccion;
+    @FXML
+    private TableColumn<Paciente, String> colNumHistoria;
+    @FXML
+    private TableColumn<Paciente, String> colNombre;
+    @FXML
+    private TableColumn<Paciente, String> colDireccion;
+    @FXML
+    private TableColumn<Paciente, Date> colFechaNac;
+    @FXML
+    private TableColumn<Paciente, String> colEstado;
+    @FXML
+    private TableColumn<Paciente, String> colUnidad;
+
+    @FXML
+    private JFXTextField txtNumHistoria, txtNombre, txtDireccion, txtFechaNac, txtEstado;
+    @FXML
+    private ComboBox<String> cmbUnidad;
+    @FXML
+    private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
+    @FXML
+    private AnchorPane panelCrud;
+    @FXML
+    private Button btnTogglePanel;
 
     private ObservableList<Paciente> items = FXCollections.observableArrayList();
     private ObservableList<String> unidadItems = FXCollections.observableArrayList();
@@ -97,11 +111,14 @@ public class GestionPacienteController implements Initializable {
                 cb.setOnAction(e -> {
                     Paciente p = getTableRow().getItem();
                     if (p != null) {
-                        if (cb.isSelected()) seleccionados.add(p);
-                        else seleccionados.remove(p);
+                        if (cb.isSelected())
+                            seleccionados.add(p);
+                        else
+                            seleccionados.remove(p);
                     }
                 });
             }
+
             @Override
             public void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
@@ -124,15 +141,16 @@ public class GestionPacienteController implements Initializable {
         colFechaNac.setCellValueFactory(new PropertyValueFactory<>("fechaN"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         colUnidad.setCellValueFactory(new PropertyValueFactory<>("codigoUni"));
-        
+
         tablaPacientes.setItems(items);
-        
+
         tablaPacientes.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2) {
                 Paciente p = tablaPacientes.getSelectionModel().getSelectedItem();
                 if (p != null) {
                     cargarDatosEnPanel(p);
-                    if (!panelVisible) mostrarPanel();
+                    if (!panelVisible)
+                        mostrarPanel();
                 }
             }
         });
@@ -144,7 +162,7 @@ public class GestionPacienteController implements Initializable {
         txtDireccion.setText(p.getDireccionP());
         txtFechaNac.setText(p.getFechaN() != null ? p.getFechaN().toString() : "");
         txtEstado.setText(p.getEstado());
-        
+
         // Cargar la unidad seleccionada en el ComboBox
         if (p.getCodigoUni() != null && !p.getCodigoUni().isEmpty()) {
             for (Map.Entry<String, String> entry : unidadMap.entrySet()) {
@@ -160,8 +178,10 @@ public class GestionPacienteController implements Initializable {
         CheckBox cbTodos = new CheckBox("Seleccionar todos");
         cbTodos.setStyle("-fx-font-size: 11px;");
         cbTodos.selectedProperty().addListener((obs, old, val) -> {
-            if (val) seleccionados.addAll(items);
-            else seleccionados.clear();
+            if (val)
+                seleccionados.addAll(items);
+            else
+                seleccionados.clear();
             tablaPacientes.refresh();
         });
         HBox header = new HBox(cbTodos);
@@ -172,11 +192,11 @@ public class GestionPacienteController implements Initializable {
 
     private void cargarDatos() {
         tablaPacientes.setPlaceholder(new ProgressIndicator());
-        
+
         new Thread(() -> {
             try {
                 List<Paciente> lista = crudPaciente.obtenerPacientes();
-                
+
                 Platform.runLater(() -> {
                     items.clear();
                     items.addAll(lista);
@@ -206,16 +226,17 @@ public class GestionPacienteController implements Initializable {
     }
 
     private void togglePanel() {
-        if (panelVisible) ocultarPanel();
-        else mostrarPanel();
+        if (panelVisible)
+            ocultarPanel();
+        else
+            mostrarPanel();
     }
 
     private void ocultarPanel() {
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 305),
-            new KeyValue(panelCrud.opacityProperty(), 0)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 305),
+                new KeyValue(panelCrud.opacityProperty(), 0));
         timeline.getKeyFrames().add(keyFrame);
         timeline.setOnFinished(e -> {
             panelCrud.setVisible(false);
@@ -232,9 +253,8 @@ public class GestionPacienteController implements Initializable {
         panelCrud.setManaged(true);
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 0),
-            new KeyValue(panelCrud.opacityProperty(), 1)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 0),
+                new KeyValue(panelCrud.opacityProperty(), 1));
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaPacientes.setPrefWidth(562);
@@ -245,18 +265,18 @@ public class GestionPacienteController implements Initializable {
     private void agregar() {
         String num = txtNumHistoria.getText().trim();
         String nom = txtNombre.getText().trim();
-        
+
         if (num.isEmpty() || nom.isEmpty()) {
             mostrarAlerta("Nº Historia y nombre son obligatorios");
             return;
         }
-        
+
         boolean existe = items.stream().anyMatch(p -> p.getNumHisCli().equals(num));
         if (existe) {
             mostrarAlerta("Ya existe un paciente con ese número de historia");
             return;
         }
-        
+
         Date fecha = null;
         try {
             String fechaStr = txtFechaNac.getText().trim();
@@ -267,23 +287,25 @@ public class GestionPacienteController implements Initializable {
             mostrarAlerta("Formato de fecha inválido. Use YYYY-MM-DD");
             return;
         }
-        
+
         String codUni = obtenerCodigoUnidadSeleccionado();
-        
+
         Map<String, Object> resultado = crudPaciente.insertarPaciente(
-            num,
-            nom,
-            txtDireccion.getText().trim(),
-            fecha != null ? fecha.toLocalDate() : null,
-            txtEstado.getText().trim(),
-            codUni
-        );
-        
+                num,
+                nom,
+                txtDireccion.getText().trim(),
+                fecha != null ? fecha.toLocalDate() : null,
+                txtEstado.getText().trim(),
+                codUni);
+
         if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
-            Paciente p = new Paciente(num, nom, fecha, txtDireccion.getText().trim(), txtEstado.getText().trim(), codUni);
+            Paciente p = new Paciente(num, nom, fecha, txtDireccion.getText().trim(), txtEstado.getText().trim(),
+                    codUni);
             items.add(p);
             limpiarCampos();
             mostrarAlerta("Paciente agregado correctamente", Alert.AlertType.INFORMATION);
+            // Notificar cambio
+            DatosCambiadosManager.getInstance().notificarCambios();
         } else {
             String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
             mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
@@ -296,15 +318,15 @@ public class GestionPacienteController implements Initializable {
             mostrarAlerta("Seleccione un paciente de la tabla");
             return;
         }
-        
+
         String nuevoNum = txtNumHistoria.getText().trim();
         String nuevoNombre = txtNombre.getText().trim();
-        
+
         if (nuevoNum.isEmpty() || nuevoNombre.isEmpty()) {
             mostrarAlerta("Nº Historia y nombre son obligatorios");
             return;
         }
-        
+
         if (!nuevoNum.equals(p.getNumHisCli())) {
             boolean existe = items.stream().anyMatch(pac -> pac.getNumHisCli().equals(nuevoNum));
             if (existe) {
@@ -312,7 +334,7 @@ public class GestionPacienteController implements Initializable {
                 return;
             }
         }
-        
+
         Date fecha = null;
         try {
             String fechaStr = txtFechaNac.getText().trim();
@@ -323,20 +345,19 @@ public class GestionPacienteController implements Initializable {
             mostrarAlerta("Formato de fecha inválido. Use YYYY-MM-DD");
             return;
         }
-        
+
         String codUni = obtenerCodigoUnidadSeleccionado();
         String numOriginal = p.getNumHisCli();
-        
+
         Map<String, Object> resultado = crudPaciente.modificarPaciente(
-            numOriginal,
-            nuevoNum,
-            txtEstado.getText().trim(),
-            nuevoNombre,
-            txtDireccion.getText().trim(),
-            fecha != null ? fecha.toLocalDate() : null,
-            codUni
-        );
-        
+                numOriginal,
+                nuevoNum,
+                txtEstado.getText().trim(),
+                nuevoNombre,
+                txtDireccion.getText().trim(),
+                fecha != null ? fecha.toLocalDate() : null,
+                codUni);
+
         if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
             p.setNumHisCli(nuevoNum);
             p.setNombrePac(nuevoNombre);
@@ -358,20 +379,20 @@ public class GestionPacienteController implements Initializable {
             mostrarAlerta("Seleccione al menos un paciente");
             return;
         }
-        
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar eliminación");
         alert.setHeaderText(null);
         alert.setContentText("¿Eliminar " + seleccionados.size() + " paciente(s)?");
-        
+
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             List<Paciente> aEliminar = List.copyOf(seleccionados);
             boolean todosEliminados = true;
             StringBuilder errores = new StringBuilder();
-            
+
             for (Paciente p : aEliminar) {
                 String resultado = crudPaciente.eliminarPaciente(p.getNumHisCli());
-                
+
                 if (resultado != null && !resultado.toLowerCase().contains("error")) {
                     items.remove(p);
                     seleccionados.remove(p);
@@ -380,9 +401,11 @@ public class GestionPacienteController implements Initializable {
                     errores.append("• ").append(p.getNumHisCli()).append(": ").append(resultado).append("\n");
                 }
             }
-            
+
             if (todosEliminados) {
                 mostrarAlerta("Paciente(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
             } else {
                 mostrarAlerta("Algunos pacientes no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
                 cargarDatos();
@@ -403,7 +426,7 @@ public class GestionPacienteController implements Initializable {
     private void mostrarAlerta(String msg) {
         mostrarAlerta(msg, Alert.AlertType.WARNING);
     }
-    
+
     private void mostrarAlerta(String msg, Alert.AlertType tipo) {
         Alert a = new Alert(tipo);
         a.setHeaderText(null);

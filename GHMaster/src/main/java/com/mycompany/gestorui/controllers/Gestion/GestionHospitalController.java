@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import com.jfoenix.controls.JFXTextField;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
 import com.mycompany.gestorui.model.entidades.Hospital;
 import com.mycompany.gestorui.model.services.crud.crudHospital;
 
@@ -222,6 +223,9 @@ public class GestionHospitalController implements Initializable {
 
         Map<String, Object> result = new HashMap<>(crudHospital.insertarHospital(cod, nom));
 
+        // Notificar cambio
+        DatosCambiadosManager.getInstance().notificarCambios();
+
         limpiarCampos();
         if (!(result.get("existe").equals("false"))) {
             mostrarAlerta("Hospital agregado correctamente", Alert.AlertType.INFORMATION);
@@ -302,6 +306,9 @@ public class GestionHospitalController implements Initializable {
                     errores.append("• ").append(h.getCodigoHos()).append(": ").append(mensaje).append("\n");
                 }
             }
+
+            // Notificar cambio
+            DatosCambiadosManager.getInstance().notificarCambios();
 
             if (todosEliminados) {
                 // Eliminar de la tabla local y limpiar selección

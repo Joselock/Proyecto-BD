@@ -5,6 +5,7 @@ import com.mycompany.gestorui.model.entidades.Turno;
 import com.mycompany.gestorui.model.services.crud.crudMedico;
 import com.mycompany.gestorui.model.services.crud.crudTurno;
 import com.mycompany.gestorui.model.services.crud.crudUnidad;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
 import com.mycompany.gestorui.model.entidades.Medico;
 import com.mycompany.gestorui.model.entidades.Unidad;
 import javafx.animation.*;
@@ -339,6 +340,8 @@ public class GestionTurnoController implements Initializable {
                 items.add(t);
                 limpiarCampos();
                 mostrarAlerta("Turno agregado correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
             } else {
                 String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
                 mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
@@ -448,6 +451,8 @@ public class GestionTurnoController implements Initializable {
 
             if (todosEliminados) {
                 mostrarAlerta("Turno(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
             } else {
                 mostrarAlerta("Algunos turnos no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
                 cargarDatos();

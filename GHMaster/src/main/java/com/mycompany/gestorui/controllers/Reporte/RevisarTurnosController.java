@@ -4,12 +4,12 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
+import com.mycompany.gestorui.controllers.Reporte.Manager.TurnosRevisadosManager;
 import com.mycompany.gestorui.model.entidades.Departamento;
 import com.mycompany.gestorui.model.entidades.Hospital;
 import com.mycompany.gestorui.model.entidades.Informe;
 import com.mycompany.gestorui.model.entidades.Medico;
 import com.mycompany.gestorui.model.entidades.Unidad;
-import com.mycompany.gestorui.controllers.Reporte.Manager.TurnosRevisadosManager;
 import com.mycompany.gestorui.model.services.reportes.UnidadService;
 
 import javafx.beans.property.SimpleStringProperty;

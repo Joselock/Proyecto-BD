@@ -1,6 +1,7 @@
 package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
 import com.mycompany.gestorui.model.entidades.Departamento;
 import com.mycompany.gestorui.model.entidades.Unidad;
 import com.mycompany.gestorui.model.services.crud.crudDepartamento;
@@ -29,14 +30,22 @@ import java.util.Set;
 
 public class GestionUnidadController implements Initializable {
 
-    @FXML private TableView<Unidad> tablaUnidades;
-    @FXML private TableColumn<Unidad, Boolean> colSeleccion;
-    @FXML private TableColumn<Unidad, String> colCodigo, colNombre, colUbicacion, colDepartamento;
-    @FXML private JFXTextField txtCodigo, txtNombre, txtUbicacion;
-    @FXML private ComboBox<String> cmbDepartamento;
-    @FXML private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
-    @FXML private AnchorPane panelCrud;
-    @FXML private Button btnTogglePanel;
+    @FXML
+    private TableView<Unidad> tablaUnidades;
+    @FXML
+    private TableColumn<Unidad, Boolean> colSeleccion;
+    @FXML
+    private TableColumn<Unidad, String> colCodigo, colNombre, colUbicacion, colDepartamento;
+    @FXML
+    private JFXTextField txtCodigo, txtNombre, txtUbicacion;
+    @FXML
+    private ComboBox<String> cmbDepartamento;
+    @FXML
+    private Button btnAgregar, btnModificar, btnEliminar, btnLimpiar;
+    @FXML
+    private AnchorPane panelCrud;
+    @FXML
+    private Button btnTogglePanel;
 
     private ObservableList<Unidad> items = FXCollections.observableArrayList();
     private ObservableList<String> departamentoItems = FXCollections.observableArrayList();
@@ -62,11 +71,14 @@ public class GestionUnidadController implements Initializable {
                 cb.setOnAction(e -> {
                     Unidad u = getTableRow().getItem();
                     if (u != null) {
-                        if (cb.isSelected()) seleccionados.add(u);
-                        else seleccionados.remove(u);
+                        if (cb.isSelected())
+                            seleccionados.add(u);
+                        else
+                            seleccionados.remove(u);
                     }
                 });
             }
+
             @Override
             public void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
@@ -88,9 +100,9 @@ public class GestionUnidadController implements Initializable {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreUni"));
         colUbicacion.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
         colDepartamento.setCellValueFactory(new PropertyValueFactory<>("codigoDep")); // Cambiado de codDep a codigoDep
-        
+
         tablaUnidades.setItems(items);
-        
+
         tablaUnidades.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2) {
                 Unidad u = tablaUnidades.getSelectionModel().getSelectedItem();
@@ -98,7 +110,7 @@ public class GestionUnidadController implements Initializable {
                     txtCodigo.setText(u.getCodigoUni());
                     txtNombre.setText(u.getNombreUni());
                     txtUbicacion.setText(u.getUbicacion());
-                    
+
                     // CORRECCIÓN: Usar codigoDep en lugar de codDep
                     if (u.getCodigoDep() != null && !u.getCodigoDep().isEmpty()) {
                         String display = departamentoMap.get(u.getCodigoDep());
@@ -106,8 +118,9 @@ public class GestionUnidadController implements Initializable {
                     } else {
                         cmbDepartamento.setValue(null);
                     }
-                    
-                    if (!panelVisible) mostrarPanel();
+
+                    if (!panelVisible)
+                        mostrarPanel();
                 }
             }
         });
@@ -117,8 +130,10 @@ public class GestionUnidadController implements Initializable {
         CheckBox cbTodos = new CheckBox("Seleccionar todos");
         cbTodos.setStyle("-fx-font-size: 11px;");
         cbTodos.selectedProperty().addListener((obs, old, val) -> {
-            if (val) seleccionados.addAll(items);
-            else seleccionados.clear();
+            if (val)
+                seleccionados.addAll(items);
+            else
+                seleccionados.clear();
             tablaUnidades.refresh();
         });
         HBox header = new HBox(cbTodos);
@@ -129,11 +144,11 @@ public class GestionUnidadController implements Initializable {
 
     private void cargarDatos() {
         tablaUnidades.setPlaceholder(new ProgressIndicator());
-        
+
         new Thread(() -> {
             try {
                 List<Unidad> lista = crudUnidad.obtenerUnidades();
-                
+
                 Platform.runLater(() -> {
                     items.clear();
                     items.addAll(lista);
@@ -166,7 +181,8 @@ public class GestionUnidadController implements Initializable {
                     cmbDepartamento.setItems(departamentoItems);
                 });
             } catch (Exception e) {
-                Platform.runLater(() -> mostrarAlerta("Error al cargar departamentos: " + e.getMessage(), Alert.AlertType.ERROR));
+                Platform.runLater(
+                        () -> mostrarAlerta("Error al cargar departamentos: " + e.getMessage(), Alert.AlertType.ERROR));
                 e.printStackTrace();
             }
         }).start();
@@ -195,16 +211,17 @@ public class GestionUnidadController implements Initializable {
     }
 
     private void togglePanel() {
-        if (panelVisible) ocultarPanel();
-        else mostrarPanel();
+        if (panelVisible)
+            ocultarPanel();
+        else
+            mostrarPanel();
     }
 
     private void ocultarPanel() {
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 305),
-            new KeyValue(panelCrud.opacityProperty(), 0)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 305),
+                new KeyValue(panelCrud.opacityProperty(), 0));
         timeline.getKeyFrames().add(keyFrame);
         timeline.setOnFinished(e -> {
             panelCrud.setVisible(false);
@@ -221,9 +238,8 @@ public class GestionUnidadController implements Initializable {
         panelCrud.setManaged(true);
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 0),
-            new KeyValue(panelCrud.opacityProperty(), 1)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 0),
+                new KeyValue(panelCrud.opacityProperty(), 1));
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaUnidades.setPrefWidth(562);
@@ -234,26 +250,28 @@ public class GestionUnidadController implements Initializable {
     private void agregar() {
         String cod = txtCodigo.getText().trim();
         String nom = txtNombre.getText().trim();
-        
+
         if (cod.isEmpty() || nom.isEmpty()) {
             mostrarAlerta("Complete código y nombre");
             return;
         }
-        
+
         boolean existe = items.stream().anyMatch(u -> u.getCodigoUni().equals(cod));
         if (existe) {
             mostrarAlerta("Ya existe una unidad con ese código");
             return;
         }
-        
+
         String codDep = obtenerCodigoDepartamentoSeleccionado();
         Map<String, Object> resultado = crudUnidad.insertarUnidad(cod, nom, txtUbicacion.getText().trim(), codDep);
-        
+
         if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
             Unidad u = new Unidad(cod, nom, txtUbicacion.getText().trim(), codDep);
             items.add(u);
             limpiarCampos();
             mostrarAlerta("Unidad agregada correctamente", Alert.AlertType.INFORMATION);
+            // Notificar cambio
+            DatosCambiadosManager.getInstance().notificarCambios();
         } else {
             String mensaje = resultado != null ? (String) resultado.get("mensaje") : "Error desconocido";
             mostrarAlerta("Error al agregar: " + mensaje, Alert.AlertType.ERROR);
@@ -266,15 +284,15 @@ public class GestionUnidadController implements Initializable {
             mostrarAlerta("Seleccione una unidad de la tabla");
             return;
         }
-        
+
         String nuevoCodigo = txtCodigo.getText().trim();
         String nuevoNombre = txtNombre.getText().trim();
-        
+
         if (nuevoCodigo.isEmpty() || nuevoNombre.isEmpty()) {
             mostrarAlerta("Complete código y nombre");
             return;
         }
-        
+
         if (!nuevoCodigo.equals(u.getCodigoUni())) {
             boolean existe = items.stream().anyMatch(uni -> uni.getCodigoUni().equals(nuevoCodigo));
             if (existe) {
@@ -282,21 +300,20 @@ public class GestionUnidadController implements Initializable {
                 return;
             }
         }
-        
+
         String codOriginal = u.getCodigoUni();
         String nomOriginal = u.getNombreUni();
         String ubiOriginal = u.getUbicacion();
         String depOriginal = u.getCodigoDep();
-        
+
         String codDep = obtenerCodigoDepartamentoSeleccionado();
         Map<String, Object> resultado = crudUnidad.modificarUnidad(
-            codOriginal,
-            nuevoCodigo,
-            nuevoNombre,
-            txtUbicacion.getText().trim(),
-            codDep
-        );
-        
+                codOriginal,
+                nuevoCodigo,
+                nuevoNombre,
+                txtUbicacion.getText().trim(),
+                codDep);
+
         if (resultado != null && Boolean.TRUE.equals(resultado.get("existe"))) {
             u.setCodigoUni(nuevoCodigo);
             u.setNombreUni(nuevoNombre);
@@ -321,21 +338,22 @@ public class GestionUnidadController implements Initializable {
             mostrarAlerta("Seleccione al menos una unidad");
             return;
         }
-        
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar eliminación");
         alert.setHeaderText(null);
         alert.setContentText("¿Eliminar " + seleccionados.size() + " unidad(es)?");
-        
+
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             List<Unidad> aEliminar = List.copyOf(seleccionados);
             boolean todosEliminados = true;
             StringBuilder errores = new StringBuilder();
-            
+
             for (Unidad u : aEliminar) {
                 String resultado = crudUnidad.eliminarUnidad(u.getCodigoUni());
-                
-                if (resultado != null && !resultado.toLowerCase().contains("error") && !resultado.toLowerCase().contains("fallo")) {
+
+                if (resultado != null && !resultado.toLowerCase().contains("error")
+                        && !resultado.toLowerCase().contains("fallo")) {
                     items.remove(u);
                     seleccionados.remove(u);
                 } else {
@@ -343,9 +361,11 @@ public class GestionUnidadController implements Initializable {
                     errores.append("• ").append(u.getCodigoUni()).append(": ").append(resultado).append("\n");
                 }
             }
-            
+
             if (todosEliminados) {
                 mostrarAlerta("Unidad(es) eliminada(s) correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
             } else {
                 mostrarAlerta("Algunas unidades no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
                 cargarDatos();
@@ -364,7 +384,7 @@ public class GestionUnidadController implements Initializable {
     private void mostrarAlerta(String msg) {
         mostrarAlerta(msg, Alert.AlertType.WARNING);
     }
-    
+
     private void mostrarAlerta(String msg, Alert.AlertType tipo) {
         Alert a = new Alert(tipo);
         a.setHeaderText(null);

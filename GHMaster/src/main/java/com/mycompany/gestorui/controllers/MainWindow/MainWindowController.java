@@ -1,5 +1,6 @@
-package com.mycompany.gestorui.controllers;
+package com.mycompany.gestorui.controllers.MainWindow;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -17,7 +18,10 @@ import com.mycompany.gestorui.model.entidades.Informe;
 import com.mycompany.gestorui.model.entidades.Medico;
 import com.mycompany.gestorui.model.entidades.Unidad;
 import com.mycompany.gestorui.model.services.reportes.HospitalService;
-import com.mycompany.gestorui.controllers.Reporte.Manager.TurnosRevisadosListener;
+import com.mycompany.gestorui.controllers.LoginController;
+import com.mycompany.gestorui.controllers.Cuenta.Listener.PerfilListener;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
+import com.mycompany.gestorui.controllers.Reporte.Listener.TurnosRevisadosListener;
 import com.mycompany.gestorui.controllers.Reporte.Manager.TurnosRevisadosManager;
 import com.mycompany.gestorui.model.services.reportes.UnidadService;
 
@@ -35,12 +39,16 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PopupControl;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class MainWindowController implements Initializable, TurnosRevisadosListener {
+public class MainWindowController implements Initializable, TurnosRevisadosListener,
+        com.mycompany.gestorui.controllers.MainWindow.Listener.DatosCambiadosListener {
 
     @FXML
     private Label lblUsuario;
@@ -69,9 +77,16 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     @FXML
     private Button btnMenu;
 
+    @FXML
+    private ImageView imgAvatar; // Añadir este ImageView en el FXML
+
+    @FXML
+    private HBox hboxUsuario; // Contenedor para usuario y avatar
+
     private PopupControl popupMenu;
     private VBox menuContent;
     private TurnosRevisadosManager manager = TurnosRevisadosManager.getInstance();
+    private DatosCambiadosManager datosManager = DatosCambiadosManager.getInstance();
 
     private int totalHospitales = 0;
     private int totalDepartamentos = 0;
@@ -84,14 +99,16 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Registrar listeners
         manager.agregarListener(this);
+        datosManager.agregarListener(this);
 
-        String usuario = LoginController.getUsuarioActual();
-        if (usuario != null && !usuario.isEmpty()) {
-            lblUsuario.setText("👤 " + usuario);
-        } else {
-            lblUsuario.setText("👤 Usuario");
-        }
+        // Registrar listener para cambios de perfil
+        PerfilListener.agregarListener(this::actualizarDatosUsuario);
+
+        // Configurar avatar
+        configurarAvatar();
+        actualizarDatosUsuario();
 
         try {
             cargarIndicadores();
@@ -104,6 +121,62 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         crearMenuPersonalizado();
     }
 
+    private void configurarAvatar() {
+        if (imgAvatar != null) {
+            imgAvatar.setFitWidth(35);
+            imgAvatar.setFitHeight(35);
+            imgAvatar.setPreserveRatio(true);
+            // Hacerlo circular (opcional)
+            imgAvatar.setClip(new javafx.scene.shape.Circle(17.5, 17.5, 17.5));
+        }
+    }
+
+    /**
+     * Actualiza los datos del usuario (nombre y avatar)
+     */
+    private void actualizarDatosUsuario() {
+        Platform.runLater(() -> {
+            String usuario = LoginController.getUsuarioActual();
+            if (usuario != null && !usuario.isEmpty()) {
+                lblUsuario.setText("👤 " + usuario);
+            } else {
+                lblUsuario.setText("👤 Usuario");
+            }
+
+            // Cargar avatar
+            cargarAvatar();
+        });
+    }
+
+    /**
+     * Carga el avatar del usuario desde el sistema de archivos
+     */
+    private void cargarAvatar() {
+        if (imgAvatar == null)
+            return;
+
+        String usuario = LoginController.getUsuarioActual();
+        if (usuario == null || usuario.isEmpty()) {
+            imgAvatar.setImage(null);
+            return;
+        }
+
+        String avatarPath = System.getProperty("user.home") + "/.gestorui/avatars/avatar_" + usuario + ".png";
+        File avatarFile = new File(avatarPath);
+
+        if (avatarFile.exists()) {
+            try {
+                Image image = new Image(avatarFile.toURI().toString(), 35, 35, false, true);
+                imgAvatar.setImage(image);
+            } catch (Exception e) {
+                System.err.println("Error al cargar avatar en MainWindow: " + e.getMessage());
+                imgAvatar.setImage(null);
+            }
+        } else {
+            imgAvatar.setImage(null);
+        }
+    }
+
     @Override
     public void onTurnoRevisado(String hospital, String departamento, String unidad, String medico) {
         Platform.runLater(() -> {
@@ -111,6 +184,23 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
                     + " | " + medico);
             try {
                 cargarAlertas();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void onDatosCambiados() {
+        // Este método se ejecuta cuando se agrega, modifica o elimina un dato
+        Platform.runLater(() -> {
+            System.out.println("🔄 Datos cambiados - Recargando indicadores...");
+            try {
+                // Recargar indicadores
+                cargarIndicadores();
+                cargarDatosGrafico();
+                cargarAlertas();
+                reiniciarAnimaciones();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -173,7 +263,13 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
     @FXML
     private void mostrarGestion(ActionEvent event) {
         try {
+            // Cuando se abra la ventana de gestión, registrar un listener para cuando se
+            // cierre
+            Stage stage = new Stage();
             Gestion.mostrarVentanaGestion();
+
+            // Notificar cambio después de cerrar la ventana de gestión
+            // (la notificación se hará desde GestionController al guardar/eliminar)
         } catch (Exception ex) {
             System.getLogger(MainWindowController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
@@ -217,11 +313,12 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         totalMedicos = indicadores.get("medicos");
         totalPacientes = indicadores.get("pacientes");
 
-        lblTotalHospitales.setText("0");
-        lblTotalDepartamentos.setText("0");
-        lblTotalUnidades.setText("0");
-        lblTotalMedicos.setText("0");
-        lblTotalPacientes.setText("0");
+        // Actualizar labels directamente
+        lblTotalHospitales.setText(String.valueOf(totalHospitales));
+        lblTotalDepartamentos.setText(String.valueOf(totalDepartamentos));
+        lblTotalUnidades.setText(String.valueOf(totalUnidades));
+        lblTotalMedicos.setText(String.valueOf(totalMedicos));
+        lblTotalPacientes.setText(String.valueOf(totalPacientes));
     }
 
     private void cargarDatosGrafico() throws SQLException {
@@ -233,9 +330,12 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
         series.setName("Pacientes");
 
         for (Hospital h : datosHospitales) {
-            series.getData().add(new XYChart.Data<>(h.getNombreHos(), 0));
+            series.getData().add(new XYChart.Data<>(h.getNombreHos(), h.getCantPac()));
         }
         chartTopHospitales.getData().add(series);
+
+        // Reiniciar animación del gráfico
+        animacionGraficoIniciada = false;
     }
 
     private void animarGrafico() {
@@ -304,6 +404,28 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
 
         Timeline delay = new Timeline(
                 new KeyFrame(Duration.millis(1500), e -> animarGrafico()));
+        delay.play();
+    }
+
+    private void reiniciarAnimaciones() {
+        // Reiniciar la animación del gráfico
+        animacionGraficoIniciada = false;
+
+        // Volver a animar los números
+        lblTotalHospitales.setText("0");
+        lblTotalDepartamentos.setText("0");
+        lblTotalUnidades.setText("0");
+        lblTotalMedicos.setText("0");
+        lblTotalPacientes.setText("0");
+
+        animarNumero(lblTotalHospitales, totalHospitales, 0);
+        animarNumero(lblTotalDepartamentos, totalDepartamentos, 200);
+        animarNumero(lblTotalUnidades, totalUnidades, 400);
+        animarNumero(lblTotalMedicos, totalMedicos, 600);
+        animarNumero(lblTotalPacientes, totalPacientes, 800);
+
+        Timeline delay = new Timeline(
+                new KeyFrame(Duration.millis(1000), e -> animarGrafico()));
         delay.play();
     }
 
@@ -526,16 +648,20 @@ public class MainWindowController implements Initializable, TurnosRevisadosListe
             LinkedList<Hospital> hospitales = us.listadoUnidades();
 
             for (Hospital h : hospitales) {
-                if (!h.getNombreHos().equals(hospital)) continue;
+                if (!h.getNombreHos().equals(hospital))
+                    continue;
 
                 for (Departamento d : h.getDepartamentos()) {
-                    if (!d.getNombreDep().equals(departamento)) continue;
+                    if (!d.getNombreDep().equals(departamento))
+                        continue;
 
                     for (Unidad u : d.getUnidades()) {
-                        if (!u.getNombreUni().equals(unidad)) continue;
+                        if (!u.getNombreUni().equals(unidad))
+                            continue;
 
                         for (Medico m : u.getMedicos()) {
-                            if (!m.getNombreMed().equals(medico)) continue;
+                            if (!m.getNombreMed().equals(medico))
+                                continue;
 
                             // Encontrar el informe correspondiente
                             int size = Math.min(u.getInformes().size(), u.getMedicos().size());

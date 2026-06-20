@@ -1,6 +1,7 @@
 package com.mycompany.gestorui.controllers.Gestion;
 
 import com.jfoenix.controls.JFXTextField;
+import com.mycompany.gestorui.controllers.MainWindow.Manager.DatosCambiadosManager;
 import com.mycompany.gestorui.model.entidades.Informe;
 import com.mycompany.gestorui.model.services.crud.crudInforme;
 
@@ -27,22 +28,37 @@ import java.util.Set;
 
 public class GestionInformeController implements Initializable {
 
-    @FXML private TableView<Informe> tablaInformes;
-    @FXML private TableColumn<Informe, Boolean> colSeleccion;
-    @FXML private TableColumn<Informe, String> colNumInforme;
-    @FXML private TableColumn<Informe, Integer> colTurno;
-    @FXML private TableColumn<Informe, String> colUnidad;
-    @FXML private TableColumn<Informe, Time> colHora;
-    @FXML private TableColumn<Informe, Date> colFecha;
-    @FXML private TableColumn<Informe, Integer> colPacAtendidos;
-    @FXML private TableColumn<Informe, Integer> colPacAltas;
-    @FXML private TableColumn<Informe, Integer> colCantAdmitidos;
-    @FXML private TableColumn<Informe, Integer> colTotal;
-    
-    @FXML private JFXTextField txtNumInforme, txtHora, txtFecha, txtPacAtendidos, txtPacAltas, txtCantAdmitidos, txtTotal;
-    @FXML private Button btnEliminar, btnLimpiar;
-    @FXML private AnchorPane panelCrud;
-    @FXML private Button btnTogglePanel;
+    @FXML
+    private TableView<Informe> tablaInformes;
+    @FXML
+    private TableColumn<Informe, Boolean> colSeleccion;
+    @FXML
+    private TableColumn<Informe, String> colNumInforme;
+    @FXML
+    private TableColumn<Informe, Integer> colTurno;
+    @FXML
+    private TableColumn<Informe, String> colUnidad;
+    @FXML
+    private TableColumn<Informe, Time> colHora;
+    @FXML
+    private TableColumn<Informe, Date> colFecha;
+    @FXML
+    private TableColumn<Informe, Integer> colPacAtendidos;
+    @FXML
+    private TableColumn<Informe, Integer> colPacAltas;
+    @FXML
+    private TableColumn<Informe, Integer> colCantAdmitidos;
+    @FXML
+    private TableColumn<Informe, Integer> colTotal;
+
+    @FXML
+    private JFXTextField txtNumInforme, txtHora, txtFecha, txtPacAtendidos, txtPacAltas, txtCantAdmitidos, txtTotal;
+    @FXML
+    private Button btnEliminar, btnLimpiar;
+    @FXML
+    private AnchorPane panelCrud;
+    @FXML
+    private Button btnTogglePanel;
 
     private ObservableList<Informe> items = FXCollections.observableArrayList();
     private Set<Informe> seleccionados = new HashSet<>();
@@ -64,11 +80,14 @@ public class GestionInformeController implements Initializable {
                 cb.setOnAction(e -> {
                     Informe i = getTableRow().getItem();
                     if (i != null) {
-                        if (cb.isSelected()) seleccionados.add(i);
-                        else seleccionados.remove(i);
+                        if (cb.isSelected())
+                            seleccionados.add(i);
+                        else
+                            seleccionados.remove(i);
                     }
                 });
             }
+
             @Override
             public void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
@@ -95,15 +114,16 @@ public class GestionInformeController implements Initializable {
         colTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         colTurno.setCellValueFactory(new PropertyValueFactory<>("numeroTurno"));
         colUnidad.setCellValueFactory(new PropertyValueFactory<>("codigoUni"));
-        
+
         tablaInformes.setItems(items);
-        
+
         tablaInformes.setOnMouseClicked(ev -> {
             if (ev.getClickCount() == 2) {
                 Informe i = tablaInformes.getSelectionModel().getSelectedItem();
                 if (i != null) {
                     cargarDatosEnPanel(i);
-                    if (!panelVisible) mostrarPanel();
+                    if (!panelVisible)
+                        mostrarPanel();
                 }
             }
         });
@@ -123,8 +143,10 @@ public class GestionInformeController implements Initializable {
         CheckBox cbTodos = new CheckBox("Seleccionar todos");
         cbTodos.setStyle("-fx-font-size: 11px;");
         cbTodos.selectedProperty().addListener((obs, old, val) -> {
-            if (val) seleccionados.addAll(items);
-            else seleccionados.clear();
+            if (val)
+                seleccionados.addAll(items);
+            else
+                seleccionados.clear();
             tablaInformes.refresh();
         });
         HBox header = new HBox(cbTodos);
@@ -135,21 +157,21 @@ public class GestionInformeController implements Initializable {
 
     private void cargarDatos() {
         tablaInformes.setPlaceholder(new ProgressIndicator());
-        
+
         new Thread(() -> {
             try {
                 List<Informe> lista = crudInforme.obtenerInformes();
-                
+
                 Platform.runLater(() -> {
                     items.clear();
                     items.addAll(lista);
                     tablaInformes.setPlaceholder(new Label("No hay informes"));
-                    
+
                     // Debug: Verificar que los datos tienen Turno y Unidad
                     for (Informe i : items) {
-                        System.out.println("Informe: " + i.getNumIn() + 
-                                         ", Turno: " + i.getNumeroTurno() + 
-                                         ", Unidad: " + i.getCodigoUni());
+                        System.out.println("Informe: " + i.getNumIn() +
+                                ", Turno: " + i.getNumeroTurno() +
+                                ", Unidad: " + i.getCodigoUni());
                     }
                 });
             } catch (Exception e) {
@@ -174,16 +196,17 @@ public class GestionInformeController implements Initializable {
     }
 
     private void togglePanel() {
-        if (panelVisible) ocultarPanel();
-        else mostrarPanel();
+        if (panelVisible)
+            ocultarPanel();
+        else
+            mostrarPanel();
     }
 
     private void ocultarPanel() {
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 305),
-            new KeyValue(panelCrud.opacityProperty(), 0)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 305),
+                new KeyValue(panelCrud.opacityProperty(), 0));
         timeline.getKeyFrames().add(keyFrame);
         timeline.setOnFinished(e -> {
             panelCrud.setVisible(false);
@@ -200,9 +223,8 @@ public class GestionInformeController implements Initializable {
         panelCrud.setManaged(true);
         Timeline timeline = new Timeline();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(300),
-            new KeyValue(panelCrud.translateXProperty(), 0),
-            new KeyValue(panelCrud.opacityProperty(), 1)
-        );
+                new KeyValue(panelCrud.translateXProperty(), 0),
+                new KeyValue(panelCrud.opacityProperty(), 1));
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
         tablaInformes.setPrefWidth(562);
@@ -215,20 +237,20 @@ public class GestionInformeController implements Initializable {
             mostrarAlerta("Seleccione al menos un informe");
             return;
         }
-        
+
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmar eliminación");
         alert.setHeaderText(null);
         alert.setContentText("¿Eliminar " + seleccionados.size() + " informe(s)?");
-        
+
         if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             List<Informe> aEliminar = List.copyOf(seleccionados);
             boolean todosEliminados = true;
             StringBuilder errores = new StringBuilder();
-            
+
             for (Informe inf : aEliminar) {
                 String resultado = crudInforme.eliminarInforme(inf.getNumIn());
-                
+
                 if (resultado != null && !resultado.toLowerCase().contains("error")) {
                     items.remove(inf);
                     seleccionados.remove(inf);
@@ -237,13 +259,16 @@ public class GestionInformeController implements Initializable {
                     errores.append("• ").append(inf.getNumIn()).append(": ").append(resultado).append("\n");
                 }
             }
-            
+
             if (todosEliminados) {
                 mostrarAlerta("Informe(s) eliminado(s) correctamente", Alert.AlertType.INFORMATION);
+                // Notificar cambio
+                DatosCambiadosManager.getInstance().notificarCambios();
             } else {
                 mostrarAlerta("Algunos informes no se eliminaron:\n" + errores.toString(), Alert.AlertType.WARNING);
                 cargarDatos();
             }
+
         }
     }
 
@@ -261,7 +286,7 @@ public class GestionInformeController implements Initializable {
     private void mostrarAlerta(String msg) {
         mostrarAlerta(msg, Alert.AlertType.WARNING);
     }
-    
+
     private void mostrarAlerta(String msg, Alert.AlertType tipo) {
         Alert a = new Alert(tipo);
         a.setHeaderText(null);
