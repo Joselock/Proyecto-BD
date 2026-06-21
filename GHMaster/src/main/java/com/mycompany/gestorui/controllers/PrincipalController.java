@@ -64,7 +64,7 @@ public class PrincipalController implements Initializable {
             stagePrincipal.hide();
 
             // Abrir login
-            Parent root = FXMLLoader.load(getClass().getResource("/com/mycompany/gestorui/views/LoginFXML.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/com/mycompany/gestorui/views/Login/LoginFXML.fxml"));
             Stage stageLogin = new Stage();
             stageLogin.initStyle(StageStyle.UNDECORATED);
             stageLogin.setScene(new Scene(root));

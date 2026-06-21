@@ -16,7 +16,7 @@
        
       <AnchorPane layoutX="213.0" layoutY="60.0" opacity="0.94" prefHeight="417.0" prefWidth="336.0" style="-fx-background-color: #ffffff;" styleClass="panel-registro" stylesheets="@registro.css">
          <children>
-            <Label layoutX="90.0" layoutY="36.0" text="Datos Personales">
+            <Label layoutX="90.0" layoutY="36.0" text="Datos Personales" textFill="#2d7a2d">
                <font>
                   <Font size="18.0" />
                </font>

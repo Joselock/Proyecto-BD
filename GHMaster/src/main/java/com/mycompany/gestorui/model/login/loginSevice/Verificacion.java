@@ -43,7 +43,7 @@ public class Verificacion {
                     user = new User(
                             rs.getString("username"),
                             rs.getString("email"),
-                            null, // No devolvemos la contraseña 
+                            null,
                             new DataUser(
                                     rs.getString("nombre"),
                                     rs.getString("especialidad"),

@@ -56,6 +56,7 @@ public class crudUser {
         return modificada;
     }
 
+
     public static boolean modificarDatos(String usernameOriginal, String usernameNuevo, String emailNuevo, 
             String nombreC, String especialidad, String direccion, String telefono) throws SQLException {
         
@@ -99,4 +100,25 @@ public class crudUser {
         }
         return eliminado;
     }
+
+
+    public static boolean actualizarContraseñaPorEmail(String email, String nuevaPassword) throws SQLException {
+        boolean actualizada = false;
+        String function = "SELECT * FROM public.func_actualizar_contrasena_por_email(?, ?)";
+        
+        try (java.sql.Connection con = BaseDatosLogin.getConnection();
+             PreparedStatement ps = con.prepareStatement(function)) {
+            
+            ps.setString(1, email);
+            ps.setString(2, nuevaPassword);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    actualizada = rs.getBoolean(1);
+                }
+            }
+        }
+        return actualizada;
+    }
+
 }

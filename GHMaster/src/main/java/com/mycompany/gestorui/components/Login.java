@@ -23,7 +23,7 @@ public class Login{
         mainStage = new Stage();
         
         // Cargar el FXML (ruta corregida)
-        Parent root = FXMLLoader.load(MainWindow.class.getResource("/com/mycompany/gestorui/views/LoginFXML.fxml"));
+        Parent root = FXMLLoader.load(MainWindow.class.getResource("/com/mycompany/gestorui/views/Login/LoginFXML.fxml"));
         mainStage.initStyle(StageStyle.UNDECORATED);
         Scene scene = new Scene(root);
         mainStage.setScene(scene);

@@ -1,0 +1,48 @@
+
+.sign-in-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;  
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius:20px;
+}
+
+.sign-in-button:hover {
+    -fx-background-color: #0056b3;  
+    -fx-text-fill: white;
+}
+
+.sign-in-button:pressed {
+    -fx-background-color: #004099;  
+    -fx-text-fill: white;
+}
+
+.back-button{
+    -fx-background-color: white;
+    -fx-text-fill: #333333;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-background-radius:20px;
+}
+
+.back-button:hover {
+    -fx-background-color: #f0f0f0;  
+    -fx-text-fill: #333333;
+}
+
+/* Estilo para el label del toggle de contraseña */
+#togglePasswordLabel {
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+}
+
+#togglePasswordLabel:hover {
+    -fx-opacity: 0.8;
+}
+
+
+.panel-inicio{
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}

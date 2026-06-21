@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="490.0" prefWidth="758.0" style="-fx-background-color: #2d7a2d;" stylesheets="@/com/mycompany/gestorui/styles/login.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="490.0" prefWidth="758.0" style="-fx-background-color: #2d7a2d;" stylesheets="@/com/mycompany/gestorui/styles/login.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.gestorui.controllers.Login.LoginController">
    <children>
       <!-- 1️⃣ PRIMERO: La imagen de fondo (se dibuja DETRÁS) -->
       <ImageView fitHeight="559.0" fitWidth="355.0" layoutY="-12.0" opacity="0.82" pickOnBounds="true" preserveRatio="true">
-         <Image url="@../images/alexandr-podvalny-tE7_jvK-_YU-unsplash.jpg" />
+         <Image url="@../../images/alexandr-podvalny-tE7_jvK-_YU-unsplash.jpg" />
       </ImageView>
       
       <!-- 2️⃣ DESPUÉS: El panel de login (se dibuja ENCIMA de la imagen) -->
@@ -45,12 +45,12 @@
             <!-- Botón de login -->
             <JFXButton fx:id="btnIniciar" layoutX="68.0" layoutY="245.0" onAction="#handleLogin" prefHeight="36.0" prefWidth="195.0" styleClass="sign-in-button" text="Sign In" />
             
-            <Label layoutX="95.0" layoutY="47.0" text="Inicio de Sesión">
+            <Label layoutX="95.0" layoutY="47.0" text="Inicio de Sesión" textFill="#2d7a2d">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Hyperlink layoutX="104.0" layoutY="332.0" prefHeight="22.0" prefWidth="125.0" text="Forgot Password?" />
+            <Hyperlink layoutX="104.0" layoutY="332.0" onMouseClicked="#handleForgotPassword" prefHeight="22.0" prefWidth="125.0" text="Forgot Password?" />
             <Label fx:id="errorLabel" alignment="CENTER" layoutX="50.0" layoutY="221.0" prefHeight="16.0" prefWidth="226.0" text="Credenciales incorrectas" textFill="#e40808" visible="false" />
             <JFXButton fx:id="btnCancelar" layoutX="68.0" layoutY="290.0" onAction="#handleCancelar" prefHeight="36.0" prefWidth="195.0" styleClass="back-button" stylesheets="@../styles/login.css" text="Atrás" />
          </children>

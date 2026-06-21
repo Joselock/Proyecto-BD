@@ -6,7 +6,7 @@ package com.mycompany.gestorui.controllers.Cuenta;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
-import com.mycompany.gestorui.controllers.LoginController;
+import com.mycompany.gestorui.controllers.Login.LoginController;
 import com.mycompany.gestorui.model.login.loginSevice.Verificacion;
 import com.mycompany.gestorui.model.login.loginSevice.crudUser;
 import java.net.URL;

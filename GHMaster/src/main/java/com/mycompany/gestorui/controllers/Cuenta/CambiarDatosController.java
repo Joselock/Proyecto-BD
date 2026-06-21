@@ -2,9 +2,9 @@ package com.mycompany.gestorui.controllers.Cuenta;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import com.mycompany.gestorui.controllers.LoginController;
 import com.mycompany.gestorui.controllers.Cuenta.Listener.PerfilListener;
 import com.mycompany.gestorui.controllers.Cuenta.Manager.PerfilManager;
+import com.mycompany.gestorui.controllers.Login.LoginController;
 import com.mycompany.gestorui.model.login.loginSevice.crudUser;
 import com.mycompany.gestorui.model.login.entidad.User;
 import com.mycompany.gestorui.model.login.loginSevice.Verificacion;
