@@ -78,7 +78,8 @@ public class PrincipalController implements Initializable {
     @FXML
     private void handleRegistro(ActionEvent event) {
         try {
-            Stage stagePrincipal = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            // Guardar la referencia a la ventana principal ANTES de ocultarla
+            stagePrincipal = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stagePrincipal.hide();
 
             // Abrir primer paso (datos personales)
@@ -92,7 +93,6 @@ public class PrincipalController implements Initializable {
             e.printStackTrace();
         }
     }
-
     // Método para cerrar definitivamente la ventana principal (después del login)
     public static void cerrarVentanaPrincipal() {
         if (stagePrincipal != null) {
